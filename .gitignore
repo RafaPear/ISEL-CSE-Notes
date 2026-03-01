@@ -1,2 +1,50 @@
+# macOS
 .DS_Store
+
+# Backup files
 *.bak
+*.bak[0-9]*
+
+# Quartus (FPGA) generated files
+db/
+output_files/
+simulation/
+.qsys_edit/
+*.qws
+*.rpt
+*.summary
+*.sof
+*.pof
+*.jdi
+*.smsg
+
+# LaTeX auxiliary files
+*.aux
+*.lof
+*.lot
+*.toc
+*.out
+*.glo
+*.gls
+*.glg
+*.acn
+*.acr
+*.alg
+*.ist
+*.pygtex
+*.pygstyle
+*.synctex.gz
+*.fls
+*.fdb_latexmk
+_minted-*/
+
+# Java / Kotlin compiled output
+*.class
+*.kotlin_module
+META-INF/
+build/
+target/
+.gradle/
+
+# Node.js
+node_modules/

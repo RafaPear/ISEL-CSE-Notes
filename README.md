@@ -2,31 +2,13 @@
 
 ## Contents
 
-1. [Youtube channels](#Youtube_channels)
+1. [Repository Structure](#repository-structure)
+2. [Youtube channels](#youtube-channels)
+3. [Youtube playlists and Videos](#youtube-playlists-and-videos)
+4. [Cool blog posts](#coll-blog-posts)
+5. [My Setup](#my-setup)
 
-## Youtube channels
-
-- [TsodingDaily](https://www.youtube.com/@TsodingDaily)
-- [Sebastian Lague](https://www.youtube.com/@SebastianLague)
-- [Dave Leeds](https://www.youtube.com/@typealias)
-- [Paulo Pereira](https://www.youtube.com/@ProfPauloPereira)
-- [Tartarus Engine](https://www.youtube.com/@TartarusEngine)
-
-## Youtube playlists and Videos
-
-- [3D Software Rendered Game - Tsoding Daily](https://www.youtube.com/playlist?list=PLpM-Dvs8t0VaOBDp6cVRLBScgSJ2L8blq)
-- [One Formula That Demystifies 3D Graphics - Tsoding Daily](https://www.youtube.com/watch?v=qjWkNZ0SXfo)
-- [Coding Adventure - Sebastian Lague](https://www.youtube.com/playlist?list=PLFt_AvWsXl0ehjAfLFsp1PGaatzAwo0uK)
-
-## Cool blog Posts
-
-- [Continuous Integration - Martin Fowler](https://martinfowler.com/articles/continuousIntegration.html)
-- [Finding Your Home in Game Graphics Programming - Alex Tardif](https://alextardif.com/LearningGraphics.html)
-- [Layered Architecture Pattern - Yasmine Cherif](https://dev.to/yasmine_ddec94f4d4/understanding-the-layered-architecture-pattern-a-comprehensive-guide-1e2j)
-- [Layers in software architecture - Sagar Hudge](https://medium.com/@sagar.hudge/layers-in-software-architecture-c8cc16329ff6)
-- [10 Common Software Architectural Patterns in a nutshell - Vijini Mallawaarachchi](https://medium.com/data-science/10-common-software-architectural-patterns-in-a-nutshell-a0b47a1e9013)
-
-## Usefull content
+## Repository Structure
 
 You can find usefull content inside the semester folders. Currently there are 3 semesters. The content of each folder is shown bellow:
 
@@ -61,6 +43,28 @@ All assignments are within each class folder. Some assignments have a proper Git
 | **[TDS Assignment](https://github.com/RafaPear/TDS-2425-Assignment)** | Software Dev Techniques (TDS) | 3 | Software architecture, testing, design patterns | Kotlin |
 
  > Note that the reports are in portuguese as that is the course teaching language. The docs and code are in english but probably do contain some parts in portuguese.
+
+## Youtube channels
+
+- [TsodingDaily](https://www.youtube.com/@TsodingDaily)
+- [Sebastian Lague](https://www.youtube.com/@SebastianLague)
+- [Dave Leeds](https://www.youtube.com/@typealias)
+- [Paulo Pereira](https://www.youtube.com/@ProfPauloPereira)
+- [Tartarus Engine](https://www.youtube.com/@TartarusEngine)
+
+## Youtube playlists and Videos
+
+- [3D Software Rendered Game - Tsoding Daily](https://www.youtube.com/playlist?list=PLpM-Dvs8t0VaOBDp6cVRLBScgSJ2L8blq)
+- [One Formula That Demystifies 3D Graphics - Tsoding Daily](https://www.youtube.com/watch?v=qjWkNZ0SXfo)
+- [Coding Adventure - Sebastian Lague](https://www.youtube.com/playlist?list=PLFt_AvWsXl0ehjAfLFsp1PGaatzAwo0uK)
+
+## Cool blog Posts
+
+- [Continuous Integration - Martin Fowler](https://martinfowler.com/articles/continuousIntegration.html)
+- [Finding Your Home in Game Graphics Programming - Alex Tardif](https://alextardif.com/LearningGraphics.html)
+- [Layered Architecture Pattern - Yasmine Cherif](https://dev.to/yasmine_ddec94f4d4/understanding-the-layered-architecture-pattern-a-comprehensive-guide-1e2j)
+- [Layers in software architecture - Sagar Hudge](https://medium.com/@sagar.hudge/layers-in-software-architecture-c8cc16329ff6)
+- [10 Common Software Architectural Patterns in a nutshell - Vijini Mallawaarachchi](https://medium.com/data-science/10-common-software-architectural-patterns-in-a-nutshell-a0b47a1e9013)
 
 ## My Setup
 

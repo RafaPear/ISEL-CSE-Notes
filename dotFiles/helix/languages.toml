@@ -1,0 +1,35 @@
+[language-server.tinymist]
+command = "tinymist"
+config = {exportPdf = "onType", outputPath = "$root/target/$dir/$name", typstExtraArgs = ["main.typ"]}
+
+[[language]]
+name = "typst"
+
+language-servers = ["tinymist"]
+auto-format = true
+formatter.command = "typstyle"
+
+[[language]]
+name = "javascript"
+formatter = { command = 'prettier', args = ["--parser", "typescript"] }
+auto-format = true
+
+[[language]]
+name = "python"
+
+language-servers = ["pylsp"]
+formatter = { command = 'black', args = ["$name"]  }
+auto-format = true
+
+[language-server.pylsp.config.pylsp]
+plugins.black.enabled = true
+plugins.pylint.enabled = true
+plugins.pyflakes.enabled = false
+plugins.pyls_mypy.enabled = true
+plugins.pyls_mypy.live_mode = false
+plugins.isort.enabled = true
+plugins.rope_autoimport.enabled = true
+
+[language-server.clangd]
+command = "clangd"
+args = ["--query-driver=/Applications/ArmGNUToolchain/15.2.rel1/arm-none-eabi/bin/arm-none-eabi-gcc"]

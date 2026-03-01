@@ -1,0 +1,1 @@
+No intellij, quando testar a main certifique-se de que o caminho (working directory) da configuração está predefinido para o software.

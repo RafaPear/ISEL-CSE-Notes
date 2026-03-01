@@ -1,0 +1,21 @@
+\begin{gather}
+    0011^2 = \begin{cases}
+        \text{com $i=3 \rightarrow$ Se $x_i = 1 \Rightarrow A= LSL_{x}^i$ caso contrário $A=0$} \\
+        \text{com $i=2 \rightarrow$ Se $x_i = 1 \Rightarrow B=LSL_{x}^i$ caso contrário $B=0$}  \\
+        \text{com $i=1 \rightarrow$ Se $x_i = 1 \Rightarrow C=LSL_{x}^i$ caso contrário $C=0$}  \\
+        \text{com $i=0 \rightarrow$ Se $x_i = 1 \Rightarrow D=LSL_{x}^i$ caso contrário $D=0$}
+    \end{cases} \Leftrightarrow \\
+    \begin{align}
+        \Leftrightarrow 0011^2 & =
+        \begin{cases}
+            \text{com $i=3 \rightarrow A = 0$}            \\
+            \text{com $i=2 \rightarrow B = 0$}            \\
+            \text{com $i=1 \rightarrow C = LSL_{0011}^1$} \\
+            \text{com $i=0 \rightarrow D = LSL_{0011}^0$}
+        \end{cases} \\
+        \Leftrightarrow 0011^2 & = A + B + C + D                         \\
+        \Leftrightarrow 0011^2 & = 0 + 0 + LSL_{0011}^1 + LSL_{0011}^0   \\
+        \Leftrightarrow 0011^2 & = 0 + 0 + 00110 + 0011                  \\
+        \Leftrightarrow 0011^2 & = 1001
+    \end{align}
+\end{gather}

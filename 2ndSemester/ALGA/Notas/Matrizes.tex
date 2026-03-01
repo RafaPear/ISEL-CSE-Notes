@@ -1,0 +1,975 @@
+\section{Matrizes}
+\indent
+
+Sejam $m$ e $n$ números naturais. Uma Matriz real $A$ do tipo $m$ por $n$ é um
+quadro com $m \times n$ números reais dispostos por $m$ linhas e $n$ colunas.
+Escreve-se $A_{m \times n}$. O conjunto das matrizes reais do tipo $m$ por $n$
+denota-se por $\mathbb{R}^{m \times n}$. A Matriz $A$, representante das
+infinitas possibilidades de arranjar uma Matriz, é representada por:
+
+\[
+    \begin{bmatrix}
+        a_{11} & a_{12} & \cdots & a_{1n} \\
+        a_{21} & a_{22} & \cdots & a_{2n} \\
+        \vdots & \vdots & \ddots & \vdots \\
+        a_{m1} & a_{m2} & \cdots & a_{mn}
+    \end{bmatrix}
+\]
+
+\begin{tcolorbox}
+    Apenas podemos comparar matrizes do mesmo tipo, isto é, com o mesmo número de linhas e colunas ($m_A = m_B \wedge n_A = n_B$).
+\end{tcolorbox}
+
+\paragraph{Idexação de elementos de Matrizes:} Seja $A$ uma matriz do tipo $m \times n$ e $a_{ij}$ um elemento dessa mesma
+matriz. Ao número situado na linha $i$ e coluna $j$ da matriz $A$, dá-se o nome
+de entrada ($i$, $j$) de $A$ e denota-se por $a_{ij}$ ou $A_{ij}$, $i \in \{1,
+    \dots , m\}$, $j \in \{1, \dots , n\}$.
+
+Por exemplo, a matriz $A = \begin{bmatrix}
+        4 & 1 \\
+        3 & 7
+    \end{bmatrix}$ tem como elementos $a_{11} = 4$, $a_{12} = 1$, $a_{21} = 3$ e $a_{22} = 7$.
+
+\paragraph{Igualdade de Matrizes:} Duas matrizes $A$ e $B$ são iguais se, e somente se, tiverem o mesmo número de
+linhas e colunas e se, para cada par de índices $i$ e $j$, $a_{ij} = b_{ij}$.
+Isto é, $A = B \Leftrightarrow m_A = m_B \wedge n_A = n_B \wedge a_{ij} =
+    b_{ij}$, $\forall i,j$. Tenha em conta o exemplo abaixo:
+
+\begin{center}
+    Sejam as matrizes $A$ e $B$ tais que:
+\end{center}
+\[
+    A =
+    \begin{bmatrix}
+        4 & 1 \\
+        3 & 7
+    \end{bmatrix},
+    B =
+    \begin{bmatrix}
+        4 & 1 \\
+        3 & 7
+    \end{bmatrix}
+\]
+
+\begin{equation}
+    A = B \Leftrightarrow
+    \begin{bmatrix}
+        4 & 1 \\
+        3 & 7
+    \end{bmatrix} =
+    \begin{bmatrix}
+        4 & 1 \\
+        3 & 7
+    \end{bmatrix} \Leftrightarrow
+    \begin{cases}
+        a_{11} = b_{11} \\
+        a_{12} = b_{12} \\
+        a_{21} = b_{21} \\
+        a_{22} = b_{22}
+    \end{cases} \Leftrightarrow
+    \begin{cases}
+        4 = 4 \\
+        1 = 1 \\
+        3 = 3 \\
+        7 = 7
+    \end{cases} \Leftrightarrow \text{Verdadeiro}
+\end{equation}
+
+\begin{infoclean}[title = Notas, center, center title]
+    \textbf{Definição}: Uma matriz \( A \) de tipo \( m \times n \) é um arranjo de números reais em \( m \) linhas e \( n \) colunas.
+
+    \textbf{Comparação}: Só podemos comparar matrizes do mesmo tamanho (\( m_A = m_B \) e \( n_A = n_B \)).
+
+    \textbf{Indexação}: O elemento na linha \( i \) e coluna \( j \) de uma matriz \( A \) é representado por \( a_{ij} \) ou \( A_{ij} \).
+
+    \textbf{Igualdade}: Duas matrizes \( A \) e \( B \) são iguais se tiverem o mesmo tamanho e se todos os elementos corresponderem, ou seja, \( a_{ij} = b_{ij} \) para todos os índices \( i, j \).
+\end{infoclean}
+
+
+\subsection{Tipos de matrizes}
+\indent
+
+\subsubsection{Matriz Coluna}
+\indent
+
+Uma matriz coluna é uma matriz do tipo \( m \times 1 \), isto é, com uma única coluna. Uma qualquer matriz coluna é representada por:
+
+\[
+    \begin{matrix}
+        A = \begin{bmatrix}
+                a_{11} \\
+                a_{21} \\
+                \vdots \\
+                a_{m1}
+            \end{bmatrix}
+    \end{matrix}
+\]
+
+\paragraph{Exemplos:}
+
+\[
+    \begin{matrix}
+        \begin{bmatrix}
+            2
+        \end{bmatrix},
+        \quad
+        \begin{bmatrix}
+            2 \\
+            4
+        \end{bmatrix},
+        \quad
+        \begin{bmatrix}
+            2 \\
+            4 \\
+            8
+        \end{bmatrix},
+        \quad
+        \begin{bmatrix}
+            1 \\
+            2 \\
+            3 \\
+            4
+        \end{bmatrix},
+        \quad
+        \begin{bmatrix}
+            0 \\
+            0 \\
+            0 \\
+            0 \\
+            0
+        \end{bmatrix}
+    \end{matrix}
+\]
+
+\subsubsection{Matriz Linha}
+\indent
+
+Uma matriz linha é uma matriz do tipo \( 1 \times n \), isto é, com uma única linha. Uma qualquer matriz linha é representada por:
+
+\[
+    \begin{matrix}
+        A = \begin{bmatrix}
+                a_{11} & a_{12} & \cdots & a_{1n}
+            \end{bmatrix}
+    \end{matrix}
+\]
+
+\paragraph{Exemplos:}
+
+\[
+    \begin{matrix}
+        \begin{bmatrix}
+            2
+        \end{bmatrix},
+        \quad
+        \begin{bmatrix}
+            2 & 4
+        \end{bmatrix},
+        \quad
+        \begin{bmatrix}
+            1 & 2 & 3
+        \end{bmatrix},
+        \quad
+        \begin{bmatrix}
+            0 & 0 & 0 & 0
+        \end{bmatrix}
+    \end{matrix}
+\]
+
+\subsubsection{Matriz Quadrada}
+\indent
+
+Uma matriz quadrada é uma matriz do tipo \( n \times n \), isto é, com o mesmo número de linhas e colunas. Uma qualquer matriz quadrada é representada por:
+
+\[
+    \begin{matrix}
+        A = \begin{bmatrix}
+                a_{11} & a_{12} & \cdots & a_{1n} \\
+                a_{21} & a_{22} & \cdots & a_{2n} \\
+                \vdots & \vdots & \ddots & \vdots \\
+                a_{n1} & a_{n2} & \cdots & a_{nn}
+            \end{bmatrix}
+    \end{matrix}
+\]
+
+\paragraph{Exemplos:}
+
+\[
+    \begin{matrix}
+        \begin{bmatrix}
+            \mathbf{2}
+        \end{bmatrix},
+        \quad
+        \begin{bmatrix}
+            \mathbf{2} & 4          \\
+            1          & \mathbf{3}
+        \end{bmatrix},
+        \quad
+        \begin{bmatrix}
+            \mathbf{1} & 2          & 3          \\
+            4          & \mathbf{5} & 6          \\
+            7          & 8          & \mathbf{9}
+        \end{bmatrix},
+        \quad
+        \begin{bmatrix}
+            \mathbf{0} & 0          & 0          & 0          \\
+            0          & \mathbf{0} & 0          & 0          \\
+            0          & 0          & \mathbf{0} & 0          \\
+            0          & 0          & 0          & \mathbf{0}
+        \end{bmatrix}
+    \end{matrix}
+\]
+
+Chamam-se elementos da diagonal principal de uma matriz quadrada os elementos \( a_{11}, a_{22}, \dots, a_{nn} \) representados a negrito em todas as matrizes acima. Note que uma matriz só contem diagonal de for quadrada.
+
+\subsubsection{Matriz Triangular}
+\indent
+
+Uma matriz triangular é uma matriz quadrada em que todos os elementos acima ou abaixo da diagonal principal são nulos. Uma qualquer matriz triangular superior é representada por:
+
+\[
+    \begin{matrix}
+        A = \begin{bmatrix}
+                a_{11} & a_{12} & \cdots & a_{1n} \\
+                0      & a_{22} & \cdots & a_{2n} \\
+                \vdots & \vdots & \ddots & \vdots \\
+                0      & 0      & \cdots & a_{nn}
+            \end{bmatrix}
+    \end{matrix}
+\]
+
+E qualquer matriz triangular inferior é representada por:
+
+\[
+    \begin{matrix}
+        A = \begin{bmatrix}
+                a_{11} & 0      & \cdots & 0      \\
+                a_{21} & a_{22} & \cdots & 0      \\
+                \vdots & \vdots & \ddots & \vdots \\
+                a_{n1} & a_{n2} & \cdots & a_{nn}
+            \end{bmatrix}
+    \end{matrix}
+\]
+
+\paragraph{Exemplos:}
+
+\[
+    \begin{matrix}
+        \begin{bmatrix}
+            \mathbf{2}
+        \end{bmatrix},
+        \quad
+        \begin{bmatrix}
+            \mathbf{2} & 4          \\
+            0          & \mathbf{3}
+        \end{bmatrix},
+        \quad
+        \begin{bmatrix}
+            \mathbf{1} & 2          & 3          \\
+            0          & \mathbf{5} & 6          \\
+            0          & 0          & \mathbf{9}
+        \end{bmatrix},
+        \quad
+        \begin{bmatrix}
+            \mathbf{0} & 0          & 0          & 0          \\
+            0          & \mathbf{0} & 0          & 0          \\
+            0          & 0          & \mathbf{0} & 0          \\
+            0          & 0          & 0          & \mathbf{0}
+        \end{bmatrix}
+    \end{matrix}
+\]
+
+E como exemplos de matrizes triangulares inferiores as seguintes matrizes:
+
+\[
+    \begin{matrix}
+        \begin{bmatrix}
+            \mathbf{2}
+        \end{bmatrix},
+        \quad
+        \begin{bmatrix}
+            \mathbf{2} & 0          \\
+            1          & \mathbf{3}
+        \end{bmatrix},
+        \quad
+        \begin{bmatrix}
+            \mathbf{1} & 0          & 0          \\
+            4          & \mathbf{5} & 0          \\
+            7          & 8          & \mathbf{9}
+        \end{bmatrix},
+        \quad
+        \begin{bmatrix}
+            \mathbf{0} & 0          & 0          & 0          \\
+            0          & \mathbf{0} & 0          & 0          \\
+            0          & 0          & \mathbf{0} & 0          \\
+            0          & 0          & 0          & \mathbf{0}
+        \end{bmatrix}
+    \end{matrix}
+\]
+
+\subsubsection{Matriz Diagonal}
+\indent
+
+Uma matriz diagonal é uma matriz quadrada em que todos os elementos fora da diagonal principal são nulos. Uma qualquer matriz diagonal é representada por:
+
+\[
+    \begin{matrix}
+        A = \begin{bmatrix}
+                a_{11} & 0      & \cdots & 0      \\
+                0      & a_{22} & \cdots & 0      \\
+                \vdots & \vdots & \ddots & \vdots \\
+                0      & 0      & \cdots & a_{nn}
+            \end{bmatrix}
+    \end{matrix}
+\]
+
+\paragraph{Exemplos:}
+
+\[
+    \begin{matrix}
+        \begin{bmatrix}
+            \mathbf{2}
+        \end{bmatrix},
+        \quad
+        \begin{bmatrix}
+            \mathbf{2} & 0          \\
+            0          & \mathbf{3}
+        \end{bmatrix},
+        \quad
+        \begin{bmatrix}
+            \mathbf{1} & 0          & 0          \\
+            0          & \mathbf{5} & 0          \\
+            0          & 0          & \mathbf{9}
+        \end{bmatrix},
+        \quad
+        \begin{bmatrix}
+            \mathbf{0} & 0          & 0          & 0          \\
+            0          & \mathbf{0} & 0          & 0          \\
+            0          & 0          & \mathbf{0} & 0          \\
+            0          & 0          & 0          & \mathbf{0}
+        \end{bmatrix}
+    \end{matrix}
+\]
+
+\subsubsection{Matriz Escalar}
+\indent
+
+Uma matriz escalar é uma matriz diagonal em que todos os elementos da diagonal principal são iguais. Uma qualquer matriz escalar é representada por:
+
+\[
+    \begin{matrix}
+        A = \begin{bmatrix}
+                k      & 0      & \cdots & 0      \\
+                0      & k      & \cdots & 0      \\
+                \vdots & \vdots & \ddots & \vdots \\
+                0      & 0      & \cdots & k
+            \end{bmatrix}
+    \end{matrix}
+\]
+
+\paragraph{Exemplos:}
+
+\[
+    \begin{matrix}
+        \begin{bmatrix}
+            \mathbf{2}
+        \end{bmatrix},
+        \quad
+        \begin{bmatrix}
+            \mathbf{2} & 0          \\
+            0          & \mathbf{2}
+        \end{bmatrix},
+        \quad
+        \begin{bmatrix}
+            \mathbf{1} & 0          & 0          \\
+            0          & \mathbf{1} & 0          \\
+            0          & 0          & \mathbf{1}
+        \end{bmatrix},
+        \quad
+        \begin{bmatrix}
+            \mathbf{0} & 0          & 0          & 0          \\
+            0          & \mathbf{0} & 0          & 0          \\
+            0          & 0          & \mathbf{0} & 0          \\
+            0          & 0          & 0          & \mathbf{0}
+        \end{bmatrix}
+    \end{matrix}
+\]
+
+\subsubsection{Matriz Identidade}
+\indent
+
+A matriz identidade é uma matriz escalar em que todos os elementos da diagonal principal são iguais a 1. Uma qualquer matriz identidade é representada por:
+
+\[
+    \begin{matrix}
+        I = \begin{bmatrix}
+                1      & 0      & \cdots & 0      \\
+                0      & 1      & \cdots & 0      \\
+                \vdots & \vdots & \ddots & \vdots \\
+                0      & 0      & \cdots & 1
+            \end{bmatrix}
+    \end{matrix}
+\]
+
+\paragraph{Exemplos:}
+
+\[
+    \begin{matrix}
+        \begin{bmatrix}
+            \mathbf{1}
+        \end{bmatrix},
+        \quad
+        \begin{bmatrix}
+            \mathbf{1} & 0          \\
+            0          & \mathbf{1}
+        \end{bmatrix},
+        \quad
+        \begin{bmatrix}
+            \mathbf{1} & 0          & 0          \\
+            0          & \mathbf{1} & 0          \\
+            0          & 0          & \mathbf{1}
+        \end{bmatrix},
+        \quad
+        \begin{bmatrix}
+            \mathbf{1} & 0          & 0          & 0          \\
+            0          & \mathbf{1} & 0          & 0          \\
+            0          & 0          & \mathbf{1} & 0          \\
+            0          & 0          & 0          & \mathbf{1}
+        \end{bmatrix}
+    \end{matrix}
+\]
+
+\subsubsection{Matriz Nula}
+\indent
+
+Uma matriz nula é uma matriz em que todos os elementos são iguais a 0. Uma qualquer matriz nula é representada por:
+
+\[
+    \begin{matrix}
+        O = \begin{bmatrix}
+                0      & 0      & \cdots & 0      \\
+                0      & 0      & \cdots & 0      \\
+                \vdots & \vdots & \ddots & \vdots \\
+                0      & 0      & \cdots & 0
+            \end{bmatrix}
+    \end{matrix}
+\]
+
+\subsubsection{Submatriz}
+\indent
+
+Uma matriz nula é uma matriz que se obtém por
+eliminação de linhas e/ou colunas e é denotada por:
+
+\begin{itemize}
+    \item \( A[i_1, \dots, i_k | j_1, \dots, j_l] \) a submatriz de \( A \) constituída pelas linhas \( i_1, \dots, i_k \) e pelas colunas \( j_1, \dots, j_l \) de \( A \);
+    \item \( A(i_1, \dots, i_k | j_1, \dots, j_l) \) a submatriz que se obtém por eliminação das linhas \( i_1, \dots, i_k \) e pelas colunas \( j_1, \dots, j_l \) de \( A \).
+\end{itemize}
+
+\paragraph{Exemplos:}
+
+\[
+    A =
+    \begin{bmatrix}
+        1 & 0  & 2 \\
+        3 & -1 & 4 \\
+        6 & -5 & 1
+    \end{bmatrix}
+    \quad \text{e} \quad
+    B =
+    \begin{bmatrix}
+        2 & 0 & -1 & 4 \\
+        6 & 1 & 8  & 3
+    \end{bmatrix}
+\]
+
+\[
+    A[1,3 | 2,3] =
+    \begin{bmatrix}
+        0  & 2 \\
+        -5 & 1
+    \end{bmatrix},
+    \quad
+    A(1 | ) =
+    \begin{bmatrix}
+        3 & -1 & 4 \\
+        6 & -5 & 1
+    \end{bmatrix}
+\]
+
+\[
+    B[1 | 1,3] =
+    \begin{bmatrix}
+        2 & -1
+    \end{bmatrix},
+    \quad
+    B(1 | 1,3) =
+    \begin{bmatrix}
+        1 & 3
+    \end{bmatrix}
+\]
+
+\subsubsection{Matriz Transposta}
+\indent
+
+Dada uma matriz $A$ de $m \times n$, uma matriz $A^T$ é transposta se é do tipo $n \times m$ dado que:
+
+\[
+    {\left( A^{T} \right)}_{ij} = a_{ji}, \quad i \in \{1,2, \dots, n\}, \quad j \in \{1,2, \dots, m\}
+\]
+
+A transposição pode também ser considerada uma operação, pelo que estará representada no sub capítulo sobre Operações com Matrizes (\ref{sec:op_matrix})
+
+\paragraph{Exemplos:}
+
+\[
+    A =
+    \begin{bmatrix}
+        1 & 2 & 3 \\
+        4 & 5 & 6
+    \end{bmatrix}
+    \quad \Rightarrow \quad
+    A^T =
+    \begin{bmatrix}
+        1 & 4 \\
+        2 & 5 \\
+        3 & 6
+    \end{bmatrix}
+\]
+
+\[
+    B =
+    \begin{bmatrix}
+        7 & 8 & 9 \\
+        2 & 3 & 4 \\
+        5 & 6 & 1
+    \end{bmatrix}
+    \quad \Rightarrow \quad
+    B^T =
+    \begin{bmatrix}
+        7 & 2 & 5 \\
+        8 & 3 & 6 \\
+        9 & 4 & 1
+    \end{bmatrix}
+\]
+
+\[
+    I =
+    \begin{bmatrix}
+        1 & 0 & 0 \\
+        0 & 1 & 0 \\
+        0 & 0 & 1
+    \end{bmatrix}
+    \quad \Rightarrow \quad
+    I^T = I
+\]
+
+\begin{center}
+    Propriedade da Transposição
+\end{center}
+\[
+    {\left( A^T \right)}^T = A
+\]
+
+\subsubsection{Matriz Simétrica}
+\indent
+
+Uma matriz simétrica é uma matriz que, quando transposta, é igual a si mesma. Por outras palavras, uma matriz $A$ é simétrica se $A = A^T$. Uma qualquer matriz simétrica é representada por:
+
+\[
+    A = \begin{bmatrix}
+        a_{11} & a_{12} & \cdots & a_{1n} \\
+        a_{12} & a_{22} & \cdots & a_{2n} \\
+        \vdots & \vdots & \ddots & \vdots \\
+        a_{1n} & a_{2n} & \cdots & a_{nn}
+    \end{bmatrix}
+\]
+
+\paragraph{Exemplos:}
+
+\[
+    \begin{matrix}
+        \begin{bmatrix}
+            \mathbf{2}
+        \end{bmatrix},
+        \quad
+        \begin{bmatrix}
+            \mathbf{2} & 1          \\
+            1          & \mathbf{3}
+        \end{bmatrix},
+        \quad
+        \begin{bmatrix}
+            \mathbf{1} & 2          & 3          \\
+            2          & \mathbf{5} & 6          \\
+            3          & 6          & \mathbf{9}
+        \end{bmatrix},
+        \quad
+        \begin{bmatrix}
+            \mathbf{0} & 0          & 0          & 0          \\
+            0          & \mathbf{0} & 0          & 0          \\
+            0          & 0          & \mathbf{0} & 0          \\
+            0          & 0          & 0          & \mathbf{0}
+        \end{bmatrix}
+    \end{matrix}
+\]
+
+\subsubsection{Matriz Anti-Simétrica}
+\indent
+
+Uma matriz anti-simétrica é uma matriz quadrada que, quando transposta, é igual à sua oposta. Por outras palavras, uma matriz $A$ é anti-simétrica se $A^T = -A$. Uma qualquer matriz anti-simétrica é representada por:
+
+\[
+    A = \begin{bmatrix}
+        0      & -a_{12} & -a_{13} & \cdots & -a_{1n} \\
+        a_{12} & 0       & -a_{23} & \cdots & -a_{2n} \\
+        a_{13} & a_{23}  & 0       & \cdots & -a_{3n} \\
+        \vdots & \vdots  & \vdots  & \ddots & \vdots  \\
+        a_{1n} & a_{2n}  & a_{3n}  & \cdots & 0
+    \end{bmatrix}
+\]
+
+\paragraph{Exemplos:}
+
+\[
+    \begin{matrix}
+        \begin{bmatrix}
+            \mathbf{0}
+        \end{bmatrix},
+        \quad
+        \begin{bmatrix}
+            \mathbf{0} & 2          \\
+            -2         & \mathbf{0}
+        \end{bmatrix},
+        \quad
+        \begin{bmatrix}
+            \mathbf{0} & 1          & 2          \\
+            -1         & \mathbf{0} & 3          \\
+            -2         & -3         & \mathbf{0}
+        \end{bmatrix},
+        \quad
+        \begin{bmatrix}
+            \mathbf{0} & 4          & 5          & 6          \\
+            -4         & \mathbf{0} & 7          & 8          \\
+            -5         & -7         & \mathbf{0} & 9          \\
+            -6         & -8         & -9         & \mathbf{0}
+        \end{bmatrix}
+    \end{matrix}
+\]
+
+\begin{infoclean}
+    Uma matriz só é anti-simétrica se, e só se:
+    \begin{itemize}
+        \item É quadrada;
+        \item As entradas principais são nulas;
+        \item Os elementos situados em posições simétricas relativamente à diagonal principal são simétricos.
+    \end{itemize}
+\end{infoclean}
+
+\subsection{Operações com Matrizes}\label{sec:op_matrix}
+
+\subsubsection{Transposição}
+\indent
+
+A transposição de uma matriz $A$ é denotada por $A^T$ e é obtida trocando-se as linhas pelas colunas de $A$. Formalmente, se $A$ é uma matriz $m \times n$, então $A^T$ é uma matriz $n \times m$ tal que o elemento na posição $(i, j)$ de $A^T$ é o elemento na posição $(j, i)$ de $A$. Em outras palavras:
+
+\[
+    {(A^T)}_{ij} = A_{ji}
+\]
+
+\paragraph{Exemplo:}
+
+Seja a matriz $A = \begin{bNiceMatrix}[r,left-margin=0.6em,right-margin=0.6em]
+    \Block[draw=red]{1-3}{}
+    1 & 2 & 3 \\
+    \Block[draw=blue]{1-3}{}
+    4 & 5 & 6
+\end{bNiceMatrix}
+$, a transposta de $A$, denotada por $A^T$, é:
+
+\[
+    A^T = \begin{bNiceMatrix}[r,left-margin=0.6em,right-margin=0.6em]
+        \Block[draw=red]{3-1}{}
+        1 &
+        \Block[draw=blue]{3-1}{} 4 \\
+        2 & 5 \\
+        3 & 6
+    \end{bNiceMatrix}
+\]
+
+\paragraph{Propriedades da Transposição:}
+
+\begin{itemize}
+    \item ${(A^T)}^T = A$
+    \item ${(A + B)}^T = A^T + B^T$
+    \item ${(kA)}^T = kA^T$ para qualquer escalar $k$
+    \item ${(AB)}^T = B^T A^T$
+\end{itemize}
+
+\subsubsection{Soma}
+\indent
+
+Para somar duas matrizes, denotadas $A$ e $B$, somamos cada elemento da matriz $A$ com o elemento correspondente da matriz $B$. Formalmente, se $A$ e $B$ são matrizes do tipo $m \times n$, então a soma $A + B$ é uma matriz $C$ do tipo $m \times n$ tal que:
+
+\[ 
+    C_{ij} = A_{ij} + B_{ij} 
+\]
+
+\paragraph{Exemplo:}
+
+Sejam as matrizes $A = \begin{bmatrix}
+    1 & 2 & 3 \\
+    4 & 5 & 6
+\end{bmatrix}$ e $B = \begin{bmatrix}
+    7 & 8 & 9 \\
+    2 & 3 & 4
+\end{bmatrix}$, a soma $A + B$ é:
+
+\[ 
+    A + B = \begin{bmatrix}
+        1 + 7 & 2 + 8 & 3 + 9 \\
+        4 + 2 & 5 + 3 & 6 + 4
+    \end{bmatrix} = \begin{bmatrix}
+        8 & 10 & 12 \\
+        6 & 8 & 10
+    \end{bmatrix}
+\]
+
+\paragraph{Propriedades da Soma:}
+
+\begin{itemize}
+    \item \textbf{Comutatividade:} $A + B = B + A$ 
+    \item \textbf{Associatividade:} $(A + B) + C = A + (B + C)$
+    \item \textbf{Elemento Neutro:} $A + O_{m \times n} = A$
+    \item \textbf{Elemento Oposto:} $A + (-A) = 0$
+    \item \textbf{Transposição:} ${(A + B)}^T = A^T + B^T$
+\end{itemize}
+
+\subsubsection{Multiplicação pos um escalar}
+\indent
+
+A multiplicação de uma matriz $A$ por um escalar $k$ é obtida multiplicando-se cada elemento da matriz $A$ pelo escalar $k$. Formalmente, se $A$ é uma matriz $m \times n$, então $kA$ é uma matriz $m \times n$ tal que:
+
+\[ 
+    {(kA)}_{ij} = k \cdot A_{ij} 
+\]
+
+\paragraph{Exemplo:}
+
+Seja a matriz $A = \begin{bmatrix}
+    1 & 2 & 3 \\ 
+    4 & 5 & 6
+\end{bmatrix}$ e o escalar $k = 2$, a multiplicação de $A$ por $k$ é:
+
+\[ 
+    kA = 2 \begin{bmatrix}
+        1 & 2 & 3 \\ 
+        4 & 5 & 6
+    \end{bmatrix} = \begin{bmatrix}
+        2 & 4 & 6 \\ 
+        8 & 10 & 12
+    \end{bmatrix}
+\]
+
+\paragraph{Propriedades da Multiplicação por um Escalar:}
+
+\begin{itemize}
+    \item $k(A + B) = kA + kB$
+    \item $(k + l)A = kA + lA$
+    \item $(kl)A = k(lA)$
+    \item $1A = A$, $-1A = -A$, $0A = O_{m_a \times n_a}$
+    \item ${(kA)}^T = kA^T$ 
+\end{itemize}
+
+\subsubsection{Multiplicação de Matrizes}
+\indent
+
+A multiplicação de duas matrizes $A$ e $B$ é possível se, e somente se, o número de colunas de $A$ for igual ao número de linhas de $B$. Se $A$ é uma matriz $m \times n$ e $B$ é uma matriz $n \times p$, então o produto $AB$ é uma matriz $m \times p$ tal que:
+
+\begin{center}
+    Sejam $A_{m \times n}$ e $B_{t \times p}$. Se $n \neq t$ diz-se que o produto de $A$ por $B$ (ou $AB$) não está definido. 
+\end{center}
+
+\[ 
+    {(AB)}_{ij} = \sum_{k=1}^{n} A_{ik} B_{kj}
+\]
+
+\[ 
+    \boxed{m} \times \boxed{n = t} \times \boxed{p}
+\]
+
+\begin{center}
+    A matriz resultante da multiplicação das matrizes $A$ e $B$, terá tamanho $m \times p$.
+\end{center}
+
+\paragraph{Exemplo:}
+
+Sejam as matrizes $A = \begin{bmatrix}
+    1 & 2 \\ 
+    3 & 4
+\end{bmatrix}$ e $B = \begin{bmatrix}
+    2 & 0 \\ 
+    1 & 3
+\end{bmatrix}$, o produto $AB$ é:
+
+\begin{gather*}
+    AB = \begin{bmatrix}
+        1 \cdot 2 + 2 \cdot 1 & 1 \cdot 0 + 2 \cdot 3 \\ 
+        3 \cdot 2 + 4 \cdot 1 & 3 \cdot 0 + 4 \cdot 3
+    \end{bmatrix} = \begin{bmatrix}
+        4 & 6 \\ 
+        10 & 12
+    \end{bmatrix} \\
+    \boxed{m_a} \times \boxed{n_a = t_b} \times \boxed{p_b} \Leftrightarrow \\
+    \boxed{2} \times \boxed{2 = 2} \times \boxed{2} \Leftrightarrow
+\end{gather*}
+
+\begin{center}
+    Note que, a multiplicação de matrizes não é comutativa, ou seja, em geral, $AB \neq BA$.
+\end{center}
+
+\[
+    BA = \begin{bmatrix}
+        2 \cdot 1 + 0 \cdot 3 & 2 \cdot 2 + 0 \cdot 4 \\ 
+        1 \cdot 1 + 3 \cdot 3 & 1 \cdot 2 + 3 \cdot 4
+    \end{bmatrix} = \begin{bmatrix}
+        2 & 4 \\ 
+        10 & 14
+    \end{bmatrix}
+\]
+
+\begin{center}
+    Observe que $AB \neq BA$:
+\end{center}
+\[
+    AB = \begin{bmatrix}
+        4 & 6 \\ 
+        10 & 12
+    \end{bmatrix} \quad \text{e} \quad BA = \begin{bmatrix}
+        2 & 4 \\ 
+        10 & 14
+    \end{bmatrix}
+\]
+
+\paragraph{Propriedades da Multiplicação de Matrizes:}
+
+\begin{itemize}
+    \item \textbf{Associatividade:} $(AB)C = A(BC)$
+    \item \textbf{Distributividade:} $A(B + C) = AB + AC$ e $(A + B)C = AC + BC$
+    \item \textbf{Elemento Neutro:} $AI_{m \times n} = I_{m \times n}A = A$
+    \item \textbf{Transposição:} ${(AB)}^T = B^T A^T$
+\end{itemize}
+
+Dadas as matrizes $A$ e $B$ abaixo, observe que $AB$ está definido, mas $BA$ não está definido:
+
+\[ 
+    A = \begin{bmatrix}
+        1 & 2 & 3 \\ 
+        4 & 5 & 6
+    \end{bmatrix}, \quad B = \begin{bmatrix}
+        7 & 8 \\ 
+        9 & 10 \\ 
+        11 & 12
+    \end{bmatrix}
+\]
+
+O produto $AB$ é:
+
+\[ 
+    AB = \begin{bmatrix}
+        1 \cdot 7 + 2 \cdot 9 + 3 \cdot 11 & 1 \cdot 8 + 2 \cdot 10 + 3 \cdot 12 \\ 
+        4 \cdot 7 + 5 \cdot 9 + 6 \cdot 11 & 4 \cdot 8 + 5 \cdot 10 + 6 \cdot 12
+    \end{bmatrix} = \begin{bmatrix}
+        58 & 64 \\ 
+        139 & 154
+    \end{bmatrix}
+\]
+
+No entanto, o produto $BA$ não está definido, pois o número de colunas de $B$ (2) não é igual ao número de linhas de $A$ (2).
+
+\begin{center}
+    Portanto, para qualquer $A$ e $B$, $AB$ pode estar definido, mas $BA$ não e vice versa.
+\end{center}
+
+\subsubsection{Potência de uma matriz}
+\indent
+
+Seja $A$ uma matriz quadrada de ordem $n$. A potência de uma matriz $A$, denotada por $A^k, (k \in \mathbb{N})$, é definida como o produto de $A$ por si mesma $k$ vezes. Formalmente, temos:
+
+\[
+    A^k = \underbrace{A \cdot A \cdot \cdots \cdot A}_{k \text{ vezes}}
+\]
+
+Para $k = 0$, definimos $A^0$ como a matriz identidade $I_n$ de ordem $n$:
+
+\[
+    A^0 = I_n
+\]
+
+\paragraph{Exemplo:}
+
+Seja a matriz $A = \begin{bmatrix}
+    2 & 0 \\ 
+    1 & 3
+\end{bmatrix}$, a potência $A^2$ é:
+
+\[
+    A^2 = A \cdot A = \begin{bmatrix}
+        2 & 0 \\ 
+        1 & 3
+    \end{bmatrix} \cdot \begin{bmatrix}
+        2 & 0 \\ 
+        1 & 3
+    \end{bmatrix} = \begin{bmatrix}
+        4 & 0 \\ 
+        5 & 9
+    \end{bmatrix}
+\]
+
+\paragraph{Propriedades da Potência de uma Matriz:}
+
+\begin{itemize}
+    \item $A^k \cdot A^l = A^{k+l}$
+    \item ${(A^k)}^T = (A^T)^k$
+    \item ${(A^k)}^{-1} = (A^{-1})^k$ se $A$ é invertível
+\end{itemize}
+
+\subsubsection{Matrizes Invertíveis}
+\indent
+
+Uma matriz $A$ é invertível se existe uma matriz $B$ tal que $AB = BA = I$, onde $I$ é a matriz identidade. A matriz $B$ é chamada de inversa de $A$ e é denotada por $A^{-1}$.
+
+\paragraph{Exemplo:}
+
+A matriz \( A = \begin{bmatrix} 1 & 2 \\ 1 & 1 \end{bmatrix} \) é invertível e a sua inversa é a matriz \( \begin{bmatrix} -1 & 2 \\ 1 & -1 \end{bmatrix} \):
+
+\[
+\begin{bmatrix} 1 & 2 \\ 1 & 1 \end{bmatrix}
+\begin{bmatrix} -1 & 2 \\ 1 & -1 \end{bmatrix} =
+\begin{bmatrix} -1+2 & 2-2 \\ -1+1 & 2-1 \end{bmatrix} =
+\begin{bmatrix} 1 & 0 \\ 0 & 1 \end{bmatrix}
+\]
+
+\[
+\begin{bmatrix} -1 & 2 \\ 1 & -1 \end{bmatrix}
+\begin{bmatrix} 1 & 2 \\ 1 & 1 \end{bmatrix} =
+\begin{bmatrix} -1+2 & -2+2 \\ 1-1 & 2-1 \end{bmatrix} =
+\begin{bmatrix} 1 & 0 \\ 0 & 1 \end{bmatrix}
+\]
+
+A matriz \( B = \begin{bmatrix} 0 & 1 \\ 0 & 0 \end{bmatrix} \) não é invertível pois:
+
+\[
+\begin{bmatrix} 0 & 1 \\ 0 & 0 \end{bmatrix}
+\begin{bmatrix} a & b \\ c & d \end{bmatrix} =
+\begin{bmatrix} c & d \\ 0 & 0 \end{bmatrix}
+\neq
+\begin{bmatrix} 1 & 0 \\ 0 & 1 \end{bmatrix}
+\]
+
+\paragraph{Propriedades das Matrizes Invertíveis:}
+
+\begin{itemize}
+    \item ${(A^{-1})}^{-1} = A$
+    \item ${(AB)}^{-1} = B^{-1}A^{-1}$
+    \item ${(A^T)}^{-1} = {(A^{-1})}^T$
+\end{itemize}

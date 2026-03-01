@@ -1,0 +1,334 @@
+\section{Análise e Projeto}
+
+\subsection{Visão Geral}
+
+Tal como nos foi apresentado no enunciado, o nosso trabalho era implementar a função $\sum\limits_{i=0}^{n-1} x^2$ em lógica binária. Na figura~\ref{fig:outside} abaixo é possível visualizar o diagrama externo do sistema.
+
+\begin{infoclean}
+    Não considere a descrição de $x_i$ concebida mais à frente neste relatório. Considere apenas que é um novo valor de $x$ introduzido.
+\end{infoclean}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[scale=.3]{Análise e Projeto/Enunciado.png}
+    \caption{Diagrama externo do sistema (dado pelo enunciado)}\label{fig:outside}
+\end{figure}
+
+Para a conceção deste trabalho, desenvolvemos os dois módulos (Controlador e Caminho de Dados), tal como foi mencionado no enunciado.
+Durante a fase de planeamento do projeto, conseguimos simular quatro soluções distintas, cada uma com as suas vantagens e desvantagens (as quais iremos demonstrar à frente). Ao implementar o projeto, optámos pela solução que, na nossa opinião, é a mais adequada.
+
+\subsection{Arquitetura do Sistema}
+
+A arquitetura do sistema é composta por dois módulos principais já mencionados: Caminho de Dados e Controlador. Estes módulos comunicam entre si para garantir o correto funcionamento do sistema e a execução das operações de forma sincronizada.
+
+O Caminho de Dados realiza os cálculos principais do sistema, como o cálculo do quadrado dos números naturais e a soma acumulada dos quadrados. Ele é composto por sub-módulos, como o Quadrado e o Acumulador, projetados para executar funções específicas de maneira eficiente, as quais iram ser demonstradas mais à frente.
+
+O Controlador, por sua vez, descodifica as entradas \textit{Step} e \textit{Reset} e envia os sinais resultantes para o caminho de dados. Este módulo também recebe as saídas do Caminho de Dados.
+
+Como é possível observar na figura~\ref{fig:arq_sist}, estes dois módulos trabalham juntos: o Caminho de Dados realiza os cálculos, enquanto o Controlador gere os sinais. Nos capítulos seguintes, serão descritas as funcionalidades internas de cada módulo e suas interações.
+
+\begin{infoclean}
+    Note que, para todos os componentes deste relatório, o \gls{clock} será sempre omitido na representação. Tenha assim em conta, que componentes como \glspl{ffd} e registos (componentes dependentes de \gls{clock}) não são representados com a sua entrada de sinal de \gls{clock}. Note também, que a saída Out é equivalente a três saídas em hexadecimal. Neste relatório omitimos a conversão para hexadecimal mas, ainda assim, considere a sua utilização.
+\end{infoclean}
+
+\begin{figure}[H]
+    \centering
+    \input{Análise e Projeto/mod/mod_arquitetura.tex}
+    \caption{Diagrama da Arquitetura do Sistema}\label{fig:arq_sist}
+\end{figure}
+
+\subsection{Caminho de Dados}
+
+Este módulo é responsável por realizar as operações de cálculo dos quadrados dos números naturais e a soma acumulada dos mesmos.
+
+\begin{figure}[H]
+    \centering
+    \input{Análise e Projeto/mod/mod_DataPath.tex}
+    \caption{Diagrama externo do Caminho de Dados.}\label{fig:DataPath}
+\end{figure}
+
+Na figura~\ref{fig:DataPath} é possível visualizar o diagrama externo do módulo do Caminho de Dados. Como é possivel observar, ao lado esquerdo do diagrama temos as entradas e ao lado direito as saídas. A comunicação deste módulo com o controlador é feita pelas entradas Step e Reset e por todas saídas.
+
+No interior do módulo, temos os sub-módulos do Caminho de dados, constituídos pelo Quadrado e o Acumulador. Estes sub-módulos são explicados em detalhe nos Subcapítulos seguintes. Na figura~\ref{fig:DataPath_inside} abaixo é possível visualizar o diagrama interno do sub-módulo Caminho de Dados.
+
+\begin{figure}[H]
+    \centering
+    \input{Análise e Projeto/mod/mod_DataPath_inside.tex}
+    \caption{Diagrama interno do Caminho de Dados.}\label{fig:DataPath_inside}
+\end{figure}
+
+O \gls{ffd} que se apresenta à direita da entrada Xi, previne que essa mesma entrada seja alterada quando o Step está ativo. Este comportamento permite que o utilizador só possa introduzir o valor Xi quando o Step está a zero. Assim, o \gls{ffd} possibilita o armazenamento temporário do valor de Xi.
+
+\subsubsection{Quadrado}
+
+Na figura abaixo está representado o diagrama do sub-módulo Quadrado. Este módulo é responsável por calcular o quadrado de um número natural. Na figura~\ref{fig:Quadrado} abaixo, é possível visualizar o diagrama do sub-módulo Quadrado.
+
+
+\begin{figure}[H]
+    \centering
+    \input{Análise e Projeto/mod/mod_Square.tex}
+    \caption{Diagrama do sub-módulo Square.}\label{fig:Quadrado}
+\end{figure}
+
+\paragraph{LSL}
+
+No interior desde sub-módulo, realizamos diversos \Glspl{lsl} em função dos bits da entrada. Neste relatório, representamos um \Gls{lsl} da seguinte forma:
+\begin{gather}
+    \mathlarger{
+        LSL_x^a \Rightarrow x <<< a}
+\end{gather}
+Onde $x$ é um número de 4 bits e $a$ é a distância do deslocamento. Por outras palavras, ao aplicar um $LSL_x^a$, $x$ sofre um shift de $a$ bits para a esquerda. Considere o exemplo:
+\begin{gather}
+    \text{Com $x = 0011, a = 2$} \\
+    \mathlarger{LSL_x^a = LSL_{0011}^2 = 0011 <<< 2 = 001100} \\
+    \text{Logo, $LSL_{0011}^2 = 001100$}
+\end{gather}
+
+\paragraph{Cálculo do Quadrado}
+
+O cálculo do quadrado de um número natural é feito através de um conjunto de \Glspl{lsl} e somas. Para cada índice $i$ de $x$, se $x_i = 1$ então realizamos o $LSL_x^i$ caso contrário contamos $0$. De seguida, calculamos a soma de todos resultados intermédios. O resultado final será o $x^2$. Para melhor visualização do cálculo, este é representado da seguinte forma:
+
+\input{Análise e Projeto/calc_Square.tex}
+
+
+Considere o exemplo abaixo em que $x = 0011$:
+\input{Análise e Projeto/calc_Square_eg.tex}
+Logo $0011^2 = 1001$ ($3^2 = 9$).
+
+\paragraph{Funcionamento interno do Quadrado}
+O sub-módulo Quadrado é composto por uma variedade de \Glspl{mux} e somadores, para além dos \glspl{lsl} já mencionados. Na figura~\ref{fig:Quadrado_subsub} abaixo, é possível visualizar o diagrama dos sub-módulos internos do Quadrado.
+
+\begin{infoclean}
+    Note que os blocos a verde representam Inputs e os blocos a vermelho representam Outputs. Considere as entradas sem ligação = $0$ para todos os seus bits. Considere também que as ligações que contêm notas são operações intermédias. Por exemplo, entre as saídas dos \glspl{mux} e as entradas dos somadores é realizada a operação de \gls{lsl}.
+\end{infoclean}
+
+\begin{figure}[H]
+    \centering
+    \input{Análise e Projeto/mod/mod_Square_subblocks.tex}
+    \caption{Sub-módulos internos do sub-módulo Acumulador.}\label{fig:Quadrado_subsub}
+\end{figure}
+
+Como pode observar acima, o funcionamento demonstrado pela figura~\ref{fig:Quadrado_subsub} é exatamente o que foi descrito anteriormente. Neste caso, os \Glspl{mux} têm a tarefa de escolher entre zero e a entrada, em função da mesma. A soma final (apresentada anteriormente por $A+B+C+D$) é realizada por dois somadores intermédios ($MUX_1 + MUX_2$ e $MUX_3 + MUX_4$) e somador final, que junta os resultados dos anteriores.
+
+\subsubsection{Acumulador}
+
+Na figura abaixo está representado o diagrama externo do sub-módulo Acumulador. Este módulo é responsável por acumular os resultados intermédios dos quadrados dos números naturais. Na figura~\ref{fig:Acumulador} abaixo, é possível visualizar o diagrama do sub-módulo Acumulador.
+
+\begin{figure}[H]
+    \centering
+    \input{Análise e Projeto/mod/mod_SumSquare.tex}
+    \caption{Diagrama do sub-módulo Acumulador.}\label{fig:Acumulador}
+\end{figure}
+
+\paragraph{Cálculo do Acumulador}
+Matematicamente, o funcionamento do acumulador é extremamente simples. O resultado da soma é armazenado no seu registo, e o valor acumulado é utilizado para a próxima soma. Esta funcionalidade pode ser representada por: $\sum\limits_{i=0}^{n-1} x^2$.
+
+\paragraph{Funcionamento interno do Acumulador}
+O sub-módulo Acumulador é composto por um somador de 8 bits e um registo de 8 bits. O registo é responsável por armazenar o valor acumulado. Na figura~\ref{fig:Acumulador_subsub} abaixo, é possível visualizar o diagrama dos sub-módulos internos do Acumulador.
+
+\begin{infoclean}
+    Note que os blocos a verde representam Inputs e os blocos a vermelho representam Outputs. Os blocos que não contêm nome e apenas contêm um valor interno representam constantes.
+\end{infoclean}
+
+\begin{figure}[H]
+    \centering
+    \input{Análise e Projeto/mod/mod_SumSquare_subblocks.tex}
+    \caption{Sum-módulos internos do sub-módulo Acumulador.}\label{fig:Acumulador_subsub}
+\end{figure}
+
+Como podemos reparar, o funcionamento interno do Acumulador é extremamente simples, apenas contendo quatro zonas. Chamemos a estas zonas:
+\begin{itemize}
+    \item \textbf{Zona de soma: }Constituída pelo Adder;
+    \item \textbf{Zona de separação: }Constituída pelo \Gls{mux};
+    \item \textbf{Zona de memória: }Constituída pelo Registo;
+    \item \textbf{Zona de pulso: }Constituída pelo Gerador de Pulso;
+\end{itemize}
+Para uma melhor compreensão, todas estas zonas estão representadas nas figuras~\ref{fig:Acumulador_adder},~\ref{fig:Acumulador_mux},~\ref{fig:Acumulador_reg} e~\ref{fig:Acumulador_pulse} abaixo.
+
+Como também observamos, existe um bloco que gera um pulso chamado de Gerador de Pulso. O funcionamento deste bloco será explicado mais detalhadamente abaixo, mas de forma resumida, este bloco é responsável por gerar um pulso que ativa o somador de 8 bits. Este pulso é gerado quando o sinal de \textit{Step} é ativado.
+
+\begin{multicols}{2}
+    \noindent
+    \begin{minipage}[b]{0.5\textwidth}
+        \begin{figure}[H]
+            \centering
+            \input{Análise e Projeto/mod/mod_SumSquare_adder.tex}
+            \caption{Zona de soma no interior do sub-módulo Acumulador.}\label{fig:Acumulador_adder}
+        \end{figure}
+    \end{minipage}\begin{minipage}[b]{0.5\textwidth}
+        \begin{figure}[H]
+            \centering
+            \input{Análise e Projeto/mod/mod_SumSquare_mux.tex}
+            \caption{Zona de separação no interior do sub-módulo Acumulador.}\label{fig:Acumulador_mux}
+        \end{figure}
+    \end{minipage}
+\end{multicols}
+
+Como podemos observar na figura~\ref{fig:Acumulador_adder}, a zona de soma do Acumulador é composta por um somador de 8 bits. Este somador é responsável por somar o valor acumulado, guardado no registo, com o valor de entrada $x^2$. O resultado desta soma passa a ser o novo valor acumulado, ou seja, entra no registo. Para a soma não ser realizada a cada ciclo de \Gls{clock}, é necessário um sistema que impeça a saída do sinal do registo no adder.
+
+Na figura~\ref{fig:Acumulador_mux}, é possível observar o diagrama da \textbf{Zona de separação} do \gls{mux}, o módulo que, com ajuda do Gerador de Pulso realiza esta função. Este \Gls{mux} seleciona 0, se a sua porta de controlo também estiver a 0, e seleciona a saída do registo, se a porta de controlo estiver a 1. O sinal que controla este \Gls{mux} é gerado pelo Gerador de Pulso. Como já foi dito acima, este bloco representado na figura~\ref{fig:Acumulador_pulse}, transforma uma entrada contínua numa saída de um flanco ascendente do \Gls{clock}. É este comportamento que permite que o valor do registo seja libertado apenas uma vez, permitindo que a soma seja realizada também uma só vez.
+
+Por último, na figura~\ref{fig:Acumulador_reg}, podemos observar a \textbf{zona de registo}. Esta é uma das zonas mais importantes e a mais sensível, pois qualquer falha no desenvolvimento deste projeto poderia levar à operação incorreta do registo. Felizmente este circuito está bem otimizado e, pelos nossos testes apresentados mais à frente, não existe qualquer problema.
+
+\begin{multicols}{2}
+    \noindent
+    \begin{minipage}[b]{0.5\textwidth}
+        \begin{figure}[H]
+            \centering
+            \input{Análise e Projeto/mod/mod_SumSquare_reg.tex}
+            \caption{Zona de registo no interior do sub-módulo Acumulador.}\label{fig:Acumulador_reg}
+        \end{figure}
+    \end{minipage}\begin{minipage}[b]{0.5\textwidth}
+        \begin{figure}[H]
+            \centering
+            \input{Análise e Projeto/mod/mod_SumSquare_pulse.tex}
+            \caption{Zona de pulso no interior do sub-módulo Acumulador.}\label{fig:Acumulador_pulse}
+        \end{figure}
+    \end{minipage}
+\end{multicols}
+
+\paragraph{Funcionamento do Gerador de Pulso}
+
+Este bloco transforma a sua entrada num pulso de um flanco ascendente de \gls{clock}. Na figura~\ref{fig:PulseGenerator}, é possível visualizar o diagrama do sub-módulo Gerador de Pulso e na figura~\ref{fig:PulseGenerator_inside} é possível visualizar o diagrama interno do sub-módulo Gerador de Pulso.
+
+\begin{multicols}{2}
+    \noindent
+    \begin{minipage}[b]{0.5\textwidth}
+        \begin{figure}[H]
+            \centering
+            \input{Análise e Projeto/mod/mod_PulseGenerator.tex}
+            \caption{Diagrama externo do sub-módulo Gerador de Pulso.}\label{fig:PulseGenerator}
+        \end{figure}
+    \end{minipage}\begin{minipage}[b]{0.5\textwidth}
+        \begin{figure}[H]
+            \centering
+            \input{Análise e Projeto/mod/mod_PulseGenerator_inside.tex}
+            \caption{Diagrama interno do sub-módulo Gerador de Pulso.}\label{fig:PulseGenerator_inside}
+        \end{figure}
+    \end{minipage}
+\end{multicols}
+
+Como podemos observar na figura~\ref{fig:PulseGenerator_inside} ao utilizar um \Gls{ffd}, podemos impedir que o sinal seja ativo novamente. Para explicar melhor este acontecimento fizemos um pequeno gráfico temporal, apresentado na figura~\ref{graph:PulseGenerator} abaixo.
+
+\begin{figure}[H]
+    \centering
+    \input{Análise e Projeto/graph_temporal.tex}
+    \caption{Gráfico temporal do Gerador de Pulso.}\label{graph:PulseGenerator}
+\end{figure}
+
+Como é possível observar acima, devido ao and da entrada com a saída negada ($In + \overline{Q}$), a saída só ativa quando o \Gls{ffd} ainda não assumiu o valor da entrada. Logo que o \gls{clock} ative, o \Gls{ffd} irá assumir a entrada, ativando a saída $Q$. Como a saída $Q$ está ativada, a sua negação, como é lógico, estará desativada, tornando o and falso ($In + \overline{Q} = 0$).
+
+\subsection{Controlador}
+
+Este módulo tem a função de interpretar as entradas de utilizador, \textit{Step} e \textit{Reset}, controlar o módulo Caminho de Dados e interpretar os seus resultados.
+
+\begin{figure}[H]
+    \centering
+    \input{Análise e Projeto/mod/mod_Controller.tex}
+    \caption{Diagrama Externo do Controlador.}\label{fig:Controlador}
+\end{figure}
+
+Na figura~\ref{fig:Controlador}, diagrama do módulo controlador, observamos que existem dois tipos de entradas e saídas: internas e externas.
+
+\input{Análise e Projeto/table_controller.tex}
+
+\subsubsection{Funcionamento interno}
+
+De uma maneira geral, o controlador não é um módulo muito complexo. Todas as operações realizadas são simples. O interior apenas é composto por dois \glspl{mux} e um \gls{ffd}. Na figura~\ref{fig:Controlador_inside} é possível verificar exatamente isso.
+
+\begin{figure}[H]
+    \centering
+    \input{Análise e Projeto/mod/mod_Controller_inside.tex}
+    \caption{Diagrama Interno do Controlador.}\label{fig:Controlador_inside}
+\end{figure}
+
+Dado o facto do controlador ser um componente simples, é possível explicar todas as suas saídas (exceto o Cy) com expressões lógicas. O diagrama apresentado acima ilustra claramente como estas saídas são geradas a partir das entradas. Ainda assim, para uma melhor interpretação da relação dos sinais de entrada e de saída do controlador, apresentamos abaixo as funções lógicas das saídas:
+
+\begin{multicols}{2}
+    \paragraph{Saída Step}
+    \begin{equation}
+        Step_{in} = Step_{out}
+    \end{equation}
+    \paragraph{Saída Reset}
+    \begin{equation}
+        Reset = \overline{Start}
+    \end{equation}
+
+\end{multicols}
+
+\paragraph{Saída Out}
+\begin{align}
+    Out                 & = Start \cdot 0 + \overline{Start} \cdot (Step_{in}\cdot Sum In + \overline{Step_{in}} \cdot x^2) \Leftrightarrow \\
+    \Leftrightarrow Out & = \overline{Start} \cdot (Step_{in}\cdot Sum In + \overline{Step_{in}} \cdot x^2)
+\end{align}
+
+\paragraph{Saída Cy}
+Dado que o Cy é um pouco mais complexo, resolvemos explicar o seu funcionamento mais detalhadamente. Considere a figura~\ref{fig:Controller_cy} abaixo, referente à zona do Controlador onde é processado o Cy.
+
+\begin{figure}[H]
+    \centering
+    \input{Análise e Projeto/mod/mod_Controller_Cy.tex}
+    \caption{Diagrama da zona do Controlador onde é processado o Cy}\label{fig:Controller_cy}
+\end{figure}
+
+Neste caso, o \Gls{ffd} acima é usado, para manter o valor do C In até o Start voltar a zero. Este comportamento é necessário pois, quando o Acumulador acusa Carry Out, está a ``avisar'' que precisou de mais 1 bit para representar o resultado. Como é um valor acumulado, temos de continuar a indicar o Cy, ainda que os novos cálculos não o indiquem. Este mecanismo garante que o Carry Out seja mantido corretamente enquanto for necessário.
+
+Para verificar o comportamento apresentado na zona de processamento do Cy, considere o diagrama temporal apresentado na figura~\ref{graph:Cy}.
+
+\begin{figure}[H]
+    \centering
+    \input{Análise e Projeto/graph_temporal_controller.tex}
+    \caption{Gráfico temporal da saída Cy.}\label{graph:Cy}
+\end{figure}
+
+Com este diagrama, verificamos a descrição acima, observando claramente como o Cy evolui ao longo do tempo em resposta às alterações nas entradas. Esta análise temporal confirma a coerência entre o comportamento esperado e o funcionamento real do módulo controlador.
+
+\newpage
+
+\subsection{Diagrama ASM}
+
+O diagrama ASM apresentado na Figura \ref{fig:asm_diagram} representa a estrutura lógica do circuito projetado, detalhando os estados e transições necessárias para o funcionamento do sistema. Cada estado reflete uma etapa específica do processamento, desde a receção da entrada até à exibição dos resultados, incluindo cálculos intermédios e condições para repetir ou finalizar o processo.
+
+\begin{figure}[H]
+    \centering
+    \begin{tikzpicture}[thick,node distance=2cm]
+        \begin{scope}[scale=0.85, transform shape]
+            % Nodes
+            \node (startprocess) [process] {Start/Stop};
+            \node (start) [decision, below of=startprocess] {Start};
+            \node (inputXi) [process, below of=start] {Receber entrada $x$};
+            \node (step) [decision, below of=inputXi] {Step};
+            \node (square) [process, below of=step] {Calcular $x^2$};
+            \node (displaysquare) [startstop,minimum width=2cm,minimum height = 1cm, below of=square] {Mostrar $x^2$};
+            \node (step2) [decision, below of=displaysquare] {Step};
+            \node (sum) [process, below of=step2] {Calcular $\sum x^2$};
+            \node (displaysum) [startstop,minimum width=2cm,minimum height = 1cm, below of=sum] {Mostrar $\sum x^2$};
+
+            % Labels
+            \node [label=00,shift={(-.2cm,-.2cm)}] at (startprocess.north east) {};
+            \node [label=01,shift={(-.2cm,-.2cm)}] at (inputXi.north east) {};
+            \node [label=10,shift={(-.2cm,-.2cm)}] at (square.north east) {};
+            \node [label=11,shift={(-.2cm,-.2cm)}] at (sum.north east) {};
+
+            % ------------------ Begin Drawing ------------------
+
+            \draw (startprocess.south) -- (start.north);
+            \draw[arrow] (start.south) node[label=right:1] {} --  (inputXi.north);
+            \draw[arrow] (start.west) node[label=above:0] {} --++(-1cm,0) --++(0,3cm) -|  (startprocess.north);
+            \draw (inputXi.south) -- (step.north);
+            \draw[arrow] (step.south) node[label=right:1] {} -- (square.north);
+            \draw[arrow] (step.west) node[label=above:0] {} --++(-1cm,0) --++(0,3cm) -| ([xshift=-.5cm]inputXi.north);
+            \draw (square.south) -- (displaysquare.north);
+            \draw (displaysquare.south) -- (step2.north);
+            \draw[arrow] (step2.west) node[label=above:1] {} --++(-1cm,0) --++(0,3cm) -| ([xshift=-.5cm]displaysquare.north);
+            \draw[arrow] (step2.south) node[label=right:0] {} -- (sum.north) ;
+            \draw (sum.south) -- (displaysum.north) ;
+            \draw[arrow] (displaysum.west) --++(-1cm,0) --++(0,17.5cm) -| ([xshift=.5cm]startprocess.north) ;
+
+            % ------------------ End Drawing ------------------
+        \end{scope}
+    \end{tikzpicture}
+    \caption{Diagrama ASM da arquitetura.}\label{fig:asm_diagram}
+\end{figure}
+
+A simplicidade e clareza do diagrama permitem uma interpretação direta das operações sequenciais realizadas pela arquitetura. Adicionalmente, o diagrama ASM foi fundamental para compreender o comportamento lógico e sequencial do sistema, garantindo uma base sólida para a implementação do circuito no contexto do projeto.

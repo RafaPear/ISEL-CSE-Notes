@@ -1,0 +1,76 @@
+\begin{tikzpicture}[thick,node distance=4cm]
+    \begin{scope}[scale=0.9, transform shape]
+
+        % Register block
+        \node[module] (reg) {Register};
+        \node[io, label={[yshift=-.2cm]left:D}] (d) at (-1.25cm, 0.8) {};
+        \node[io, label={[yshift=-.2cm]left:Enable}] (en) at (-1.25cm, -0.8) {};
+        \node[io, label={[yshift=-.2cm]left:Reset}] (rst) at (-1.25cm, 0) {};
+
+        \node[io, label={[yshift=.2cm]right:Q}] (Q) at (1.25cm, 0) {};
+
+        % Adder Block
+        \node[module, above of = reg, xshift= -1.25cm] (adder) {Adder}; %-.83cm, 5cm
+        \node[io, label={[xshift=.2cm]above:A},xshift=-.625cm] (a) at (adder.north) {};
+        \node[io, label={[xshift=.2cm]above:B}] (b_a) at (adder.north) {};
+        \node[io, label={[xshift=.6cm]above:C in},xshift=.625cm] (cin) at (adder.north) {};
+
+        \node[io, label=above:R,xshift=-.42cm] (r_a) at (adder.south) {};
+        \node[io, label=above:C out,xshift=.42cm] (cout_adder) at (adder.south) {};
+
+        % MUX
+        \node[mux,above of = adder, xshift=2.5cm] (mux) {MUX};
+        \node[io, label={[yshift=.2cm]right:S}] (s) at (mux.east) {};
+        \node[io, label={[xshift=-.2cm]above:A},xshift=-.4cm] (a_m) at (mux.north) {};
+        \node[io, label={[xshift=-.2cm]above:B},xshift=.4cm] (b_m) at (mux.north) {};
+        \node[io, label={[xshift=.2cm]below:R}] (r_m) at (mux.south) {};
+
+        % Pulse Generator
+        \node[minimodule, right of = mux] (pulse) {Pulse Generator};
+        \node[io, label={[yshift=.2cm]left:Out}] (outp) at (pulse.west) {};
+        \node[io, label={[yshift=.2cm]right:In}] (inp) at (pulse.east) {};
+
+        % Inputs
+        \node[input,xshift=-2cm, yshift=1cm,minimum width = 2cm,label={[scale=.8]above:(8 bits)}] (xi) at (adder.north) {$x^2$};
+        \node[io] (xi_o) at (xi.east) {};
+
+        \node[input,xshift=2cm,minimum width = 2cm] (step) at (pulse.east) {Step};
+        \node[io] (step_o) at (step.west) {};
+
+        \node[input,xshift=-3cm,minimum width = .5cm, minimum height = .5cm] (reset) at (rst.west) {Reset};
+        \node[io] (reset_o) at (reset.east) {};
+
+        % Outputs
+        \node[output,xshift=4cm,minimum width = 2cm,label={[scale=.8]above:(8 bits)}] (out) at (reg.east) {Out};
+        \node[io] (out_o) at (out.west) {};
+        \node[io,xshift=1.37cm,label={[scale=.8]below:(8 bits)}] (node) at (reg.east) {};
+
+        \node[output,yshift=2cm] (cout) at (out) {C out};
+        \node[io] (cout_o) at (cout.west) {};
+
+        % Constants
+        \node[input, draw=black, minimum width = .5cm, minimum height = .5cm, yshift=1cm] (zero) at (cin.north) {0};
+        \node[io] (zero_o) at (zero.south) {};
+
+        \node[input, draw=black, xshift=-2cm, yshift=1cm] (zero8) at (mux.north) {00000000};
+        \node[io] (zero8_o) at (zero8.east) {};
+
+        \node[io,xshift=-.5cm] (node1) at (pulse.west) {};
+
+        % Connections
+        \draw (d.west) -| node[midway,label={[scale=.8]left:(8 bits)}] {} (r_a.south);
+        \draw (outp.west) -- (s.east);
+        \draw (r_m.south) --++(0,-.5cm) -| node[midway,label={[scale=.8]above:(8 bits)}] {} (b_a.north);
+        \draw (b_m.north) --++(0,.5cm) --++(1cm,0) |- (Q.east);
+        \draw (a.north) --++(0,.5cm) |- (xi_o.east);
+        \draw (a_m.north) --++(0,.5cm) |- node[label={[scale=.8]right:(8 bits)}] {} (zero8_o.east);
+        \draw (zero.south) |- (cin.north);
+        \draw (reset_o.east) -- (rst.west);
+        \draw (step_o.west) -- (pulse.east);
+        \draw (node) -- (out_o.west);
+        \draw (cout_adder.south) |- (cout_o.east);
+        \draw (en.west) --++(-1.5cm,0) --++(0,-.8cm) --++(6cm,0) -| (node1.south);
+        
+
+    \end{scope}
+\end{tikzpicture}

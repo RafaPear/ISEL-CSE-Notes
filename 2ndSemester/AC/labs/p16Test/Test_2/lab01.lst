@@ -1,0 +1,48 @@
+P16 assembler v1.5 (Feb  9 2024)	lab01.lst	Thu Mar 06 21:00:38 2025
+
+Sections
+Index   Name            Address   Size
+0       .text           0000      0020 32
+
+Symbols
+Name                    Type      Value       Section
+if                      LABEL     0002 2      .text
+if_end                  LABEL     001E 30     .text
+line#32                 LABEL     001E 30     .text
+while                   LABEL     0012 18     .text
+while_end               LABEL     001E 30     .text
+
+Code listing
+   1           	; -----------------------------------------------------------------------------
+   2           	; Ficheiro:  lab01.S
+   3           	; Descricao: Codigo de suporte a realizacao da 1a atividade laboratorial de AC.
+   4           	; Autor:     Tiago M Dias (tiago.dias@isel.pt)
+   5           	; Data:      11-03-2022
+   6           	; -----------------------------------------------------------------------------
+   7           	
+   8           		; r0 guarda o valor da variavel M
+   9           		; r1 guarda o valor da variavel m
+  10           		; r2 guarda o valor da variavel p
+  11           		; r3 e utilizado para guardar valores temporariamente
+  12           	
+  13 0000 02 60		mov r2, #0
+  14           	if:
+  15 0002 03 60		mov r3, #0
+  16 0004 80 B9		cmp r0, r3
+  17 0006 0B 40		beq if_end
+  18 0008 80 B8		cmp r0, r1
+  19 000A 03 48		bhs while
+  20 000C 83 B0		mov r3, r1
+  21 000E 01 B0		mov r1, r0
+  22 0010 80 B1		mov r0, r3
+  23           	while:
+  24 0012 03 60		mov r3, #0
+  25 0014 B0 B8		cmp r3, r1
+  26 0016 03 48		bhs while_end
+  27 0018 22 80		add r2, r2, r0
+  28 001A 91 A8		sub r1, r1, #1
+  29 001C FA 5B		b while
+  30           	while_end:
+  31           	if_end:
+  32 001E FF 5B		b .
+  32           	

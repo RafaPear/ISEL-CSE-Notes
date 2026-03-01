@@ -1,0 +1,206 @@
+--- ===========================
+--- ALINEA a
+--- ===========================
+
+SELECT 
+    I.idInteracao, 
+    I.data, 
+    I.texto, 
+    A.abusiva
+FROM INTERACAO I
+LEFT JOIN ANALISE A ON I.idInteracao = A.idInteracao
+WHERE i.idutilizador = (
+	SELECT u.idutilizador FROM utilizador u WHERE u.alcunha = 'Ut2'
+)
+
+--- ===========================
+--- ALINEA b
+--- ===========================
+
+SELECT 
+    C.idCaso, 
+    C.estado, 
+    C.descricao, 
+    Av.grauDeGravidade, 
+    Av.anotacao AS AnalisePsicologo
+FROM ANALISE A
+JOIN CRIA Cr ON A.idAnalise = Cr.idAnalise
+JOIN CASO_DE_CYBERBULLYING C ON Cr.idCaso = C.idCaso
+LEFT JOIN AVALIA Av ON C.idCaso = Av.idCasoDeCyberbullying
+WHERE A.idInteracao = 7;
+
+--- ===========================
+--- ALINEA c
+--- ===========================
+
+SELECT 
+    I.idInteracao, 
+    U.alcunha AS utilizador, 
+    A.abusiva, 
+    U_Mod.alcunha AS Moderador
+FROM INTERACAO I
+JOIN UTILIZADOR U ON I.idUtilizador = U.idUtilizador
+LEFT JOIN ANALISE A ON I.idInteracao = A.idInteracao
+LEFT JOIN UTILIZADOR U_Mod ON A.idModerador = U_Mod.idUtilizador
+ORDER BY 
+    (A.idModerador IS NOT NULL),
+    U_Mod.alcunha;
+
+--- ===========================
+--- ALINEA d
+--- ===========================
+
+SELECT 
+    I.idInteracao as interacao, 
+    I.texto, 
+    C.idCaso as caso, 
+    C.estado
+FROM INTERACAO I
+JOIN UTILIZADOR U ON I.idUtilizador = U.idUtilizador
+LEFT JOIN ANALISE A ON I.idInteracao = A.idInteracao
+LEFT JOIN CRIA Cr ON A.idAnalise = Cr.idAnalise
+LEFT JOIN CASO_DE_CYBERBULLYING C ON Cr.idCaso = C.idCaso
+WHERE U.alcunha = 'Ut3';
+
+--- ===========================
+--- ALINEA e
+--- ===========================
+
+SELECT 
+    C.idCaso as caso,
+    I.idInteracao as interacao,
+    I.texto AS TextoInteracao,
+    A.abusiva,
+    ModUser.alcunha AS NomeModerador,
+    PsiUser.alcunha AS PsicologoAvaliador,
+    Av.anotacao AS AnaliseFeita,
+    IntPsi.alcunha AS PsicologoIntervencao,
+    Intv.data AS DataIntervencao,
+    Intv.tipo AS TipoIntervencao
+FROM CASO_DE_CYBERBULLYING C
+JOIN CRIA Cr ON C.idCaso = Cr.idCaso
+JOIN ANALISE A ON Cr.idAnalise = A.idAnalise
+JOIN INTERACAO I ON A.idInteracao = I.idInteracao
+JOIN UTILIZADOR ModUser ON A.idModerador = ModUser.idUtilizador
+LEFT JOIN AVALIA Av ON C.idCaso = Av.idCasoDeCyberbullying
+LEFT JOIN UTILIZADOR PsiUser ON Av.idUtilizador = PsiUser.idUtilizador
+LEFT JOIN INTERVEM Intv ON C.idCaso = Intv.idCaso
+LEFT JOIN UTILIZADOR IntPsi ON Intv.idPsicologo = IntPsi.idUtilizador
+WHERE C.idCaso = 1101;
+
+--- ===========================
+--- ALINEA f
+--- ===========================
+
+SELECT 
+    abusiva, 
+    COUNT(*) AS Total
+FROM ANALISE
+GROUP BY abusiva;
+
+--- ===========================
+--- ALINEA g
+--- ===========================
+
+SELECT 
+    I.idInteracao, 
+    COUNT(C.idCaso) AS Total_Casos, 
+    ROUND(AVG(Av.grauDeGravidade),2) AS Media_Gravidade
+FROM INTERACAO I
+JOIN ANALISE A ON I.idInteracao = A.idInteracao
+JOIN CRIA Cr ON A.idAnalise = Cr.idAnalise
+JOIN CASO_DE_CYBERBULLYING C ON Cr.idCaso = C.idCaso
+LEFT JOIN AVALIA Av ON C.idCaso = Av.idCasoDeCyberbullying
+GROUP BY I.idInteracao
+ORDER BY I.idInteracao;
+
+--- ===========================
+--- ALINEA h
+--- ===========================
+
+SELECT 
+    U.alcunha AS Psicologo,
+    COUNT(Av.idCasoDeCyberbullying) AS CasosAtribuidos,
+	COUNT(CASE WHEN Av.graudegravidade IS NOT NULL THEN Av.idcasodecyberbullying ELSE NULL END) as Casos_analisados,
+    ROUND(AVG(Av.grauDeGravidade),2) AS MediaGravidade,
+    MAX(Av.grauDeGravidade) AS MaxGravidade
+FROM PSICOLOGO P
+JOIN UTILIZADOR U ON P.idUtilizador = U.idUtilizador
+LEFT JOIN AVALIA Av ON P.idUtilizador = Av.idUtilizador
+GROUP BY U.alcunha, P.idUtilizador;
+
+--- ===========================
+--- ALINEA i
+--- ===========================
+
+SELECT
+    C.areaDeAtuacao AS Especializacao,
+    (
+        SELECT COUNT(idUtilizador)
+        FROM PSICOLOGO
+        WHERE especializacao = C.areaDeAtuacao
+    ) AS Num_Psicologos_Area,
+
+    COUNT(CASE WHEN C.estado = 'iniciado' THEN 1 ELSE NULL END) AS Casos_Iniciados,
+    COUNT(CASE WHEN C.estado = 'avaliado' THEN 1 ELSE NULL END) AS Casos_Avaliados,
+    COUNT(CASE WHEN C.estado = 'fechado' THEN 1 ELSE NULL END) AS Casos_Fechados,
+
+    ROUND(AVG(A.grauDeGravidade), 2) AS Media_Gravidade
+FROM
+    CASO_DE_CYBERBULLYING C
+LEFT JOIN
+    AVALIA A ON C.idCaso = A.idcasodecyberbullying
+GROUP BY
+    C.areaDeAtuacao
+ORDER BY
+    C.areaDeAtuacao;
+
+	
+--- ===========================
+--- ALINEA j
+--- ===========================
+
+SELECT
+    U.alcunha
+FROM
+    CONSULTA C
+INNER JOIN
+    UTILIZADOR U ON C.idUtilizador = U.idUtilizador
+GROUP BY
+    U.idUtilizador, U.alcunha
+HAVING
+    COUNT(DISTINCT C.idRecurso) = 
+    (        
+		SELECT COUNT(idRecurso) FROM RECURSO_EDUCATIVO
+    );
+
+--- =========================== 
+--- ALINEA k
+--- ===========================
+
+SELECT
+	c.idCaso as casos
+FROM caso_de_cyberbullying c
+INNER JOIN avalia a ON a.idcasodecyberbullying = c.idCaso
+WHERE
+	a.graudegravidade > (
+		SELECT
+			AVG(graudegravidade)
+		FROM avalia
+		WHERE graudegravidade IS NOT NULL
+		
+	)
+
+--- ===========================
+--- ALINEA l
+--- ===========================
+
+SELECT 
+    U.alcunha
+FROM INTERVEM I
+JOIN UTILIZADOR U ON I.idPsicologo = U.idUtilizador
+JOIN CASO_DE_CYBERBULLYING C ON I.idCaso = C.idCaso
+JOIN AVALIA Av ON C.idCaso = Av.idCasoDeCyberbullying
+WHERE Av.grauDeGravidade > 3
+GROUP BY U.idUtilizador, U.alcunha
+HAVING COUNT(*) > 1;

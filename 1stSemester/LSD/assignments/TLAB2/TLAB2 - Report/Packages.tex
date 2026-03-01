@@ -1,0 +1,117 @@
+\documentclass[12pt,twoside]{article}
+\usepackage[portuguese]{babel}
+\usepackage[a4paper]{geometry}
+\usepackage{graphicx, wrapfig, subcaption, setspace, booktabs}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[font=small, labelfont=bf]{caption}
+\usepackage{url, lipsum}
+\usepackage{hyperref}
+\usepackage{xcolor}
+\usepackage[portuguese]{babel}
+\usepackage{algorithm}
+\usepackage{tikz}
+\usepackage{indentfirst}
+\usepackage{float}
+\usepackage[table]{xcolor}
+\usepackage[usenames,dvipsnames]{xcolor}
+\usepackage[bottom]{footmisc}
+\usepackage[document]{ragged2e}
+\usepackage{fancyvrb}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{hhline}
+\usepackage{circuitikz}
+\usepackage{multicol}
+\usepackage{colortbl}
+\usepackage{xpatch}
+\usepackage{varwidth}
+\usepackage[cache=false]{minted}
+\usepackage{tcolorbox}
+\usepackage{etoolbox}
+\usepackage{titlesec}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{svg}
+\usepackage[neverdecrease]{paralist}
+\tcbuselibrary{raster}
+\tcbuselibrary{all}
+\usetikzlibrary{shadings}
+\onehalfspacing
+\usepackage{geometry}[]
+\geometry{margin=.6in,bottom=1in,top=1in}
+
+\tcbset{skin=enhanced,drop shadow}
+
+\graphicspath{{images/}}
+
+\usepackage{fancyhdr}
+
+\renewcommand{\sectionmark}[1]{\xdef\leftmark{\thesection\quad#1}\xdef\rightmark{}}
+\renewcommand{\subsectionmark}[1]{\xdef\rightmark{\thesubsection\quad#1}}
+
+\fancypagestyle{geral}{
+  \fancyhf{}
+  \renewcommand{\footrulewidth}{0.3pt}
+  \fancyhead[R]{\rule[-5mm]{0pt}{2ex}\nouppercase{\leftmark}}
+  \fancyfoot[RO, LE]{\nouppercase{\rightmark}}
+  \fancyfoot[LO, RE]{\rule[3mm]{0pt}{2ex}\textbf{\thepage}}
+}
+
+% \fancypagestyle{firstpage}{
+%   \fancyhf{}
+%   \renewcommand{\footrulewidth}{0.3pt}
+%   \fancyhead[R]{\rule[-5mm]{0pt}{2ex}1\hspace{4mm}Introdução}
+%   \fancyfoot[C,RE]{\rule[3mm]{0pt}{2ex}\textbf{\thepage}}
+% }
+
+\fancypagestyle{referencias}{
+  \fancyhf{}
+  \renewcommand{\footrulewidth}{0.3pt}
+  \fancyhead[R]{\rule[-5mm]{0pt}{2ex}Referências}
+  \fancyfoot[RE, LO]{\rule[3mm]{0pt}{2ex}\textbf{\thepage}}
+}
+
+
+\newcommand{\Sec}[1]{
+\section{#1}
+\hrule
+\vspace{0.5cm}
+}
+
+\newcommand{\Subsec}[1]{
+\subsection{#1}
+\noindent\rule[1.2cm]{3.35in}{.1mm}
+\vspace{-0.5cm}
+}
+%1.675in
+
+\newcommand{\Subsubsec}[1]{
+\subsubsection{#1}
+}
+
+\makeatletter
+\renewcommand\paragraph{\@startsection{paragraph}{4}{\z@}%
+            {-2.5ex\@plus -1ex \@minus -.25ex}%
+            {1.25ex \@plus .25ex}%
+            {\normalfont\normalsize\bfseries}}
+\makeatother
+\setcounter{secnumdepth}{4} % how many sectioning levels to assign numbers to
+\setcounter{tocdepth}{4}    % how many sectioning levels to show in ToC
+
+\newcommand{\Subsubsubsec}[1]{
+\paragraph{#1}
+}
+
+\newtcolorbox{marker}[1][]{enhanced,
+  before skip=2mm,after skip=3mm,
+  boxrule=0.4pt,left=5mm,right=2mm,top=1mm,bottom=1mm,
+  colback=white,
+  colframe=black,
+  sharp corners,rounded corners=southeast,arc is angular,arc=3mm,
+  underlay={%
+    \path[fill=tcbcolback!80!black] ([yshift=3mm]interior.south east)--++(-0.4,-0.1)--++(0.1,-0.2);
+    \path[draw=tcbcolframe,shorten <=-0.05mm,shorten >=-0.05mm] ([yshift=3mm]interior.south east)--++(-0.4,-0.1)--++(0.1,-0.2);
+    \path[fill=gray!50!black,draw=none] (interior.south west) rectangle node[white]{\Huge\bfseries !} ([xshift=4mm]interior.north west);
+    },
+  drop fuzzy shadow,#1}

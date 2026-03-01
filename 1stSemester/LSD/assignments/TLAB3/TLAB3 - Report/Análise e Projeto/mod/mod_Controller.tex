@@ -1,0 +1,36 @@
+\begin{tikzpicture}
+
+    % Module block
+    \node[module, minimum width = 2cm, minimum height = 7.5cm] (controller) at (0, 0) {Controller};
+
+    % Inputs on the left
+    \node[io, label=left:Step, left of = controller, yshift = .83*4cm] (step_i) {};
+    \node[io, label=left:Start, left of = controller, yshift = .83*3cm] (start_i) {};
+
+    % Outputs on the right
+    \node[io, label=right:Square, right of = controller, yshift = .83cm*4,label={[scale=.8]left:(8 bits)}] (sqr) {};
+    \node[io, label=right:Sum, right of = controller, yshift = .83cm*3,label={[scale=.8]left:(8 bits)}] (sum) {};
+    \node[io, label=right:C in, right of = controller, yshift = .83cm*2] (cin) {};
+    \node[io, label=right:Step, right of = controller] (step_o) {};
+    \node[io, label=right:Reset, right of = controller, yshift = .83cm*-1] (reset_o) {};
+    \node[io, label=right:Cy, right of = controller, yshift = .83cm*-3] (cy) {};
+    \node[io, label=right:Out, right of = controller, yshift = .83cm*-4,label={[scale=.8]left:($3 \times 7$ bits)}] (cout) {};
+ 
+    % 9 laterais
+    % .83 por espaço
+
+
+    % Inputs Externos
+    \draw [decorate,decoration={brace,amplitude=5pt,mirror,raise=1.5cm},thick,xshift=-1cm]  (0,3.75cm) -- (0,2.09cm) node[midway, left, xshift=-2cm]{Inputs Externos};
+
+    % Inputs Internos
+    \draw [decorate,decoration={brace,amplitude=5pt,raise=1.5cm},thick,xshift=1cm]  (0,3.75cm) -- (0,1.26cm) node[midway, right, xshift=2cm]{Inputs Internos};
+
+    % Outputs Externos
+    \draw [decorate,decoration={brace,amplitude=5pt,raise=1.5cm},thick,xshift=1cm]  (0,-2.29cm) -- (0,-3.75cm) node[midway, right, xshift=2cm]{Outputs Externos};
+
+    % Outputs Internos
+    \draw [decorate,decoration={brace,amplitude=5pt,raise=1.5cm},thick,xshift=1cm]  (0,.4cm) -- (0,-1.26cm) node[midway, right, xshift=2cm]{Outputs Internos};
+    
+
+\end{tikzpicture}

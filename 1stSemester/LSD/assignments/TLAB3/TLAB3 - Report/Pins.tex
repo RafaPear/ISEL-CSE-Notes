@@ -1,0 +1,96 @@
+\section{Pin Assignments}
+
+\vspace*{\fill}
+\begin{figure}[H]
+    \footnotesize
+    \centering
+    \begin{minipage}{0.5\textwidth}
+        \begin{minted}[breaklines,autogobble]{text}
+            #==========================================
+            # Altera DE10-Lite board settings
+            #==========================================
+
+            set_global_assignment -name FAMILY "MAX 10 FPGA"
+            set_global_assignment -name DEVICE 10M50DAF484C6GES
+            set_global_assignment -name TOP_LEVEL_ENTITY "DE10_Lite"
+            set_global_assignment -name DEVICE_FILTER_PACKAGE FBGA
+            set_global_assignment -name SDC_FILE DE10_Lite.sdc
+            set_global_assignment -name INTERNAL_FLASH_UPDATE_MODE "SINGLE IMAGE WITH ERAM"
+
+            #==========================================
+            # CLOCK
+            #==========================================
+            set_location_assignment PIN_P11 -to CLK
+
+            #==========================================
+            # SW
+            #==========================================
+            set_location_assignment PIN_C10 -to Xi[0]
+            set_location_assignment PIN_C11 -to Xi[1]
+            set_location_assignment PIN_D12 -to Xi[2]
+            set_location_assignment PIN_C12 -to Xi[3]
+            set_location_assignment PIN_B14 -to Step
+            set_location_assignment PIN_F15 -to Start
+
+            #==========================================
+            # LED
+            #==========================================
+            set_location_assignment PIN_A8 -to Cy
+        \end{minted}
+    \end{minipage}
+    \caption{Código de atribuição de pinos (1)}
+\end{figure}
+\vspace*{\fill}%
+
+\newpage
+
+\vspace*{\fill}
+\begin{figure}[H]
+    \footnotesize
+    \centering
+    \begin{minipage}{0.5\textwidth}
+        \begin{minted}[autogobble]{text}
+            #==========================================
+            # HEX0
+            #==========================================
+            set_location_assignment PIN_C14 -to HEX0[0]
+            set_location_assignment PIN_E15 -to HEX0[1]
+            set_location_assignment PIN_C15 -to HEX0[2]
+            set_location_assignment PIN_C16 -to HEX0[3]
+            set_location_assignment PIN_E16 -to HEX0[4]
+            set_location_assignment PIN_D17 -to HEX0[5]
+            set_location_assignment PIN_C17 -to HEX0[6]
+            set_location_assignment PIN_D15 -to HEX0[7]
+
+            #==========================================
+            # HEX1
+            #==========================================
+            set_location_assignment PIN_C18 -to HEX1[0]
+            set_location_assignment PIN_D18 -to HEX1[1]
+            set_location_assignment PIN_E18 -to HEX1[2]
+            set_location_assignment PIN_B16 -to HEX1[3]
+            set_location_assignment PIN_A17 -to HEX1[4]
+            set_location_assignment PIN_A18 -to HEX1[5]
+            set_location_assignment PIN_B17 -to HEX1[6]
+            set_location_assignment PIN_A16 -to HEX1[7]
+
+            #==========================================
+            # HEX2
+            #==========================================
+            set_location_assignment PIN_B20 -to HEX2[0]
+            set_location_assignment PIN_A20 -to HEX2[1]
+            set_location_assignment PIN_B19 -to HEX2[2]
+            set_location_assignment PIN_A21 -to HEX2[3]
+            set_location_assignment PIN_B21 -to HEX2[4]
+            set_location_assignment PIN_C22 -to HEX2[5]
+            set_location_assignment PIN_B22 -to HEX2[6]
+            set_location_assignment PIN_A19 -to HEX2[7]
+
+            #==========================================
+            # End of pin and io_standard assignments
+            #==========================================
+        \end{minted}
+    \end{minipage}
+    \caption{Código de atribuição de pinos (2)}
+\end{figure}
+\vspace*{\fill}%

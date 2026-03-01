@@ -1,0 +1,27 @@
+\begin{tikzpicture}
+
+    \begin{scope}[scale=0.8, transform shape]
+
+
+    % Module block
+    \node[module, minimum width = 4cm, minimum height = 2.5cm] (DataPath) at (0, 0) {DataPath};
+
+    % Inputs on the left
+    \node[io, label=left:Xi, label={[scale=.8]right:(4 bits)}] (xi) at (-2, 0.8) {};
+    \node[io, label=left:Step] (step) at (-2, 0) {};
+    \node[io, label=left:Reset] (reset) at (-2, -0.8) {};
+
+    % Outputs on the right
+    \node[io, label=right:Carry Out] (cout) at (2, 0.8) {};
+    \node[io, label=right:Sum Out, label={[scale=.8]left:(8 bits)}] (sumout) at (2, 0) {};
+    \node[io, label=right:Square Out, label={[scale=.8]left:(8 bits)}] (x2) at (2, -0.8) {};
+
+    % Inputs
+    \draw [decorate,decoration={brace,amplitude=5pt,mirror,raise=1.5cm},thick]  (-2cm,1.25cm) -- (-2,-1.25cm) node[midway, left, xshift=-2cm]{Inputs};
+
+    % Outputs
+    \draw [decorate,decoration={brace,amplitude=5pt,raise=2.5cm},thick] (2cm,1.25cm) -- (2,-1.25cm) node[midway, left, xshift=4.5cm]{Outputs};
+
+    \end{scope}
+
+\end{tikzpicture}

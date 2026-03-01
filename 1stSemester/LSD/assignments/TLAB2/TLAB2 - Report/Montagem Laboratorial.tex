@@ -1,0 +1,217 @@
+\Sec{Montagem Laboratorial}
+
+\Subsec{Configuração dos pinos}
+
+Utilizando, como base, o manual da placa \textit{DE10-Lite} procedemos à configuração dos pinos de acordo com os \textit{inputs} e \textit{outputs} da nossa ALU.
+Uma vez que este modelo possui apenas dez \textit{switches} e dez \textit{LEDs}, e como nós temos 12 \textit{inputs} para serem configurados e definidos na placa, tivemos de optar pelo uso dos dois botões \textit{(buttons)}, presentes nesta mesma placa, para totalizar o número de entradas desejado.
+
+\begin{figure}[H]
+    \centering
+    \scriptsize
+    \begin{tcolorbox}[title=\textit{Pin Assignments},center title,halign=center,valign=center,text width=10cm]
+    \begin{BVerbatim}
+        set_global_assignment -name FAMILY "MAX 10 FPGA"
+        set_global_assignment -name DEVICE 10M50DAF484C6GES
+        set_global_assignment -name TOP_LEVEL_ENTITY "DE10_Lite"
+        
+        # Switches
+        set_location_assignment PIN_C10 -to OP[0]
+        set_location_assignment PIN_C11 -to CBI
+        set_location_assignment PIN_D12 -to Y[0]
+        set_location_assignment PIN_C12 -to Y[1]
+        set_location_assignment PIN_A12 -to Y[2]
+        set_location_assignment PIN_B12 -to Y[3]
+        set_location_assignment PIN_A13 -to X[0]
+        set_location_assignment PIN_A14 -to X[1]
+        set_location_assignment PIN_B14 -to X[2]
+        set_location_assignment PIN_F15 -to X[3]
+
+        # LEDS
+        set_location_assignment PIN_A8 -to BE
+        set_location_assignment PIN_A9 -to GE
+        set_location_assignment PIN_A10 -to P
+        set_location_assignment PIN_B10 -to Z
+        set_location_assignment PIN_D13 -to OV
+        set_location_assignment PIN_C13 -to CBo
+        set_location_assignment PIN_E14 -to R[0]
+        set_location_assignment PIN_D14 -to R[1]
+        set_location_assignment PIN_A11 -to R[2]
+        set_location_assignment PIN_B11 -to R[3]
+
+        # BUTTONS
+        set_location_assignment PIN_B8 -to OP[2]
+        set_location_assignment PIN_A7 -to OP[1]
+    \end{BVerbatim}
+    \end{tcolorbox}
+    \caption{Código de atribuição de pinos}
+\end{figure}
+\newpage
+
+\Subsec{Testes para Operações Aritméticas}
+
+\Subsubsec{Teste 21 - Configuração e Resultado}
+
+Para a configuração do teste 21 da nossa tabela, optámos pela seguinte combinação de \textit{inputs}:
+\begin{figure}[h]
+    \centering
+    \begin{tcolorbox}[halign=flush center,halign lower=flush center,text fill]
+        \large $X = 0101$ | $Y = 1001$ | $CBi = 1$ | $OP = 000$
+        
+        \tcblower
+        \large
+        Resultado do teste:
+        \vspace{2mm}
+        
+        $R = 0110$ | $CBo = 0$ | $OV = 0$ | $Z = 0$ | $P = 0$
+    \end{tcolorbox}
+    \begin{marker}
+        As \textit{flags} \textit{GE} (\textit{Greater or Equal}) e \textit{BE} (\textit{Below or Equal}) não têm significado para a operação em questão.
+    \end{marker}
+    \caption{Teste de um incremento}
+\end{figure}
+
+\Subsubsec{Teste 22 - Configuração e Resultado}
+
+Para a configuração do teste 22 da nossa tabela, optámos pela seguinte combinação de \textit{inputs}:
+\begin{figure}[h]
+    \centering
+    \begin{tcolorbox}[halign=flush center,halign lower=flush center,text fill]
+        \large $X = 1110$ | $Y = 0110$ | $CBi = 0$ | $OP = 011$
+        
+        \tcblower
+        \large
+        Resultado do teste:
+        \vspace{2mm}
+        
+        $R = 1000$ | $CBo = 0$ | $OV = 0$ | $Z = 0$ | $P = 1$ | $GE = 0$ | $BE = 1$
+    \end{tcolorbox}
+    \caption{Teste de uma subtração}
+\end{figure}
+\newpage
+\Subsec{Testes para Operações Lógicas}
+
+\Subsubsec{Teste 23 - Configuração e Resultado}
+
+Para a configuração do teste 23 da nossa tabela, optámos pela seguinte combinação de \textit{inputs}:
+\begin{figure}[h]
+    \centering
+    \begin{tcolorbox}[halign=flush center,halign lower=flush center,text fill]
+        \large $X = 1100$ | $Y = 0011$ | $CBi = 1$ | $OP = 101$
+        
+        \tcblower
+        \large
+        Resultado do teste:
+        \vspace{2mm}
+        
+        $R = 1110$ | $CBo = 0$ | $Z = 0$ | $P = 1$
+    \end{tcolorbox}
+    \begin{marker}
+        As \textit{flags} OV (\textit{Overflow}), GE (\textit{Greater or Equal}) e BE (\textit{Below or Equal}) não têm significado para a operação em questão.
+    \end{marker}
+    \caption{Teste de um deslocamento aritmético à direita}
+\end{figure}
+
+\Subsubsec{Teste 24 - Configuração e Resultado}
+
+Para a configuração do teste 24 da nossa tabela, optámos pela seguinte combinação de \textit{inputs}:
+\begin{figure}[h]
+    \centering
+    \begin{tcolorbox}[halign=flush center,halign lower=flush center,text fill]
+        \large $X = 1011$ | $Y = 0001$ | $CBi = 1$ | $OP = 110$
+        
+        \tcblower
+        \large
+        Resultado do teste:
+        \vspace{2mm}
+        
+        $R = 0110$ | $CBo = 1$ | $Z = 0$ | $P = 0$
+    \end{tcolorbox}
+        \begin{marker}
+        As \textit{flags} OV (\textit{Overflow}), GE (\textit{Greater or Equal}) e BE (\textit{Below or Equal}) não têm significado para a operação em questão.
+    \end{marker}
+    \caption{Teste de um deslocamento lógico à esquerda}
+\end{figure}
+
+\newpage
+
+\Subsec{Comparação dos Resultados}
+
+\Subsubsec{Resultados Teóricos \textit{versus} Experimentais}
+
+\begin{figure}[H]
+\centering
+\begin{tcolorbox}[left=5mm,right=5mm,top=0mm,bottom=5mm,boxsep=0mm,
+toptitle=0.5mm,bottomtitle=0.5mm,title=Resultados Teóricos \textit{versus} Resultados Experimentais,center title]
+\centering
+\begin{minipage}{\textwidth}
+\resizebox{\linewidth}{!}{
+\begin{tabular}{c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|}
+\multicolumn{1}{c}{}                                                                                       & \multicolumn{1}{c}{} & \multicolumn{1}{c}{} & \multicolumn{1}{c}{} & \multicolumn{1}{c}{} & \multicolumn{1}{c}{}                        & \multicolumn{1}{c}{}                        & \multicolumn{1}{c}{} & \multicolumn{1}{c}{}                        & \multicolumn{1}{c}{}                        & \multicolumn{1}{c}{} & \multicolumn{1}{c}{}                        & \multicolumn{1}{c}{}                        & \multicolumn{1}{c}{} & \multicolumn{1}{c}{} & \multicolumn{1}{c}{} & \multicolumn{1}{c}{} & \multicolumn{1}{c}{} & \multicolumn{1}{c}{} & \multicolumn{1}{c}{} & \multicolumn{1}{c}{}                        & \multicolumn{1}{c}{}                        & \multicolumn{1}{c}{} & \multicolumn{1}{c}{} & \multicolumn{1}{c}{} & \multicolumn{1}{c}{} & \multicolumn{1}{c}{} & \multicolumn{1}{c}{}  \\ 
+\hhline{~---------------------------|}
+                                                                                                           & \multicolumn{9}{c|}{{\cellcolor[rgb]{0.996,0.604,0.643}}\textbf{TLAB\_2 - Resultados}}                                                                                                                                                                                                                   & \multicolumn{9}{c|}{{\cellcolor[rgb]{0.596,0.796,0.996}}\textbf{Resultado Teórico }}                                                                                                                                                                       & \multicolumn{9}{c|}{{\cellcolor[rgb]{0.996,0.604,0.984}}\textbf{Resultado Experimental }}                                                                                                                                                                   \\ 
+\cline{2-28}
+                                                                                                           & \textbf{\#}          & \textbf{OP}          & \textbf{CBi}         & \textbf{X(2)}        & \textbf{X($\mathbb{N}$)} & \textbf{X($\mathbb{Z}$)} & \textbf{Y(2)}        & \textbf{Y($\mathbb{N}$)} & \textbf{Y($\mathbb{Z}$)} & \textbf{R(2)}        & \textbf{R($\mathbb{N}$)} & \textbf{R($\mathbb{Z}$)} & \textbf{CBo}         & \textbf{OV}          & \textbf{Z}           & \textbf{P}           & \textbf{GE}          & \textbf{BE}          & \textbf{R(2)}        & \textbf{R($\mathbb{N}$)} & \textbf{R($\mathbb{Z}$)} & \textbf{CBo}         & \textbf{OV}          & \textbf{Z}           & \textbf{P}           & \textbf{GE}          & \textbf{BE}           \\ 
+\cline{2-28}
+                                                                                                           & \textbf{1}           & 000                  & 0                    & 0000                 & 0                                           & 0                                           & 1111                 & 15                                          & -1                                          & 0000                 & 0                                           & 0                                           & 0                    & 0                    & 1                    & 0                    & $-$                    & $-$                    & 0000                 & 0                                           & 0                                           & 0                    & 0                    & 1                    & 0                    & 1                    & 1                     \\ 
+\cline{2-28}
+                                                                                                           & \textbf{2}           & 000                  & 1                    & 0000                 & 0                                           & 0                                           & 1111                 & 15                                          & -1                                          & 0001                 & 1                                           & 1                                           & 0                    & 0                    & 0                    & 1                    & $-$                    & $-$                    & 0001                 & 1                                           & 1                                           & 0                    & 0                    & 0                    & 1                    & 1                    & 0                     \\ 
+\cline{2-28}
+                                                                                                           & \textbf{3}           & 000                  & 1                    & 0111                 & 7                                           & 7                                           & 0101                 & 5                                           & 5                                           & 1000                 & 8                                           & -8                                          & 0                    & 1                    & 0                    & 1                    & $-$                    & $-$                    & 1000                 & 8                                           & -8                                          & 0                    & 1                    & 0                    & 1                    & 0                    & 1                     \\ 
+\cline{2-28}
+                                                                                                           & \textbf{4}           & 000                  & 1                    & 1111                 & 15                                          & -1                                          & 1010                 & 10                                          & -6                                          & 0000                 & 0                                           & 0                                           & 1                    & 0                    & 1                    & 0                    & $-$                    & $-$                    & 0000                 & 0                                           & 0                                           & 1                    & 0                    & 1                    & 0                    & 1                    & 1                     \\ 
+\cline{2-28}
+                                                                                                           & \textbf{5}           & 001                  & 1                    & 0000                 & 0                                           & 0                                           & 1111                 & 15                                          & -1                                          & 1111                 & 15                                          & -1                                          & 1                    & 0                    & 0                    & 0                    & $-$                    & $-$                    & 1111                 & 15                                          & -1                                          & 1                    & 0                    & 0                    & 0                    & 0                    & 1                     \\ 
+\cline{2-28}
+                                                                                                           & \textbf{6}           & 001                  & 1                    & 0001                 & 1                                           & 1                                           & 0101                 & 5                                           & 5                                           & 0000                 & 0                                           & 0                                           & 0                    & 0                    & 1                    & 0                    & $-$                    & $-$                    & 0000                 & 0                                           & 0                                           & 0                    & 0                    & 1                    & 0                    & 1                    & 1                     \\ 
+\cline{2-28}
+                                                                                                           & \textbf{7}           & 001                  & 1                    & 1000                 & 8                                           & -8                                          & 1010                 & 10                                          & -6                                          & 0111                 & 7                                           & 7                                           & 0                    & 1                    & 0                    & 1                    & $-$                    & $-$                    & 0111                 & 7                                           & 7                                           & 0                    & 1                    & 0                    & 1                    & 1                    & 0                     \\ 
+\cline{2-28}
+                                                                                                           & \textbf{8}           & 010                  & 0                    & 0001                 & 1                                           & 1                                           & 1110                 & 14                                          & -2                                          & 1111                 & 15                                          & -1                                          & 0                    & 0                    & 0                    & 0                    & $-$                    & $-$                    & 1111                 & 15                                          & -1                                          & 0                    & 0                    & 0                    & 0                    & 0                    & 1                     \\ 
+\cline{2-28}
+                                                                                                           & \textbf{9}           & 010                  & 1                    & 0001                 & 1                                           & 1                                           & 1110                 & 14                                          & -2                                          & 0000                 & 0                                           & 0                                           & 1                    & 0                    & 1                    & 0                    & $-$                    & $-$                    & 0000                 & 0                                           & 0                                           & 1                    & 0                    & 1                    & 0                    & 1                    & 1                     \\ 
+\cline{2-28}
+                                                                                                           & \textbf{10}          & 010                  & 1                    & 1000                 & 8                                           & -8                                          & 1111                 & 15                                          & -1                                          & 1000                 & 8                                           & -8                                          & 1                    & 0                    & 0                    & 1                    & $-$                    & $-$                    & 1000                 & 8                                           & -8                                          & 1                    & 0                    & 0                    & 1                    & 0                    & 1                     \\ 
+\cline{2-28}
+                                                                                                           & \textbf{11}          & 010                  & 1                    & 0010                 & 2                                           & 2                                           & 0101                 & 5                                           & 5                                           & 1000                 & 8                                           & -8                                          & 0                    & 1                    & 0                    & 1                    & $-$                    & $-$                    & 1000                 & 8                                           & -8                                          & 0                    & 1                    & 0                    & 1                    & 0                    & 1                     \\ 
+\cline{2-28}
+                                                                                                           & \textbf{12}          & 011                  & 0                    & 0011                 & 3                                           & 3                                           & 0101                 & 5                                           & 5                                           & 1110                 & 14                                          & -2                                          & 1                    & 0                    & 0                    & 1                    & 0                    & 1                    & 1110                 & 14                                          & -2                                          & 1                    & 0                    & 0                    & 1                    & 0                    & 1                     \\ 
+\cline{2-28}
+                                                                                                           & \textbf{13}          & 011                  & 0                    & 1110                 & 14                                          & -2                                          & 1100                 & 12                                          & -4                                          & 0010                 & 2                                           & 2                                           & 0                    & 0                    & 0                    & 1                    & 1                    & 0                    & 0010                 & 2                                           & 2                                           & 0                    & 0                    & 0                    & 1                    & 1                    & 0                     \\ 
+\cline{2-28}
+                                                                                                           & \textbf{14}          & 011                  & 1                    & 0110                 & 6                                           & 6                                           & 0110                 & 6                                           & 6                                           & 1111                 & 15                                          & -1                                          & 1                    & 0                    & 0                    & 0                    & 0                    & 1                    & 1111                 & 15                                          & -1                                          & 1                    & 0                    & 0                    & 0                    & 0                    & 1                     \\ 
+\cline{2-28}
+                                                                                                           & \textbf{15}          & 011                  & 1                    & 1000                 & 8                                           & -8                                          & 0111                 & 7                                           & 7                                           & 0000                 & 0                                           & 0                                           & 0                    & 1                    & 1                    & 0                    & 1                    & 1                    & 0000                 & 0                                           & 0                                           & 0                    & 1                    & 1                    & 0                    & 1                    & 1                     \\ 
+\cline{2-28}
+                                                                                                           & \textbf{16}          & 100                  & 1                    & 0001                 & 1                                           & 1                                           & 1100                 & 12                                          & -4                                          & 0000                 & 0                                           & 0                                           & 1                    & $-$                    & 1                    & 0                    & $-$                    & $-$                    & 0000                 & 0                                           & 0                                           & 1                    & 0                    & 1                    & 0                    & 0                    & 0                     \\ 
+\cline{2-28}
+                                                                                                           & \textbf{17}          & 100                  & 0                    & 1101                 & 13                                          & -3                                          & 1001                 & 9                                           & -7                                          & 0110                 & 6                                           & 6                                           & 1                    & $-$                    & 0                    & 0                    & $-$                    & $-$                    & 0110                 & 6                                           & 6                                           & 1                    & 0                    & 0                    & 0                    & 0                    & 0                     \\ 
+\cline{2-28}
+                                                                                                           & \textbf{18}          & 101                  & 0                    & 1010                 & 10                                          & -6                                          & 1111                 & 15                                          & -1                                          & 1101                 & 13                                          & -3                                          & 0                    & $-$                    & 0                    & 1                    & $-$                    & $-$                    & 1101                 & 13                                          & -3                                          & 0                    & 0                    & 0                    & 1                    & 0                    & 0                     \\ 
+\cline{2-28}
+                                                                                                           & \textbf{19}          & 110                  & 0                    & 1001                 & 9                                           & -7                                          & 0110                 & 6                                           & 6                                           & 0010                 & 2                                           & 2                                           & 1                    & $-$                    & 0                    & 1                    & $-$                    & $-$                    & 0010                 & 2                                           & 2                                           & 1                    & 0                    & 0                    & 1                    & 0                    & 0                     \\ 
+\cline{2-28}
+                                                                                                           & \textbf{20}          & 111                  & 1                    & 1111                 & 15                                          & -1                                          & 0100                 & 4                                           & 4                                           & 1011                 & 11                                          & -5                                          & $-$                    & $-$                    & 0                    & 1                    & $-$                    & $-$                    & 1011                 & 11                                          & -5                                          & 1                    & 0                    & 0                    & 1                    & 0                    & 0                     \\ 
+\hline
+\rowcolor[rgb]{1,1,0} \multicolumn{1}{|c|}{{\cellcolor[rgb]{0.596,0.796,0.996}}\textbf{Aritm}} & \textbf{21}          & 000                  & 1                    & 0101                 & 5                                           & 5                                           & 1001                 & 9                                           & -7                                          & 0110                 & 6                                           & 6                                           & 0                    & 0                    & 0                    & 0                    & $-$                    & $-$                    & 0110                 & 6                                           & 6                                           & 0                    & 0                    & 0                    & 0                    & 1                    & 0                     \\ 
+\hline
+\rowcolor[rgb]{1,1,0} \multicolumn{1}{|c|}{{\cellcolor[rgb]{0.596,0.796,0.996}}\textbf{Aritm}} & \textbf{22}          & 011                  & 0                    & 1110                 & 14                                          & -2                                          & 0110                 & 6                                           & 6                                           & 1000                 & 8                                           & -8                                          & 0                    & 0                    & 0                    & 1                    & 0                    & 1                    & 1000                 & 8                                           & -8                                          & 0                    & 0                    & 0                    & 1                    & 0                    & 1                     \\ 
+\hline
+\rowcolor[rgb]{1,1,0} \multicolumn{1}{|c|}{{\cellcolor[rgb]{0.596,0.796,0.996}}\textbf{Logic}} & \textbf{23}          & 101                  & 1                    & 1100                 & 12                                          & -4                                          & 0011                 & 3                                           & 3                                           & 1110                 & 14                                          & -2                                          & 0                    & $-$                    & 0                    & 1                    & $-$                    & $-$                    & 1110                 & 14                                          & -2                                          & 0                    & 0                    & 0                    & 1                    & 0                    & 0                     \\ 
+\hline
+\rowcolor[rgb]{1,1,0} \multicolumn{1}{|c|}{{\cellcolor[rgb]{0.596,0.796,0.996}}\textbf{Logic}} & \textbf{24}          & 110                  & 1                    & 1011                 & 11                                          & -5                                          & 0001                 & 1                                           & 1                                           & 0110                 & 6                                           & 6                                           & 1                    & $-$                    & 0                    & 0                    & $-$                    & $-$                    & 0110                 & 6                                           & 6                                           & 1                    & 0                    & 0                    & 0                    & 0                    & 0                     \\
+\hline
+\end{tabular}}
+\end{minipage}%
+\end{tcolorbox}
+    \caption{Tabela completa de resultados}
+    \label{tabela}
+\end{figure}
+
+\Subsubsec{Análise da Consistência e Erros}
+
+De modo geral, os resultados demonstraram uma consistência satisfatória nas fases de testes práticos e teóricos ao longo do desenvolvimento do projeto. As operações da ALU foram testadas em diferentes cenários, e os valores das \textit{flags} corresponderam, na maioria dos casos, ao comportamento esperado.
+
+\vspace{5mm}
+
+Durante o processo de validação, pequenos erros surgiram, como ajustes de configuração nas \textit{flags} e comportamentos inesperados em operações específicas. No entanto, esses erros foram identificados rapidamente e resolvidos com pequenas correções no código VHDL e ajustes na configuração da placa.
+\newpage

@@ -1,0 +1,21 @@
+\begin{tikzpicture}[thick]
+
+    % Module block
+    \node[module] (SumSquare) at (0, 0) {Acumulador};
+
+    % Inputs on the left
+    \node[io, label=left:Xi,label={[scale=.8]right:(8 bits)}] (xi) at (-1.25cm, 0.8) {};
+    \node[io, label=left:Step] (step) at (-1.25cm, 0) {};
+    \node[io, label=left:Reset] (reset) at (-1.25cm, -0.8) {};
+
+    % Outputs on the right
+    \node[io, label=right:Carry Out] (cout) at (1.25cm, .42cm) {};
+    \node[io, label=right:Out,label={[scale=.8]left:(8 bits)}] (sumout) at (1.25cm, -.42cm) {};
+
+    % Inputs
+    \draw [decorate,decoration={brace,amplitude=5pt,mirror,raise=1.5cm},thick]  (-1.5cm,1.25cm) -- (-1.5,-1.25cm) node[midway, left, xshift=-2cm]{Inputs};
+
+    % Outputs
+    \draw [decorate,decoration={brace,amplitude=5pt,raise=2.5cm},thick] (1.5cm,1.25cm) -- (1.5,-1.25cm) node[midway, left, xshift=4.5cm]{Outputs};
+
+\end{tikzpicture}

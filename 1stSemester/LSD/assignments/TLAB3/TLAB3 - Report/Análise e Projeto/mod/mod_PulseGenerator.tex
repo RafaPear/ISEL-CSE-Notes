@@ -1,0 +1,6 @@
+\begin{tikzpicture}[thick,node distance=4cm]
+    % Pulse Generator
+    \node[minimodule] (pulse) {Pulse Generator};
+    \node[io, label=left:Out] (outp) at (pulse.west) {};
+    \node[io, label=right:In] (inp) at (pulse.east) {};
+\end{tikzpicture}

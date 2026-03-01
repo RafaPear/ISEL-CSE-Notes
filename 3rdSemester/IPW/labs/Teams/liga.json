@@ -1,0 +1,82 @@
+[
+  {
+    "team": "FC Porto",
+    "points": 15,
+    "goals": 12
+  },
+  {
+    "team": "Sporting CP",
+    "points": 12,
+    "goals": 15
+  },
+  {
+    "team": "Moreirense",
+    "points": 12,
+    "goals": 8
+  },
+  {
+    "team": "Benfica",
+    "points": 10,
+    "goals": 7
+  },
+  {
+    "team": "FC Famalicão",
+    "points": 10,
+    "goals": 6
+  },
+  {
+    "team": "Gil Vicente",
+    "points": 10,
+    "goals": 5
+  },
+  {
+    "team": "SC Braga",
+    "points": 8,
+    "goals": 10
+  },
+  {
+    "team": "Vitória SC",
+    "points": 7,
+    "goals": 4
+  },
+  {
+    "team": "Casa Pia",
+    "points": 6,
+    "goals": 4
+  },
+  {
+    "team": "Estoril Praia",
+    "points": 5,
+    "goals": 4
+  },
+  {
+    "team": "Santa Clara",
+    "points": 5,
+    "goals": 2
+  },
+  {
+    "team": "Arouca",
+    "points": 5,
+    "goals": 6
+  },
+  {
+    "team": "Estrela da Amadora",
+    "points": 3,
+    "goals": 3
+  },
+  {
+    "team": "Marítimo",
+    "points": 3,
+    "goals": 3
+  },
+  {
+    "team": "Vizela",
+    "points": 1,
+    "goals": 1
+  },
+  {
+    "team": "Farense",
+    "points": 0,
+    "goals": 0
+  }
+]

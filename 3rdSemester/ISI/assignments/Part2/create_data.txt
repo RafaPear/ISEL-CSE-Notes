@@ -1,0 +1,61 @@
+INSERT INTO UTILIZADOR (idUtilizador, email, alcunha, tipoUtilizador)
+VALUES
+ (1, 'ana@gmail.com',    'ana123',     NULL),          -- utilizador normal
+ (2, 'rui@gmail.com',    'ruizito',    'moderador'),
+ (3, 'ines@gmail.com',   'ines_mod',   'moderador'),
+ (4, 'carlos@gmail.com', 'carlopsi',   'psicologo'),
+ (5, 'maria@gmail.com',  'mariaPsi',   'psicologo');
+
+INSERT INTO MODERADOR (idUtilizador, areaDeModeracao, nivelDeSenioridade)
+VALUES
+ (2, 'Redes Sociais', 'Junior'),
+ (3, 'Jogos Online',  'Senior');
+
+INSERT INTO PSICOLOGO (idUtilizador, cedulaProfissional, especializacao)
+VALUES
+ (4, 'CP-1001', 'Comportamento Infantil'),
+ (5, 'CP-1002', 'Comportamento Adolescente');
+
+INSERT INTO RECURSO_EDUCATIVO (idRecurso, formato, titulo, url, especializacao)
+VALUES
+ (10, 'pdf', 'Guia para Combater Cyberbullying', 'http://site/guia1.pdf', 'Comportamento Infantil'),
+ (11, 'video', 'Como lidar com ataques online', 'http://site/video1.mp4', 'Comportamento Adolescente');
+
+INSERT INTO CONSULTA (idUtilizador, idRecurso, data)
+VALUES
+ (1, 10, '2025-01-10 11:20'),
+ (1, 11, '2025-01-11 10:00'),
+ (2, 10, '2025-01-11 09:50');
+
+INSERT INTO INTERACAO (idInteracao, idUtilizador, data, tipo, texto)
+VALUES
+ (100, 1, '2025-01-10 15:30', 'Mensagem', 'Estão a insultar-me no chat do jogo'),
+ (101, 1, '2025-01-10 15:45', 'Comentário', 'Responderam-me com ameaças'),
+ (102, 1, '2025-01-11 10:10', 'Resposta', 'Continuam a atacar-me');
+
+INSERT INTO PLATAFORMA (idInteracao, plataforma)
+VALUES
+ (100, 'Discord'),
+ (100, 'Steam'),
+ (101, 'Steam'),
+ (102, 'Instagram');
+
+INSERT INTO ANALISA (idUtilizador, idInteracao, data, justificacao, abusiva, esclarecimento)
+VALUES
+ (2, 100, '2025-01-10 16:00', 'Insultos repetidos', TRUE, 'Conteúdo ofensivo'),
+ (3, 101, '2025-01-10 17:10', 'Ameaças diretas', TRUE, 'Gravidade elevada'),
+ (2, 102, '2025-01-11 11:00', 'Continuacão do ataque', TRUE, 'Abuso contínuo');
+
+INSERT INTO CASO_DE_CYBERBULLYING 
+(id, idInteracao, dataDeAbertura, estado, descricao, areaDeAtuacao)
+VALUES
+ (200, 100, '2025-01-10', 'iniciado', 'Caso inicial reportado', 'Comportamento Infantil'),
+ (201, 101, '2025-01-10', 'iniciado', 'Ameaças confirmadas', 'Comportamento Adolescente'),
+ (202, 102, '2025-01-11', 'iniciado', 'Ataques continuados', 'Comportamento Infantil');
+
+INSERT INTO AVALIA 
+(idUtilizador, idCasoDeCyberbullying, dataDeAvaliacao, grauDeGravidade, anotacao)
+VALUES
+ (4, 200, '2025-01-12 09:00', 3, 'Requer acompanhamento'),
+ (5, 201, '2025-01-12 10:30', 4, 'Caso grave, monitorizar'),
+ (4, 202, '2025-01-12 11:00', 2, 'Ataque moderado mas persistente');

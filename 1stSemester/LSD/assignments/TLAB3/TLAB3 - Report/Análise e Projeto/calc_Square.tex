@@ -1,0 +1,14 @@
+\begin{infoclean}
+    \centering
+    Seja $x$ um número binário de 4 bits, $x_i$ um índice $i$ de $x$ e $A,B,C,D$ resultados temporários, o cálculo de $x^2$ é dado por:
+\end{infoclean}
+\vspace{-.5cm}
+\begin{gather}
+    x^2 = \begin{cases}
+        \text{com $i=3 \rightarrow$ Se $x_i = 1 \Rightarrow A= LSL_{x}^i$ caso contrário $A=0$} \\
+        \text{com $i=2 \rightarrow$ Se $x_i = 1 \Rightarrow B=LSL_{x}^i$ caso contrário $B=0$}  \\
+        \text{com $i=1 \rightarrow$ Se $x_i = 1 \Rightarrow C=LSL_{x}^i$ caso contrário $C=0$}  \\
+        \text{com $i=0 \rightarrow$ Se $x_i = 1 \Rightarrow D=LSL_{x}^i$ caso contrário $D=0$}
+    \end{cases} \\
+    x^2 = A + B + C + D
+\end{gather}

@@ -1,0 +1,11 @@
+GET http://localhost:3000/students?limit=3
+###
+POST http://localhost:3000/students
+Content-Type: application/json
+
+{
+  "name": "Titaço",
+  "number": 15391
+}
+###
+GET http://localhost:3000/students/2

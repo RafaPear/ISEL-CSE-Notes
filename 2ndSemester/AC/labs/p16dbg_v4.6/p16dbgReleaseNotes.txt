@@ -1,0 +1,44 @@
+p16dbg v4.6, 31/1/2024, João Pedro Patriarca (jpatri@cc.isel.ipl.pt)
+. Implementação dos comandos vFlashErase, vFlashWrite e vFlashDone. A programação de uma ROM passa a ser possível apenas pela utilização destes comandos
+. Implementação do comando qXfer:memory-map:read para obter uma imagem do mapa de memória constituído apenas por ROM's
+. Adequação da implementação do comando para alterar memória de forma a especificar sempre um endereço base par
+. Correção de erro de interpretação como dados do programa de inteiros estando definidos dentro de um comentário
+. Correção de erro de geração de exceção entre carregamento de programas com dimensões diferentes e por o valor do registo PC ser superior à região ocupada em memória pelo segundo programa
+
+P16Debugger v4.5, 26/2/2023, João Pedro Patriarca (jpatri@cc.isel.ipl.pt)
+. Implementação do comando 'r' que provoca reset ao CPU (colocação do registo PC a 0 e das flags I e M do registo CPSR a 0). A aplicação mantém a utilização dos comandos de alteração de registos para realizar reset ao CPU.
+. A informação da janela de Debug é limpa sempre que se termina uma ligação com o Target.
+. Mitigação do problema da aplicação P16Debugger arrancar no estado minimized.
+. Suporte de secções com dimensão 0 (o suporte para estas alterações no ficheiro lst não envolveram qualquer alteração no código desta aplicação).
+. Alteração do nome do executável de P16Debugger para P16Dbg à imagem da alteração do nome do simulador para P16Sim.
+
+P16Debugger v4.4, 31/3/2022, João Pedro Patriarca (jpatri@cc.isel.ipl.pt)
+. Correção da limitação da definição de símbolos até 16 bits. Passa a suportar a definição de símbolos até 64 bits.
+
+P16Debugger v4.3, 3/6/2021, João Pedro Patriarca (jpatri@cc.isel.ipl.pt)
+. No reset ao CPU o CPSR apenas coloca a 0 os bits I e M mantendo o valor das flags produzidas pela ALU
+. Tradução para inglês do texto da janela de contexto da vista Source Code
+
+P16Debugger v4.2, 19/6/2020, João Pedro Patriarca (jpatri@cc.isel.ipl.pt)
+. Correcção do comando RunToAddress
+. Tratamento do botão Cancel da janela de diálogo que substitui o breakpoint mais antigo definido na janela com o código fonte.
+
+P16Debugger v4.1, 30/5/2020, João Pedro Patriarca (jpatri@cc.isel.ipl.pt)
+. Introdução do controlo "Activação/Desactivação" de um pedido de interrupção externa a partir do Debugger. Esta funcionalidade apenas se encontra activa numa ligação com o simulador do P16.
+. Extensão ao protocolo de comunicação para suportar o comando de activação/desactivação e consulta do estado da entrada do P16 da interrupção externa (consultar documento RemoteSerialProtocol.docx, secção "Interrupt Request").
+. Adição do controlo com o registo ILinkRegister na vista de Registos.
+. Correcções de bugs: refrescamento da vista Conteúdo de Memória com a alteração de uma posição de memória.
+
+P16Debugger v4.0, 17/5/2020, João Pedro Patriarca (jpatri@cc.isel.ipl.pt)
+. Extensão ao protocolo de comunicação para suportar ausência de memória ou sobreposição de memória, na consulta por conteúdo de memória (consultar documento "RemoteSerialProtocol.docx", secção "Read memory").
+. Intervenção no módulo Memory para representar ausência de memória e sobreposição de memória.
+. Extensão ao protocolo de comunicação para suportar acesso inválido a memória durante a execução do programa (consultar documento "RemoteSerialProtocol.docx", secção "Hit Error condition").
+. Intervenção no módulo de interpretação dos dados com origrem do simulador. Adição do signal SIGBUS para indicar erro no acesso a memória.
+. Refinamento em algum código existente. 
+. Conversão de todo o texto (mensagens, menus, títulos de vistas, ...) para a língua inglesa.
+. Intervenção na vista das flags: nomes e valores das flags.
+. Intervenção nos breakpoints com introdução, novamente, da noção de enable/disable. 
+.. Adequação da vista Breakpoints;
+.. Adequação na janela de popup na configuração de um breakpoint na vista Source code;
+.. No carregamento de um novo programa, os breakpoints ficam disable.
+. Intervenção na vista Tabela de símbolos: separação em duas colunas dos valores na base decimal e na base hexadecimal.

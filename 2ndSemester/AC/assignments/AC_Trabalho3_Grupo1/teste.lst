@@ -1,0 +1,71 @@
+P16 assembler v1.5 (Feb  9 2024)	d:\1-ISEL\Semestre_2\AC\Trabalhos\AC_Trabalho3_Grupo1\teste.lst	Wed May 07 23:59:18 2025
+
+Sections
+Index   Name            Address   Size
+0       .text           0000      0026 38
+
+Symbols
+Name                    Type      Value       Section
+inport_addr             LABEL     0020 32     .text
+INPORT_ADDR             ABSOLUTE  8000 32768  .text
+loop                    LABEL     0004 4      .text
+lsl_loop                LABEL     0010 16     .text
+lsl_stop                LABEL     0018 24     .text
+main                    LABEL     0002 2      .text
+outport_addr            LABEL     0022 34     .text
+OUTPORT_ADDR            ABSOLUTE  8001 32769  .text
+stack_top               LABEL     0026 38     .text
+stack_top_addr          LABEL     0024 36     .text
+
+Code listing
+   1          	.equ INPORT_ADDR, 0x8000   ; Endereço do porto de entrada
+   2          	.equ OUTPORT_ADDR, 0x8001  ; Endereço do porto de saída
+   3           	
+   4           	.text
+   5 0000 00 58	    b main        ; Início do programa
+   6           	
+   7           	main:
+   8           	    ; Inicializa o stack pointer
+   9 0002 0D 0D	    ldr sp, stack_top_addr
+  10           	
+  11           	loop:
+  12           	    ; Lê o valor atual do INPORT
+  13 0004 D0 0C	    ldr r0, inport_addr
+  14 0006 01 08	    ldrb r1, [r0]      ; Lê o byte do INPORT
+  15           	    
+  16           	    ; Extrai os bits 0-2 (valor entre 0 e 7)
+  17 0008 70 60	    mov r0, #0x07
+  18 000A 11 C0	    and r1, r1, r0
+  19           	    
+  20           	    ; Cria a máscara com todos os bits a '1'
+  21 000C F2 6F	    mov r2, #0xFF
+  22           	    
+  23           	    ; Cria a máscara com um bit a '0' na posição indicada
+  24 000E 13 60	    mov r3, #1
+  25           	lsl_loop:
+  26 0010 91 A8	    sub r1, r1, #1
+  27 0012 02 54	    blt lsl_stop
+  28 0014 B3 E0	    lsl r3, r3, #1         ; Desloca o bit para a posição correta
+  29 0016 FC 5B	    b lsl_loop
+  30           	lsl_stop:
+  31 0018 A2 D1	    eor r2, r2, r3         ; Inverte o bit na posição (1->0)
+  32           	    
+  33           	    ; Escreve o resultado no OUTPORT
+  34 001A 30 0C	    ldr r0, outport_addr
+  35 001C 02 28	    strb r2, [r0]
+  36           	    
+  37           	    ; Repete o processo indefinidamente
+  38 001E F2 5B	    b loop
+  39           	
+  40           	; Endereços dos dispositivos
+  41           	inport_addr:
+  42 0020 00 80	    .word INPORT_ADDR
+  43           	
+  44           	outport_addr:
+  45 0022 01 80	    .word OUTPORT_ADDR
+  46           	
+  47           	stack_top_addr:
+  48 0024 26 00	    .word stack_top
+  49           	
+  50           	stack_top:                 ; Topo da pilha
+  50           	

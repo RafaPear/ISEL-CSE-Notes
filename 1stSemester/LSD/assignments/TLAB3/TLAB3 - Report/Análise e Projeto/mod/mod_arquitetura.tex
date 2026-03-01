@@ -1,0 +1,70 @@
+\begin{tikzpicture}[node distance=4cm]
+
+
+    \begin{scope}[scale=0.8, transform shape]
+        % Controller
+        \node[module, minimum width = 2cm, minimum height = 7.5cm] (controller) {Controller};
+        \node[io, label={[yshift=.5cm]left:Step}, yshift = .83*4cm] (step_i) at (controller.west) {};
+        \node[io, label={[yshift=.5cm]left:Start}, yshift = .83*3cm] (start_i) at (controller.west) {};
+        \node[io, label={[yshift=.5cm]right:Square}, yshift = .83cm*4, label={[scale=.8]left:(8 bits)}] (sqr) at (controller.east) {};
+        \node[io, label={[yshift=.5cm]right:Sum}, yshift = .83cm*3, label={[scale=.8]left:(8 bits)}] (sum) at (controller.east) {};
+        \node[io, label={[yshift=.5cm]right:C in}, yshift = .83cm*2] (cin) at (controller.east) {};
+        \node[io, label={[yshift=.5cm]right:Step}] (step_o) at (controller.east) {};
+        \node[io, label={[yshift=.5cm]right:Reset}, yshift = .83cm*-1] (reset_o) at (controller.east) {};
+        \node[io, label={[yshift=.5cm]right:Cy}, yshift = .83cm*-3] (cy) at (controller.east) {};
+        \node[io, label={[yshift=.5cm]right:Out}, yshift = .83cm*-4,label={[scale=.8]left:($3 \times 8$ bits)}] (out) at (controller.east) {};
+
+        % Data Path
+        \node[module, minimum width = 4cm, minimum height = 2.5cm, right of = controller, xshift=2cm] (datapath) {DataPath};
+        \node[io, label={[yshift=.5cm]left:Xi}, label={[scale=.8]right:(4 bits)}, yshift=.8cm] (xi) at (datapath.west) {};
+        \node[io, label={[yshift=.5cm]left:Step}] (step) at (datapath.west) {};
+        \node[io, label={[yshift=.5cm]left:Reset}, yshift=-.8cm] (reset) at (datapath.west) {};
+        \node[io, label={[yshift=.5cm]right:Carry Out}, yshift=.8cm] (cout) at (datapath.east) {};
+        \node[io, label={[yshift=.5cm]right:Sum Out}, label={[scale=.8]left:(8 bits)}] (sumout) at (datapath.east) {};
+        \node[io, label={[yshift=.5cm]right:Square Out}, yshift=-.8cm, label={[scale=.8]left:(8 bits)}] (x2) at (datapath.east) {};
+
+        % 7 Segment Displays
+        \node[seven segment val=1 dot none box on,fill=gray!30!white,below of = controller,scale=2,shift={(2cm,-.5cm)}](hex1){};
+        \node[io] (hex1_o) at (hex1.north) {};
+
+        \node[seven segment val=2 dot none box on,fill=gray!30!white,scale=2,shift={(.5cm,0)}](hex2) at (hex1.east){};
+        \node[io] (hex2_o) at (hex2.north) {};
+
+        \node[seven segment val=3 dot none box on,fill=gray!30!white,scale=2,shift={(.5cm,0)}](hex3) at (hex2.east){};
+        \node[io] (hex3_o) at (hex3.north) {};
+
+        % Cy
+        \node[io,color=black,fill=red,inner sep=2mm,label=above:Cy,right of = cy] (cy_o) {};
+        \node[io] (cy_o_o) at (cy_o.west) {};
+
+        % Inputs
+        \node[input, above of = controller,yshift=1cm,, label={[scale=.8]above:(4 bits)}] (x) {$x$};
+        \node[io] (x_o) at (x.east) {};
+
+        \node[input, left of = step_i,xshift=2cm] (step_ia) {Step};
+        \node[io] (step_ia_o) at (step_ia.east) {};
+
+        \node[input, left of = start_i,xshift=2cm] (start_ia) {Start};
+        \node[io] (start_ia_o) at (start_ia.east) {};
+
+        % ------------------ Begin Draw ------------------
+
+        % Controller
+        \draw (step_ia_o) -- (step_i);
+        \draw (start_ia_o) -- (start_i);
+        \draw (step_o) -- (step);
+        \draw (reset_o) -- (reset);
+        \draw (cy) -- (cy_o_o);
+        \draw (out) -| (hex1_o);
+        \draw (out) -| (hex2_o);
+        \draw (out) -| (hex3_o);
+
+        % Data Path
+        \draw (xi) --++(-1cm,0) |- (x);
+        \draw (cout) --++(2cm,0) |- (cin);
+        \draw (sumout) --++(2.5cm,0) |- (sum);
+        \draw (x2) --++(3cm,0) |- (sqr);
+
+        % ------------------ End Draw ------------------
+        \end{scope}
+\end{tikzpicture}

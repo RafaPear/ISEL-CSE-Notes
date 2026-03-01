@@ -1,0 +1,30 @@
+\pagestyle{geral}
+\Sec{Introdução}
+\justifying
+
+\Subsec{Descrição do Trabalho}
+
+Este trabalho de laboratório consiste no desenvolvimento de uma Unidade Aritmética e Lógica (ALU) em VHDL, testada na placa \textit{DE10-Lite} da \textit{Intel}. A motivação deste projeto é compreender e aplicar conceitos fundamentais de arquitetura de sistemas digitais, manipulação de lógica binária e design modular, reforçando habilidades em programação de hardware e análise de resultados.
+\vspace{5mm}
+
+A ALU foi projetada para executar operações aritméticas e lógicas com operandos de 4 \textit{bits} e gerar \textit{flags} que indicam condições específicas dos resultados. As operações incluem adição, subtração, incremento, decremento, deslocamentos (\textit{shift}) e uma operação NAND, todas controladas por uma entrada de 3 \textit{bits}. Todas as operações foram realizadas em complemento de dois, garantindo o suporte para números negativos dentro do circuito.
+\vspace{5mm}
+
+Para facilitar o desenvolvimento, a ALU foi dividida em módulos específicos, os quais foram posteriormente integrados em um módulo principal. Como ferramenta de desenvolvimento e simulação, foi utilizado o software \textit{Quartus}, que possibilitou a verificação do comportamento do circuito ao nível da simulação antes da implementação física na \textit{DE10-Lite}. A funcionalidade do circuito foi testada com entradas específicas e comparada a valores teóricos fornecidos pelo enunciado.
+\vspace{5mm}
+
+Desafios enfrentados incluíram a integração dos módulos e a implementação dos sinais de \textit{flags} com precisão. Foram aplicadas técnicas de depuração e simulação de \textit{waveforms} para resolver esses problemas, garantindo que o circuito responderia corretamente às diversas combinações de entrada.
+\newpage
+
+\Subsec{Objetivos}
+
+O objetivo deste trabalho é consolidar conhecimentos de Lógica de Sistemas Digitais e aplicar design modular para integrar funções numa \textit{ALU}. Através da simulação e implementação prática, pretende-se:
+
+\begin{enumerate}[$\bullet$]
+    \item Desenvolver competências em \textit{VHDL} estrutural, incluindo a criação de módulos que simulam operações aritméticas, lógicas e de geração de \textit{flags};
+    \item Integrar o design modular num sistema completo, construído a partir de unidades básicas que executam operações específicas;
+    \item Testar e validar a \textit{ALU} usando a placa \textit{DE10-Lite}, comprovando o funcionamento do circuito através de entradas configuradas e da análise dos resultados;
+    \item Analisar a precisão do circuito através da comparação entre resultados teóricos e experimentais, garantindo que a implementação prática corresponde com o previsto;
+    \item Aplicar, devida e corretamente, a usabilidade do programa \textit{Quartus}.
+\end{enumerate}
+\newpage

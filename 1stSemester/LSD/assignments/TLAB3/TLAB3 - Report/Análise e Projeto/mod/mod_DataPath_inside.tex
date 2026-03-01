@@ -1,0 +1,70 @@
+\begin{tikzpicture}[thick,node distance=3cm]
+    
+
+    \begin{scope}[scale=0.9, transform shape]
+    % Sum
+    \node[module] (sum) {Acumulador};
+    \node[io, label={[yshift=-.3cm]left:Xi},yshift=0.8cm] (xi_sum) at (sum.west) {};
+    \node[io, label={[yshift=-.3cm]left:Step}] (step_sum) at (sum.west) {};
+    \node[io, label={[yshift=-.3cm]left:Reset},yshift=-0.8cm] (reset_sum) at (sum.west) {};
+    \node[io, label={[yshift=-.3cm]right:Carry Out},yshift=.42cm] (cout_sum) at (sum.east) {};
+    \node[io, label={[yshift=-.3cm]right:Out},yshift=-.42cm] (sumout_sum) at (sum.east) {};
+
+    % Square
+    \node[module,shift={(-1.25cm,2.5cm)}] (square) at (sum.north west) {Square};
+    \node[io, label=below:Input] (x_square) at (square.north) {};
+    \node[io, label=above:Output] (x2_square) at (square.south) {};
+
+    % FFD
+    \node[minimodule,minimum width = 1.5cm,shift={(-.75cm,.5cm)}] (ffd) at (square.north west) {Registo};
+    \node[io, label={[yshift=.3cm]left:D}] (d_ffd) at (ffd.west) {};
+    \node[io, label={[yshift=.3cm]right:Q}] (q_ffd) at (ffd.east) {};
+    \node[io, label={[xshift=-.2cm,yshift=.1cm]below:E},xshift=-.25cm] (en_ffd) at (ffd.south) {};
+    \node[io, label={[xshift=-.2cm,yshift=.1cm]below:R},xshift=.25cm] (rst_ffd) at (ffd.south) {};
+
+    % Inputs
+    \node[input,left of = ffd, label={[scale=.8]above:(4 bits)}] (xi) {Xi};
+    \node[io] (xi_o) at (xi.east) {};
+
+    \node[input,left of = step_sum,xshift=-2cm] (step) {Step};
+    \node[io] (step_o) at (step.east) {};
+
+    \node[input,left of = reset_sum,xshift=-2cm] (reset) {Reset};
+    \node[io] (reset_o) at (reset.east) {};
+
+    % Outputs
+    \node[output,right of = cout_sum] (cout) {C Out};
+    \node[io] (cout_o) at (cout.west) {};
+
+    \node[output,right of = sumout_sum,label={[scale=.8]below:(8 bits)}] (sumout) {Sum};
+    \node[io] (sumout_o) at (sumout.west) {};
+    
+    \node[output,yshift = .42cm*2,label={[scale=.8]above:(8 bits)}] (sqrOut) at (cout.north) {$x^2$};
+    \node[io] (sqrOut_o) at (sqrOut.west) {};
+
+    % Not's
+    \node[not gate US, draw, below of = en_ffd,yshift=2cm, rotate=-90] (not) {};
+
+    % ------------- Begin Connections -------------
+
+    % x2
+    \draw (x2_square) |- node[io, label={[scale=.8]left:(8 bits)}] {} (sqrOut_o);
+
+    % FFD
+    \draw (xi) -- (d_ffd);
+    \draw (q_ffd) -| node[label={[scale=.8]above:(4 bits)}] {} (x_square);
+    \draw (en_ffd) -- (not.input);
+    \draw (not.output) |- node[io] {} (step_o);
+    \draw (rst_ffd) |- node[io] {} (reset_o);
+
+    % Sum
+    \draw (x2_square) |- (xi_sum);
+    \draw (step_o) -- (step_sum);
+    \draw (reset_o) -- (reset_sum);
+    \draw (cout_sum) -- (cout_o);
+    \draw (sumout_sum) -- (sumout_o);
+
+    % ------------- End Connections -------------
+    \end{scope}
+    
+\end{tikzpicture}

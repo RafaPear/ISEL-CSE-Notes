@@ -1,0 +1,48 @@
+#============================================================
+# Altera DE10-Lite board settings
+#============================================================
+
+
+set_global_assignment -name FAMILY "MAX 10 FPGA"
+set_global_assignment -name DEVICE 10M50DAF484C6GES
+set_global_assignment -name TOP_LEVEL_ENTITY "DE10_Lite"
+set_global_assignment -name DEVICE_FILTER_PACKAGE FBGA
+set_global_assignment -name SDC_FILE DE10_Lite.sdc
+set_global_assignment -name INTERNAL_FLASH_UPDATE_MODE "SINGLE IMAGE WITH ERAM"
+
+#============================================================
+# CLOCK
+#============================================================
+set_location_assignment PIN_P11 -to CLK
+
+#============================================================
+# SW
+#============================================================
+set_location_assignment PIN_C12 -to clear
+set_location_assignment PIN_A12 -to CE
+set_location_assignment PIN_B12 -to PL
+set_location_assignment PIN_A13 -to dataIn[0]
+set_location_assignment PIN_A14 -to dataIn[1]
+set_location_assignment PIN_B14 -to dataIn[2]
+set_location_assignment PIN_F15 -to dataIn[3]
+
+#============================================================
+# LED
+#============================================================
+set_location_assignment PIN_C13 -to TC
+set_location_assignment PIN_E14 -to CountValue[0]
+set_location_assignment PIN_D14 -to CountValue[1]
+set_location_assignment PIN_A11 -to CountValue[2]
+set_location_assignment PIN_B11 -to CountValue[3]
+
+#============================================================
+# HEX0
+#============================================================
+set_location_assignment PIN_C14 -to SEG7[0]
+set_location_assignment PIN_E15 -to SEG7[1]
+set_location_assignment PIN_C15 -to SEG7[2]
+set_location_assignment PIN_C16 -to SEG7[3]
+set_location_assignment PIN_E16 -to SEG7[4]
+set_location_assignment PIN_D17 -to SEG7[5]
+set_location_assignment PIN_C17 -to SEG7[6]
+set_location_assignment PIN_D15 -to SEG7[7]

@@ -1,0 +1,88 @@
+\begin{tikzpicture}[thick,node distance=3cm]
+
+
+    \begin{scope}[scale=0.9, transform shape]
+
+        % Inputs
+        \node[input,minimum width = 2cm,label={[scale=.8]above:(4 bits)}] (xi) {$x_i$};
+        \node[io] (xi_o) at (xi.south) {};
+
+        % MUX2
+        \node[mux,left of = xi, yshift=-3cm] (mux2) {MUX};
+        \node[io, label={[]right:S}] (s_mux2) at (mux2.east) {};
+        \node[io, label={[]above:A},xshift=-.4cm] (a_mux2) at (mux2.north) {};
+        \node[io, label={[xshift=0.2cm]above:B},xshift=.4cm] (b_mux2) at (mux2.north) {};
+        \node[io, label={[xshift=.3cm]below:R}] (r_mux2) at (mux2.south) {};
+
+        % MUX1
+        \node[mux,left of = mux2] (mux1) {MUX};
+        \node[io, label={[]right:S}] (s_mux1) at (mux1.east) {};
+        \node[io, label={[]above:A},xshift=-.4cm] (a_mux1) at (mux1.north) {};
+        \node[io, label={[xshift=0.2cm]above:B},xshift=.4cm] (b_mux1) at (mux1.north) {};
+        \node[io, label={[xshift=.3cm]below:R}] (r_mux1) at (mux1.south) {};
+
+        % MUX3
+        \node[mux,right of = xi, yshift=-3cm] (mux3) {MUX};
+        \node[io, label={[]right:S}] (s_mux3) at (mux3.east) {};
+        \node[io, label={[]above:A},xshift=-.4cm] (a_mux3) at (mux3.north) {};
+        \node[io, label={[xshift=0.2cm]above:B},xshift=.4cm] (b_mux3) at (mux3.north) {};
+        \node[io, label={[xshift=.3cm]below:R}] (r_mux3) at (mux3.south) {};
+
+        % MUX4
+        \node[mux,right of = mux3] (mux4) {MUX};
+        \node[io, label={[]right:S}] (s_mux4) at (mux4.east) {};
+        \node[io, label={[]above:A},xshift=-.4cm] (a_mux4) at (mux4.north) {};
+        \node[io, label={[xshift=0.2cm]above:B},xshift=.4cm] (b_mux4) at (mux4.north) {};
+        \node[io, label={[xshift=.3cm]below:R}] (r_mux4) at (mux4.south) {};
+
+        % Adder1
+        \node[module, below of = mux1, xshift= 1.5cm] (adder1) {Adder}; %-.83cm, 5cm
+        \node[io, label=below:A,xshift=-.625cm] (a_adder1) at (adder1.north) {};
+        \node[io, label=below:C in] (cin_adder1) at (adder1.north) {};
+        \node[io, label=below:B,xshift=.625cm] (b_adder1) at (adder1.north) {};
+        \node[io, label=above:R,xshift=-.42cm] (r_adder1) at (adder1.south) {};
+        \node[io, label=above:C out,xshift=.42cm] (cout_adder1) at (adder1.south) {};
+
+        % Adder2
+        \node[module, below of = mux3, xshift= 1.5cm] (adder2) {Adder}; %-.83cm, 5cm
+        \node[io, label=below:A,xshift=-.625cm] (a_adder2) at (adder2.north) {};
+        \node[io, label=below:C in] (cin_adder2) at (adder2.north) {};
+        \node[io, label=below:B,xshift=.625cm] (b_adder2) at (adder2.north) {};
+        \node[io, label=above:R,xshift=-.42cm] (r_adder2) at (adder2.south) {};
+        \node[io, label=above:C out,xshift=.42cm] (cout_adder2) at (adder2.south) {};
+
+        % Adder3
+        \node[module, below of = xi, yshift= -7cm] (adder3) {Adder}; %-.83cm, 5cm
+        \node[io, label=below:A,xshift=-.625cm] (a_adder3) at (adder3.north) {};
+        \node[io, label=below:C in] (cin_adder3) at (adder3.north) {};
+        \node[io, label=below:B,xshift=.625cm] (b_adder3) at (adder3.north) {};
+        \node[io, label=above:R,xshift=-.42cm] (r_adder3) at (adder3.south) {};
+        \node[io, label=above:C out,xshift=.42cm] (cout_adder3) at (adder3.south) {};
+
+        % Outputs
+        \node[output,minimum width = 2cm, below of = adder3,label={[scale=.8]below:(8 bits)}] (x2) {$x^2$};
+        \node[io] (x2_o) at (x2.north) {};
+
+
+        % Connections
+        \draw (b_mux1.north) -- ++(0,.7cm) -| (xi_o.south);
+        \draw (b_mux2.north) -- ++(0,.7cm) node [io] {} -| (xi_o.south);
+        \draw (b_mux3.north) -- ++(0,.7cm) node [io] {} -| node [io] {} (xi_o.south);
+        \draw (b_mux4.north) -- ++(0,.7cm) -| (xi_o.south);
+
+        \draw (s_mux1) -- node [midway,right,yshift=-.2cm] {$x_0$} ++(0,1.5cm) -| (xi_o.south);
+        \draw (s_mux2) -- node [midway,right,yshift=-.2cm] {$x_1$} ++(0,1.5cm) node [io] {} -| node [io] {} (xi_o.south);
+        \draw (s_mux3) -- node [midway,right,yshift=-.2cm] {$x_2$} ++(0,1.5cm) node [io] {} -| (xi_o.south);
+        \draw (s_mux4) -- node [midway,right,yshift=-.2cm] {$x_3$} ++(0,1.5cm) -| (xi_o.south);
+
+        \draw (r_mux1.south) -- ++(0,-.7cm) node [midway,anchor=north,yshift=-.3cm,label={[scale=.8]left:(8 bits)}] {$LSL_{x}^0$} -| (a_adder1.north);
+        \draw (r_mux2.south) -- ++(0,-.7cm) node [midway,anchor=north,yshift=-.3cm,label={[scale=.8]right:(8 bits)}] {$LSL_{x}^1$} -| (b_adder1.north);
+        \draw (r_mux3.south) -- ++(0,-.7cm) node [midway,anchor=north,yshift=-.3cm,label={[scale=.8]left:(8 bits)}] {$LSL_{x}^2$} -| (a_adder2.north);
+        \draw (r_mux4.south) -- ++(0,-.7cm) node [midway,anchor=north,yshift=-.3cm,label={[scale=.8]right:(8 bits)}] {$LSL_{x}^3$} -| (b_adder2.north);
+
+        \draw (r_adder1.south) -- ++(0,-.7cm) -| node[midway,label={[scale=.8]above:(8 bits)}] {} (a_adder3.north);
+        \draw (r_adder2.south) -- ++(0,-.7cm) -| node[midway,label={[scale=.8]above:(8 bits)}] {} (b_adder3.north);
+
+        \draw (r_adder3.south) -- ++(0,-.7cm) -| (x2_o.north);
+        \end{scope}
+\end{tikzpicture}

@@ -1,0 +1,131 @@
+theme = "catppuccin_macchiato_transparent"
+
+[editor]
+line-number = "relative"
+# popup-border = "all"
+mouse = true
+scrolloff = 2
+scroll-lines = 2
+cursorline = true
+auto-completion = true
+auto-format = true
+completion-timeout = 5
+auto-info = true
+true-color = true
+undercurl = false
+indent-heuristic = "simple"
+insert-final-newline = true
+color-modes = true
+
+[editor.cursor-shape]
+insert = "bar"
+normal = "block"
+select = "underline"
+
+[editor.gutters]
+layout = [ "line-numbers", "spacer" ]
+
+[editor.file-picker]
+hidden = false
+
+[keys.select]
+# if already in select mode, just add new selection at next occurrence
+"C-d" = ["search_selection", "extend_search_next"]
+tab = "extend_parent_node_end"
+S-tab = "extend_parent_node_start"
+
+[keys.normal]
+# make sure there is only one selection, select word under cursor, set search to selection, then switch to select mode
+# "A-d" = ["keep_primary_selection", "move_prev_word_start", "move_next_word_end", "search_selection", "select_mode"]
+
+"C-/" = ["buffer_picker"]
+"C-." = ["goto_next_buffer"]
+"C-," = ["goto_previous_buffer"]
+
+"A-j" = [
+  "extend_to_line_bounds",
+  "delete_selection",
+  "paste_after",
+  "select_mode",
+  "goto_line_start",
+  "normal_mode",
+] # Move line(s) down
+"A-k" = [
+  "extend_to_line_bounds",
+  "delete_selection",
+  "move_line_up",
+  "paste_before",
+  "flip_selections",
+] # Move line(s) up
+"A-down" = [
+  "extend_to_line_bounds",
+  "delete_selection",
+  "paste_after",
+  "select_mode",
+  "goto_line_start",
+  "normal_mode",
+] # Move line(s) down
+"A-up" = [
+  "extend_to_line_bounds",
+  "delete_selection",
+  "move_line_up",
+  "paste_before",
+  "flip_selections",
+] # Move line(s) up
+"ret" = ":w"
+# A-d = "delete_selection"
+d = "delete_selection_noyank"
+# A-c = "change_selection"
+c = "change_selection_noyank"
+
+p = "paste_before"
+P = "paste_after"
+
+H = "goto_line_start"
+L = "goto_line_end"
+
+tab = "move_parent_node_end"
+S-tab = "move_parent_node_start"
+
+[keys.normal."-"]
+c = ":buffer-close-others"
+b = "buffer_picker"
+"." = "goto_next_buffer"
+"," = "goto_previous_buffer"
+
+[keys.normal.space]
+p = "paste_clipboard_before"
+P = "paste_clipboard_after"
+B = ":echo %sh{git blame -L %{cursor_line},+1 %{buffer_name}}"
+
+[keys.normal."\\"]
+c = ":sh make"
+r = ":sh make run"
+d = ":sh make clean"
+
+[keys.insert]
+S-tab = "move_parent_node_start"
+
+[editor.soft-wrap]
+enable = true
+max-wrap = 25
+
+[editor.indent-guides]
+render = true
+skipeditor-levels = 1
+
+[editor.statusline]
+left = ["mode", "spinner", "register", "file-modification-indicator"]
+center = ["file-base-name", "total-line-numbers"]
+right = ["diagnostics", "workspace-diagnostics", "selections", "position", "file-encoding", "file-line-ending", "file-type"]
+separator = "│"
+mode.normal = "NORMAL"
+mode.insert = "INSERT"
+mode.select = "SELECT"
+diagnostics = ["warning", "error"]
+workspace-diagnostics = ["warning", "error"]
+
+[editor.word-completion]
+enable = true
+# Set the trigger length lower so that words are completed more often
+trigger-length = 2

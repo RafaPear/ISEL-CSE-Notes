@@ -1,0 +1,228 @@
+-- ============================================================
+-- SCRIPT DE POVOAMENTO (DML) - PROJETO PARTE 3
+-- ============================================================
+
+-- Utilizadores Simples (Ut1 a Ut5)
+INSERT INTO UTILIZADOR (idUtilizador, email, alcunha, tipoUtilizador) VALUES 
+(1, 'ut1@isctest.pt', 'Ut1', NULL),
+(2, 'ut2@isctest.pt', 'Ut2', NULL),
+(3, 'ut3@isctest.pt', 'Ut3', NULL),
+(4, 'ut4@isctest.pt', 'Ut4', NULL),
+(5, 'ut5@isctest.pt', 'Ut5', NULL);
+
+-- Moderadores (Mod1 a Mod3)
+INSERT INTO UTILIZADOR (idUtilizador, email, alcunha, tipoUtilizador) VALUES 
+(11, 'mod1@isctest.pt', 'Mod1', 'moderador'),
+(12, 'mod2@isctest.pt', 'Mod2', 'moderador'),
+(13, 'mod3@isctest.pt', 'Mod3', 'moderador');
+
+-- Psicólogos (Psi1 a Psi4)
+INSERT INTO UTILIZADOR (idUtilizador, email, alcunha, tipoUtilizador) VALUES 
+(21, 'psi1@isctest.pt', 'Psi1', 'psicologo'),
+(22, 'psi2@isctest.pt', 'Psi2', 'psicologo'),
+(23, 'psi3@isctest.pt', 'Psi3', 'psicologo'),
+(24, 'psi4@isctest.pt', 'Psi4', 'psicologo');
+
+INSERT INTO MODERADOR (idUtilizador, areaDeModeracao, nivelDeSenioridade) VALUES
+(11, 'Geral', 'Senior'),
+(12, 'Geral', 'Junior'),
+(13, 'Geral', 'Pleno');
+
+-- A1-Assédio; A2-Boatos; A3-Partilha; A4-Usurpação
+INSERT INTO PSICOLOGO (idUtilizador, cedulaProfissional, especializacao) VALUES
+(21, 'CP-001', 'Assédio'),                      -- Psi1 (A1)
+(22, 'CP-002', 'Assédio'),                      -- Psi2 (A1)
+(23, 'CP-003', 'Boatos'),                       -- Psi3 (A2)
+(24, 'CP-004', 'Partilha de informação pessoal'); -- Psi4 (A3)
+
+INSERT INTO RECURSO_EDUCATIVO (idRecurso, formato, titulo, url, especializacao) VALUES
+(1, 'PDF', 'Guia contra Assédio', 'http://recurso1.pt', 'Assédio'),
+(2, 'Video', 'Como identificar Assédio', 'http://recurso2.pt', 'Assédio'),
+(3, 'Artigo', 'Verdade sobre Boatos', 'http://recurso3.pt', 'Boatos'),
+(4, 'Podcast', 'Proteção de Dados', 'http://recurso4.pt', 'Partilha de informação pessoal'),
+(5, 'Quiz', 'Segurança Online', 'http://recurso5.pt', 'Partilha de informação pessoal'),
+(6, 'Infografia', 'Roubo de Identidade', 'http://recurso6.pt', 'Usurpação de identidade');
+
+-- Tabela "Utilizadores que consultaram"
+INSERT INTO CONSULTA (idUtilizador, idRecurso, data) VALUES
+(1, 1, NOW()), (3, 1, NOW()), (21, 1, NOW()), -- Recurso 1: Ut1, Ut3, Psi1
+(2, 2, NOW()), (4, 2, NOW()), (21, 2, NOW()), (22, 2, NOW()), -- Recurso 2: Ut2, Ut4, Psi1, Psi2
+(2, 3, NOW()), (5, 3, NOW()), (21, 3, NOW()), (23, 3, NOW()), -- Recurso 3: Ut2, Ut5, Psi1, Psi3
+(3, 4, NOW()), (5, 4, NOW()), (21, 4, NOW()), (22, 4, NOW()), -- Recurso 4: Ut3, Ut5, Psi1, Psi2
+(2, 5, NOW()), (4, 5, NOW()), (21, 5, NOW()), -- Recurso 5: Ut2, Ut4, Psi1
+(5, 6, NOW()), (21, 6, NOW()); -- Recurso 6: Ut5, Psi1
+
+-- 18 Interações do enunciado
+INSERT INTO INTERACAO (idInteracao, idUtilizador, data, tipo, texto) VALUES
+(1, 1, '2025-12-01 10:00:00', 'Mensagem', 'Texto int 1'),
+(2, 1, '2025-12-01 10:05:00', 'Comentário', 'Texto int 2'),
+(3, 2, '2025-12-01 11:00:00', 'Mensagem', 'Texto int 3'),
+(4, 2, '2025-12-01 11:10:00', 'Comentário', 'Texto int 4'),
+(5, 2, '2025-12-01 11:15:00', 'Resposta', 'Texto int 5'),
+(6, 2, '2025-12-01 12:00:00', 'Mensagem', 'Texto int 6'),
+(7, 2, '2025-12-01 12:30:00', 'Comentário', 'Texto int 7'),
+(8, 2, '2025-12-01 13:00:00', 'Resposta', 'Texto int 8'),
+(9, 3, '2025-12-02 09:00:00', 'Mensagem', 'Texto int 9'),
+(10, 3, '2025-12-02 09:15:00', 'Comentário', 'Texto int 10'),
+(11, 3, '2025-12-02 10:00:00', 'Resposta', 'Texto int 11'),
+(12, 4, '2025-12-02 11:00:00', 'Mensagem', 'Texto int 12'),
+(13, 4, '2025-12-02 11:30:00', 'Comentário', 'Texto int 13'),
+(14, 4, '2025-12-02 12:00:00', 'Resposta', 'Texto int 14'),
+(15, 5, '2025-12-03 14:00:00', 'Mensagem', 'Texto int 15'),
+(16, 5, '2025-12-03 14:15:00', 'Comentário', 'Texto int 16'),
+(17, 5, '2025-12-03 15:00:00', 'Resposta', 'Texto int 17'),
+(18, 5, '2025-12-03 16:00:00', 'Mensagem', 'Texto int 18');
+
+-- 4 plataformas à escolha
+INSERT INTO PLATAFORMA (idInteracao, plataforma) VALUES
+(1, 'Instagram'), (2, 'Facebook'), (3, 'Twitter'), (4, 'Instagram'),
+(5, 'TikTok'), (6, 'Facebook'), (7, 'Twitter'), (8, 'Instagram'),
+(9, 'TikTok'), (10, 'Facebook'), (11, 'Twitter'), (12, 'Instagram'),
+(13, 'Facebook'), (14, 'Twitter'), (15, 'TikTok'), (16, 'Instagram'),
+(17, 'Facebook'), (18, 'Twitter');
+
+-- Baseado nas colunas "Moderador" e "Abusiva" da tabela de interações
+-- Interações sem moderador (ex: 1, 14) não têm registo na tabela ANALISE.
+INSERT INTO ANALISE (idAnalise, idInteracao, idModerador, data, abusiva, justificacao) VALUES
+(2, 2, 11, '2025-12-01 10:10:00', FALSE, 'Verificação de rotina'),
+(3, 3, 12, '2025-12-01 11:05:00', FALSE, 'Verificação de rotina'),
+(4, 4, 12, '2025-12-01 11:20:00', TRUE, 'Conteúdo ofensivo detetado'),
+(5, 5, 13, '2025-12-01 11:25:00', FALSE, 'Verificação de rotina'),
+(6, 6, 11, '2025-12-01 12:10:00', TRUE, 'Violação de regras'),
+(7, 7, 12, '2025-12-01 12:40:00', TRUE, 'Assédio verbal'),
+(8, 8, 11, '2025-12-01 13:10:00', TRUE, 'Partilha indevida'),
+(9, 9, 13, '2025-12-02 09:05:00', FALSE, 'Limpo'),
+(10, 10, 11, '2025-12-02 09:25:00', TRUE, 'Ofensivo'),
+(11, 11, 12, '2025-12-02 10:10:00', TRUE, 'Muito grave'),
+(12, 12, 11, '2025-12-02 11:10:00', TRUE, 'Assédio'),
+(13, 13, 12, '2025-12-02 11:40:00', TRUE, 'Usurpação'),
+(15, 15, 11, '2025-12-03 14:10:00', TRUE, 'Boatos'),
+(16, 16, 12, '2025-12-03 14:25:00', TRUE, 'Assédio'),
+(17, 17, 12, '2025-12-03 15:10:00', TRUE, 'Privacidade'),
+(18, 18, 13, '2025-12-03 16:10:00', FALSE, 'Limpo');
+
+-- IDs convertidos: 4-1 -> 401
+-- Casos associados à interação 4
+INSERT INTO CASO_DE_CYBERBULLYING (idCaso, dataDeAbertura, estado, dataDeFecho, descricao, areaDeAtuacao) VALUES
+(401, '2025-12-01', 'fechado', '2025-12-05', 'Caso 4-1', 'Assédio'),
+(402, '2025-12-01', 'avaliado', NULL, 'Caso 4-2', 'Boatos');
+
+-- Casos associados à interação 6
+INSERT INTO CASO_DE_CYBERBULLYING (idCaso, dataDeAbertura, estado, dataDeFecho, descricao, areaDeAtuacao) VALUES
+(601, '2025-12-01', 'avaliado', NULL, 'Caso 6-1', 'Assédio');
+
+-- Casos associados à interação 7
+INSERT INTO CASO_DE_CYBERBULLYING (idCaso, dataDeAbertura, estado, dataDeFecho, descricao, areaDeAtuacao) VALUES
+(701, '2025-12-01', 'fechado', '2025-12-06', 'Caso 7-1', 'Boatos'),
+(702, '2025-12-01', 'avaliado', NULL, 'Caso 7-2', 'Partilha de informação pessoal');
+
+-- Casos associados à interação 8
+INSERT INTO CASO_DE_CYBERBULLYING (idCaso, dataDeAbertura, estado, dataDeFecho, descricao, areaDeAtuacao) VALUES
+(801, '2025-12-01', 'iniciado', NULL, 'Caso 8-1', 'Partilha de informação pessoal');
+
+-- Casos associados à interação 10
+INSERT INTO CASO_DE_CYBERBULLYING (idCaso, dataDeAbertura, estado, dataDeFecho, descricao, areaDeAtuacao) VALUES
+(1001, '2025-12-02', 'iniciado', NULL, 'Caso 10-1', 'Partilha de informação pessoal');
+
+-- Casos associados à interação 11
+INSERT INTO CASO_DE_CYBERBULLYING (idCaso, dataDeAbertura, estado, dataDeFecho, descricao, areaDeAtuacao) VALUES
+(1101, '2025-12-02', 'fechado', '2025-12-10', 'Caso 11-1', 'Assédio'),
+(1102, '2025-12-02', 'fechado', '2025-12-10', 'Caso 11-2', 'Boatos'),
+(1103, '2025-12-02', 'fechado', '2025-12-10', 'Caso 11-3', 'Partilha de informação pessoal');
+
+-- Casos associados à interação 12
+INSERT INTO CASO_DE_CYBERBULLYING (idCaso, dataDeAbertura, estado, dataDeFecho, descricao, areaDeAtuacao) VALUES
+(1201, '2025-12-02', 'fechado', '2025-12-08', 'Caso 12-1', 'Assédio'),
+(1202, '2025-12-02', 'iniciado', NULL, 'Caso 12-2', 'Partilha de informação pessoal');
+
+-- Casos associados à interação 13
+INSERT INTO CASO_DE_CYBERBULLYING (idCaso, dataDeAbertura, estado, dataDeFecho, descricao, areaDeAtuacao) VALUES
+(1301, '2025-12-02', 'iniciado', NULL, 'Caso 13-1', 'Usurpação de identidade');
+
+-- Casos associados à interação 15
+INSERT INTO CASO_DE_CYBERBULLYING (idCaso, dataDeAbertura, estado, dataDeFecho, descricao, areaDeAtuacao) VALUES
+(1501, '2025-12-03', 'avaliado', NULL, 'Caso 15-1', 'Boatos'),
+(1502, '2025-12-03', 'iniciado', NULL, 'Caso 15-2', 'Usurpação de identidade');
+
+-- Casos associados à interação 16
+INSERT INTO CASO_DE_CYBERBULLYING (idCaso, dataDeAbertura, estado, dataDeFecho, descricao, areaDeAtuacao) VALUES
+(1601, '2025-12-03', 'avaliado', NULL, 'Caso 16-1', 'Assédio'),
+(1602, '2025-12-03', 'avaliado', NULL, 'Caso 16-2', 'Boatos'),
+(1603, '2025-12-03', 'iniciado', NULL, 'Caso 16-3', 'Partilha de informação pessoal'),
+(1604, '2025-12-03', 'iniciado', NULL, 'Caso 16-4', 'Usurpação de identidade');
+
+-- Casos associados à interação 17
+INSERT INTO CASO_DE_CYBERBULLYING (idCaso, dataDeAbertura, estado, dataDeFecho, descricao, areaDeAtuacao) VALUES
+(1701, '2025-12-03', 'fechado', '2025-12-12', 'Caso 17-1', 'Partilha de informação pessoal');
+
+
+INSERT INTO CRIA (idCaso, idModerador, idAnalise) VALUES
+(401, 12, 4), (402, 12, 4),
+(601, 11, 6),
+(701, 12, 7), (702, 12, 7),
+(801, 11, 8),
+(1001, 11, 10),
+(1101, 12, 11), (1102, 12, 11), (1103, 12, 11),
+(1201, 11, 12), (1202, 11, 12),
+(1301, 12, 13),
+(1501, 11, 15), (1502, 11, 15),
+(1601, 12, 16), (1602, 12, 16), (1603, 12, 16), (1604, 12, 16),
+(1701, 12, 17);
+
+INSERT INTO AVALIA (idUtilizador, idCasoDeCyberbullying, dataDeAvaliacao, grauDeGravidade, anotacao) VALUES
+-- Casos da Interação 4
+(22, 401, '2025-12-02 10:00:00', 2, 'Avaliação inicial'),    -- Psi2 (fechado)
+(23, 402, '2025-12-02 10:30:00', 3, 'Avaliação inicial'),    -- Psi3 (avaliado)
+
+-- Casos da Interação 6
+(22, 601, '2025-12-02 12:30:00', 2, 'Avaliação inicial'),    -- Psi2 (avaliado)
+
+-- Casos da Interação 7
+(23, 701, '2025-12-02 13:00:00', 3, 'Avaliação inicial'),    -- Psi3 (fechado)
+(24, 702, '2025-12-02 13:30:00', 3, 'Avaliação inicial'),    -- Psi4 (avaliado)
+
+-- Casos da Interação 8
+(NULL, 801, '2025-12-02 14:00:00', NULL, 'A aguardar atribuição'), -- Sem Psicólogo (iniciado)
+
+-- Casos da Interação 10
+(24, 1001, '2025-12-02 15:00:00', NULL, 'Atribuído, a aguardar'), -- Psi4 (iniciado)
+
+-- Casos da Interação 11
+(21, 1101, '2025-12-03 10:00:00', 5, 'Caso crítico'),        -- Psi1 (fechado)
+(23, 1102, '2025-12-03 10:30:00', 4, 'Grave'),               -- Psi3 (fechado)
+(24, 1103, '2025-12-03 11:00:00', 4, 'Grave'),               -- Psi4 (fechado)
+
+-- Casos da Interação 12
+(21, 1201, '2025-12-03 12:00:00', 4, 'Grave'),               -- Psi1 (fechado)
+(NULL, 1202, '2025-12-03 12:30:00', NULL, 'A aguardar atribuição'), -- Sem Psicólogo (iniciado)
+
+-- Casos da Interação 13
+(NULL, 1301, '2025-12-03 13:00:00', NULL, 'A aguardar atribuição'), -- Sem Psicólogo (iniciado)
+
+-- Casos da Interação 15
+(23, 1501, '2025-12-04 14:30:00', 4, 'Grave'),               -- Psi3 (avaliado)
+(NULL, 1502, '2025-12-04 15:00:00', NULL, 'A aguardar atribuição'), -- Sem Psicólogo (iniciado)
+
+-- Casos da Interação 16
+(22, 1601, '2025-12-04 15:00:00', 3, 'Moderado'),            -- Psi2 (avaliado)
+(23, 1602, '2025-12-04 15:30:00', 4, 'Grave'),               -- Psi3 (avaliado)
+(NULL, 1603, '2025-12-04 16:00:00', NULL, 'A aguardar atribuição'), -- Sem Psicólogo (iniciado)
+(NULL, 1604, '2025-12-04 16:30:00', NULL, 'A aguardar atribuição'), -- Sem Psicólogo (iniciado)
+
+-- Casos da Interação 17
+(24, 1701, '2025-12-04 16:30:00', 4, 'Grave');               -- Psi4 (fechado)
+
+
+INSERT INTO INTERVEM (idPsicologo, idCaso, data, observacao, tipo) VALUES
+(22, 401, '2025-12-03 09:00:00', 'Sessão de apoio', 'Acompanhamento'), -- Psi2
+(22, 601, '2025-12-03 09:30:00', 'Sessão conjunta', 'Acompanhamento'), -- Psi2
+(21, 601, '2025-12-03 09:30:00', 'Sessão conjunta', 'Acompanhamento'), -- Psi1
+(21, 701, '2025-12-03 10:00:00', 'Sessão extra', 'Acompanhamento'),    -- Psi1
+(23, 702, '2025-12-03 10:30:00', 'Sessão extra', 'Acompanhamento'),    -- Psi3
+(21, 1101, '2025-12-04 09:00:00', 'Sessão crise', 'Urgência'),         -- Psi1
+(22, 1101, '2025-12-04 09:00:00', 'Apoio crise', 'Urgência'),          -- Psi2
+(21, 1102, '2025-12-04 10:00:00', 'Follow up', 'Acompanhamento'),      -- Psi1
+(21, 1103, '2025-12-04 11:00:00', 'Follow up', 'Acompanhamento'),      -- Psi1
+(24, 1501, '2025-12-05 14:00:00', 'Sessão', 'Acompanhamento'),         -- Psi4
+(21, 1602, '2025-12-05 15:00:00', 'Sessão', 'Acompanhamento'),         -- Psi1
+(23, 1602, '2025-12-05 16:00:00', 'Sessão', 'Acompanhamento');         -- Psi3

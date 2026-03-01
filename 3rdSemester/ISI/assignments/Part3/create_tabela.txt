@@ -1,0 +1,141 @@
+DROP SCHEMA public CASCADE;
+CREATE SCHEMA public;
+
+-- ===========================
+-- Tabela UTILIZADOR
+-- ===========================
+CREATE TABLE UTILIZADOR (
+    idUtilizador    INTEGER PRIMARY KEY,
+    email           VARCHAR(255),
+    alcunha         VARCHAR(100) UNIQUE,
+    tipoUtilizador  VARCHAR(20),
+    CONSTRAINT chk_tipoUtil CHECK (
+        tipoUtilizador IN ('psicologo','moderador') OR tipoUtilizador IS NULL
+    )
+);
+
+-- ===========================
+-- Tabela PSICOLOGO
+-- ===========================
+CREATE TABLE PSICOLOGO (
+    idUtilizador        INTEGER PRIMARY KEY REFERENCES UTILIZADOR(idUtilizador) ON DELETE CASCADE,
+    cedulaProfissional  VARCHAR(100) NOT NULL,
+    especializacao      VARCHAR(100)
+);
+
+-- ===========================
+-- Tabela MODERADOR
+-- ===========================
+CREATE TABLE MODERADOR (
+    idUtilizador        INTEGER PRIMARY KEY REFERENCES UTILIZADOR(idUtilizador) ON DELETE CASCADE,
+    areaDeModeracao     VARCHAR(100),
+    nivelDeSenioridade  VARCHAR(50)
+);
+
+-- ===========================
+-- RECURSO_EDUCATIVO
+-- ===========================
+CREATE TABLE RECURSO_EDUCATIVO (
+    idRecurso      INTEGER PRIMARY KEY,
+    formato        VARCHAR(50) NOT NULL,
+    titulo         VARCHAR(255) NOT NULL,
+    url            VARCHAR(500),
+    especializacao VARCHAR(100)
+);
+
+-- ===========================
+-- INTERACAO
+-- ===========================
+CREATE TABLE INTERACAO (
+    idInteracao   INTEGER PRIMARY KEY,
+    idUtilizador  INTEGER NOT NULL REFERENCES UTILIZADOR(idUtilizador),
+    data          TIMESTAMP NOT NULL,
+    tipo          VARCHAR(20) NOT NULL,
+    texto         TEXT,
+    CONSTRAINT chk_tipoInteracao CHECK (
+        tipo IN ('Mensagem','Comentário','Resposta')
+    )
+);
+
+-- ===========================
+-- PLATAFORMA (Multi-valorado de INTERACAO)
+-- ===========================
+CREATE TABLE PLATAFORMA (
+    idInteracao   INTEGER NOT NULL REFERENCES INTERACAO(idInteracao) ON DELETE CASCADE,
+    plataforma    VARCHAR(100) NOT NULL,
+    PRIMARY KEY (idInteracao, plataforma)
+);
+
+-- ===========================
+-- CONSULTA
+-- ===========================
+CREATE TABLE CONSULTA (
+    idUtilizador  INTEGER NOT NULL REFERENCES UTILIZADOR(idUtilizador),
+    idRecurso     INTEGER NOT NULL REFERENCES RECURSO_EDUCATIVO(idRecurso),
+    data          TIMESTAMP NOT NULL,
+    PRIMARY KEY (idUtilizador, idRecurso, data)
+);
+
+-- ===========================
+-- ANALISE (Moderador analisa interação)
+-- ===========================
+CREATE TABLE ANALISE (
+    idAnalise     INTEGER PRIMARY KEY,
+    idModerador   INTEGER NOT NULL REFERENCES MODERADOR(idUtilizador),
+    idInteracao   INTEGER NOT NULL REFERENCES INTERACAO(idInteracao),
+    data          TIMESTAMP NOT NULL,
+    justificacao  TEXT,
+    abusiva       BOOLEAN,
+    CONSTRAINT unq_analise_interacao UNIQUE(idInteracao, idModerador)
+);
+
+-- ===========================
+-- CASO_DE_CYBERBULLYING
+-- ===========================
+CREATE TABLE CASO_DE_CYBERBULLYING (
+    idCaso          INTEGER PRIMARY KEY,
+    dataDeAbertura  DATE NOT NULL,
+    estado          VARCHAR(20) NOT NULL,
+    dataDeFecho     DATE,
+    descricao       TEXT,
+    areaDeAtuacao   VARCHAR(100),
+    CONSTRAINT chk_estado CHECK (
+        estado IN ('iniciado','avaliado','fechado','publico','inativo')
+    )
+);
+
+-- ===========================
+-- CRIA
+-- ===========================
+CREATE TABLE CRIA (
+    idCaso      INTEGER PRIMARY KEY REFERENCES CASO_DE_CYBERBULLYING(idCaso),
+    idModerador INTEGER NOT NULL REFERENCES MODERADOR(idUtilizador), -- 1 moderador pode gerar varios casos,
+    idAnalise   INTEGER NOT NULL REFERENCES ANALISE(idAnalise) -- 1 analise pode gerar varios casos,
+
+);
+
+-- ===========================
+-- AVALIA (Psicólogo avalia caso)
+-- ===========================
+CREATE TABLE AVALIA (
+    idUtilizador           INTEGER REFERENCES PSICOLOGO(idUtilizador),
+    idCasoDeCyberbullying  INTEGER NOT NULL REFERENCES CASO_DE_CYBERBULLYING(idCaso),
+    dataDeAvaliacao        TIMESTAMP NOT NULL,
+    grauDeGravidade        INTEGER,
+    anotacao               TEXT,
+    PRIMARY KEY (idCasoDeCyberbullying),
+    FOREIGN KEY (idUtilizador) REFERENCES PSICOLOGO(idUtilizador)
+);
+
+-- ===========================
+-- INTERVEM
+-- ===========================
+CREATE TABLE INTERVEM (
+    idPsicologo     INTEGER NOT NULL REFERENCES PSICOLOGO(idUtilizador),
+    idCaso          INTEGER NOT NULL REFERENCES CASO_DE_CYBERBULLYING(idCaso),
+    data            TIMESTAMP NOT NULL,
+    observacao      TEXT,
+    tipo            VARCHAR(100) NOT NULL,
+	-- mesmo psicologo pode intervir no mesmo caso em datas diferentes
+    PRIMARY KEY (idPsicologo, idCaso, data) 
+);

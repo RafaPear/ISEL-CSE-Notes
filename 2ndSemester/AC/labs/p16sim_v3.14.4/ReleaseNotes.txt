@@ -1,0 +1,89 @@
+p16sim v3.14, 12/3/2024, João Pedro Patriarca (jpatri@cc.isel.ipl.pt)
+. Configuração da frequência de clock do temporizador limitada entre 1 e 100 Hz
+. Remoção da característica do temporizador clkInBrkMode. A partir desta versão, o temporizador conta sempre, independentemente do estado de execução do P16 (Running ou Break)
+. Remoção da configuração P16 associada à característica clkref do temporizador. A partir desta versão, o clock de referência do temporizador é Wall (conta em tempo real) ou Manual (conta com incrementos dados pelo utilizador)
+
+p16sim v3.13, 25/2/2024, João Pedro Patriarca (jpatri@cc.isel.ipl.pt)
+. Instruções que envolvam a operação subtração (SUB, SBC e CMP) afetam a flag Cy de acordo com o carry gerado pela operação em de afetarem com o borrow
+. Adição do comando qXfer:memory-map:read que obtém uma descrição em XML das regiões do mapa de memória cobertas por ROMs de 16 bits de dados
+. Adição do conjunto de comandos vFlashErase, vFlashWrite e vFlashDone que operam sobre dispositivos do tipo flash. No contexto do P16, operam sobre dispositivos do tipo ROM e servem para iniciar ROM's com programas
+. As ROMs passam a ser iniciadas com 1s
+. Adequação dos comandos 'M' e 'm', comandos para alterar e consultar memória, respetivamente, de forma a cumprir os requisitos:
+  - dispositivos apenas de leitura não permitem ser escritos;
+  - dispositivos apenas de escrita não permitem ser lidos.
+. O CPU (simulador) deixa de arrancar em modo de execução após estabelecida um ligação entre debugger e simulador. O efeito pretendido é o CPU deixar de executar instruções não programadas entre o estabelecimento da ligação e a recepção do comando Stop e com isso não aceder a posições inválidas de memória (deixando de gerar popus a notificar acessos inválidos a memória).
+. Validação do ficheiro de configuração. Em caso de erro, o programa termina apresentando previamente uma mensagem alusiva ao erro.
+
+p16sim v3.12, 1/6/2023, João Pedro Patriarca (jpatri@cc.isel.ipl.pt)
+. A solução adotada na versão v3.11 para resolver problemas de dinâmica do temporizador comprometeu a execução de programas do P16 com o temporizador configurado para produzir interrupções com um período de 10ms. Em vez de se tornar a thread principal menos obsessiva por CPU na v3.11, aumentou-se a prioridade da thread que processa mensagens Windows nesta versão, v3.12.
+
+p16sim v3.11, 29/5/2023, João Pedro Patriarca (jpatri@cc.isel.ipl.pt)
+. Resolução de problemas de dinâmica associados às atualizações de componentes gráficos. Tornou-se a thread principal menos obsessiva por CPU.
+
+p16sim v3.10, 20/5/2023, João Pedro Patriarca (jpatri@cc.isel.ipl.pt)
+. A colocação de mensagens Windows para processar mensagens no âmbito da escrita de valores nos portos de saída (escritas com origem da execução de instruções STR) são colocadas apenas se os novos valores forem diferente do valor atual presente no porto. Este filtro benificia a interação do utilizador com os dispositivoscom com representação gráfica num cenário onde o programa em execução escreva insistentemente em portos de saída (desde que os valores escritos sejam iguais ao valor presente no porto de saída).
+. O registo TIR da vista do temporizador pTC passou a apresentar o valor do registo em vez do valor à saída do temporizador (nTIR)
+. Correção de configuração no porto de entrada de 8 bits que provocava que a vista para o porto iniciasse sempre no topo
+. As leituras com origem de comandos para ler a memória a partir de endereços onde apenas existam dispositivos write-only passam a devolver alta impedância ('z') em vez de devolverem os valores presentes nos dispositivos write-only. Esta alteração de comportamento não está relacionado com o processamento de leituras de memória a partir da execução de instruções LDRs e POPs
+. Correção de erro relacionado com a iniciação de dados numa ROM com barramento de dados de 16 bits. O erro manifestava-se com a colocação dos 8 bits de maior peso de cada palavra iniciada da ROM constantemente com zeros.
+
+p16sim v3.9, 23/3/2023, João Pedro Patriarca (jpatri@cc.isel.ipl.pt)
+. Remoção da propriedade Address Size do ficheiro de configuração no âmbito da descrição do componente PicoTimer
+. Cosmética nas janelas de diálogo, na identificação dos bits dos registos do componente
+. Remoção por completo do cursor correspondente à barra ao alto de qualquer controlo de edição que permita apenas alteração de valor por clique do rato
+
+p16sim v3.8, 12/3/2023, João Pedro Patriarca (jpatri@cc.isel.ipl.pt)
+. Alteração do nome da solução P16Simulador e do respetivo executável P16SimulatorApp para p16sim
+. Registo TIR do PicoTimer assinala passagem pelo módulo com registo TMR=0;
+. Alteração de valores dos periféricos através de eventos do rato (controlos que apresentam valores dos bits individualmente);
+. Remoção da capacidade de alterar valores dos periféricos através de edição por teclado (controlos que apresentam valores dos bits individualmente);
+. Porto de entrada permite edição de valores em bloco à entrada do porto;
+. Temporizador permite a alteração externa dos valores dos registos TMR, TCR e TIR. Apenas é permitido levar o registo TIR a 1 externamente (limpar a passagem pelo módulo);
+. Capacidade de configurar em ficheiro de configuração a referência do clock do temporizador (clkRef): P16, herdado de versões anteriores; Relógio de parede (Wall), correspondente a contagem em tempo real; e Manual, sendo o utilizador que determina manualmente a evolução do contador;
+. Capacidade de configurar em ficheiro de configuração se o temporizador conta apenas com o P16 em modo Run ou se permanece em contagem com o P16 em modo Break;
+. Na ausência no ficheiro de configuração da definição do clock de referência e do contador permanecer a contar com o P16 em modo Break, é considerada a referência Relógio de parede e a permanência em contagem com o P16 em modo Break;
+. Reformulação na hierarquia de classes que representa periféricos;
+
+P16Simulator v3.7, 3/6/2021, João Pedro Patriarca (jpatri@cc.isel.ipl.pt)
+. Correcção de salto para instruções com operando offset de 10 bits (especificamente para o valor de offset 0x200)
+. O comando de Reset ao CPU ('r') passa a manter o valor das flags produzidas pela ALU no registo CPSR; apenas as flags I e M são colocadas a 0. No entanto, a acção de Reset realizada a partir do P16Debugger não utiliza o comando Reset. No P16Debugger, a acção de Reset ao CPU utiliza os comandos de alteração de registos (PC e CPSR). Logo, para esta alteração ter consequências, ter-se-á que alterar o P16Debugger.
+. Adição do temporizador PicoTimer_v1
+
+P16Simulator v3.6, 16/7/2020, João Pedro Patriarca (jpatri@cc.isel.ipl.pt)
+. Correcção de bug no cenário de não se especificar ficheiro de configuração que provocava a terminação abrupta do simulador após estabelecida ligação com o debugger.
+
+P16Simulator v3.5, 2/7/2020, João Pedro Patriarca (jpatri@cc.isel.ipl.pt)
+. Adequação do controlador de interrupções com a versão emulada do P16: o atendimento de interrupção é processado imediatamente após reunidas as condições favoráveis para o processamento da interrupção (IE e extint activos). Nas versões anteriores o atendimento era retardado até à execução da próxima instrução. A implementação actual não permite a execução de uma instrução do programa principal num cenário de pedido de interrupção persistente.
+
+P16Simulator v3.4, 29/6/2020, João Pedro Patriarca (jpatri@cc.isel.ipl.pt)
+. Revisão do módulo SASO_Timer_v3
+
+P16Simulator v3.3, 25/6/2020, João Pedro Patriarca (jpatri@cc.isel.ipl.pt)
+. Correcção de bug que se manifestava no acesso a um dispositivo com o bit de maior do endereço interno a 1
+. Adição de vista para o temporizador SASO_Timer_v3 que apresenta o valor dos registos LR, CR e nTC_FF
+
+P16Simulator v3.2, 14/6/2020, João Pedro Patriarca (jpatri@cc.isel.ipl.pt)
+. Adição de vistas (janelas de diálogo) para os portos de entrada e de saída de 8 ou 16 bits
+. Na sobreposição de dispositivos apenas de leitura com dispositivos apenas de escrita, quando se altera o conteúdo de memória através do debugger, apenas os dispositivos de escrita são alterados. Os dispositivos de leitura apenas têm os dados à entrada alterados se não existirem quaisquer dispositivos de ecrita seleccionados pelos mesmos endereços. Na versão 3.1, os dois eram sempres alterados, independentemente de existir sobreposição ou não.
+. Adição de terceiro parâmetro na função randomize correspondente ao limite superior do valor aleatório.
+
+P16Simulator v3.1, 30/5/2020, João Pedro Patriarca (jpatri@cc.isel.ipl.pt)
+. Extensão à caracterização do sistema P16, nomeadamente no componente P16 e na entrada de interrupção externa para configurar o respectivo controlo por um componente do sistema P16 (consultar documento "Caracterização do sistema P16.docx", secção P16).
+. Extensão do protocolo de comunicação para suportar comandos relacionadas com o controlo da entrada de interrupção externa do P16 com origem do Debugger (consultar documento "RemoteSrialProtocol.docx, secção Interrupt Request).
+
+P16Simulator v3.0, 17/5/2020, João Pedro Patriarca (jpatri@cc.isel.ipl.pt)
+. Suporte da caracterização do sistema P16 com dispositivos do tipo ROM, RAM, portos de entrada e de saída, a 8 ou 16 bits. A caracterização é realizada através de ficheiro de texto com o nome P16Sytem.txt e especificado como argumento na execução do simulador do P16 (consultar documento "Caracterização do sistema P16.docx").
+. Suporte de fold-back, ausência de memória e sobreposição de memória.
+. Extensão ao protocolo de comunicação para indicar ausência de memória ou sobreposição de memória, na consulta por conteúdo de memória (consultar documento "RemoteSerialProtocol.docx", secção "Read memory").
+. Extensão ao protocolo de comunicação para indicar acesso inválido a memória durante a execução do programa (consultar documento "RemoteSerialProtocol.docx", secção "Hit Error condition").
+. Refinamento em algum código existente.
+. Configuração do porto para comunicação com o Debugger por argumento da aplicação.
+. Especificação dos argumentos da aplicação à lá GNU: --severity, --configuration, --hexintel, --port, --version, --help e versão curta correspondente (-s, -c, -i, -p, -v e -h).
+. Especificação do nível de severidade do log com letras minúsculas.
+. Quaisquer argumentos da aplicação são opcionais. Por omissão são usados os valores:
+.. severidade do log: error
+.. configuração do sistema P16: espaço de endereçamento totalmente preenchido com memória física do tipo RAM, constituído por duas RAMs de 8 bits de dados
+.. porto de comunicação: 2018
+. Apresentação do menu de help com as opções possíveis apenas quando solicitado.
+. As opções -h e -v apresentam o menu com as opções e a versão, respectivamente, terminando a aplicação de imediato.
+. No início da execução do simulador, apresentação sistemática da versão, do nível de severidade de log e do porto de comunicação e apresentação condicionada das restantes opções apenas se especificadas.

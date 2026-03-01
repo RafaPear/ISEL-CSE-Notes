@@ -1,0 +1,171 @@
+P16 assembler v1.5 (Feb  9 2024)	d:\1-ISEL\Semestre_2\AC\Programs\lab3\lab03 copy.lst	Thu May 08 12:56:36 2025
+
+Sections
+Index   Name            Address   Size
+0       .text           0000      0062 98
+1       .data           0062      0008 8
+2       .stack          006A      0040 64
+
+Symbols
+Name                    Type      Value       Section
+addr                    LABEL     003E 62     .text
+ALL_ONES                ABSOLUTE  FFFF 65535  .text
+ALL_ZEROS               ABSOLUTE  0000 0      .text
+duty50arr               LABEL     0062 98     .data
+INPORT_ADDRESS          ABSOLUTE  FF80 65408  .text
+inport_read             LABEL     0040 64     .text
+line#22                 LABEL     0002 2      .text
+loop                    LABEL     0012 18     .text
+main                    LABEL     000A 10     .text
+OUTPORT_ADDRESS         ABSOLUTE  FFC0 65472  .text
+outport_write           LABEL     0048 72     .text
+program                 LABEL     0004 4      .text
+sleep                   LABEL     0050 80     .text
+sleep_end               LABEL     0060 96     .text
+sleep_inner_loop        LABEL     0058 88     .text
+sleep_outer_loop        LABEL     0054 84     .text
+STACK_SIZE              ABSOLUTE  0040 64     .text
+stack_top               LABEL     00AA 170    .stack
+stack_top_addr          LABEL     0008 8      .text
+write_off               LABEL     001E 30     .text
+write_on                LABEL     0024 36     .text
+
+Code listing
+   1           	; Ficheiro:  lab03.s
+   2           	; Descricao: Programa para a realização da 3a atividade laboratorial de
+   3           	;            Arquitetura de Computadores.
+   4           	; Autor:     Tiago M Dias (tiago.dias@isel.pt)
+   5           	; Data:      29-04-2025
+   6           	
+   7           	; Definicao dos valores dos simbolos utilizados no programa
+   8           	;
+   9          		.equ	STACK_SIZE, 64                ; Dimensao do stack, em bytes
+  10           	
+  11          		.equ	ALL_ONES, 0xFFFF              ; Palavra com todos os bits a 1
+  12          		.equ	ALL_ZEROS, 0x0000             ; Palavra com todos os bits a 0
+  13           	
+  14          		.equ	INPORT_ADDRESS, 0xFF80        ; Endereço do inport
+  15          		.equ	OUTPORT_ADDRESS, 0xFFC0       ; Endereço do outport
+  16           	
+  17           	; Seccao:    text
+  18           	; Descricao: Guarda o código do programa
+  19           	;
+  20           		.text
+  21 0000 01 58		b	program
+  22 0002 FF 5B		b	.		; Reservado para a ISR
+  23           	program:
+  24 0004 1D 0C		ldr	sp, stack_top_addr
+  25 0006 01 58		b	main
+  26           	
+  27           	stack_top_addr:
+  28 0008 AA 00		.word	stack_top
+  29           	
+  30           	; Rotina:    main
+  31           	; Descricao: Escreve no Outport o valor do inport
+  32           	; Entradas:  -
+  33           	; Saidas:    -
+  34           	; Efeitos:   r0
+  35           	main:
+  36 000A F0 6F		mov	r0, #ALL_ONES & 0xFF
+  37 000C 1D 5C		bl	outport_write
+  38 000E 00 60		mov	r0, #ALL_ZEROS & 0xFF
+  39 0010 1B 5C		bl	outport_write
+  40           	loop:
+  41 0012 16 5C		bl inport_read
+  42 0014 04 B0		mov r4, r0
+  43 0016 03 68		mov r3, #128
+  44 0018 C0 C1		and r0, r4, r3
+  45 001A 01 40		bzs write_off
+  46 001C 03 58		b write_on
+  47           	
+  48           	write_off:
+  49 001E 00 68		mov r0, #128
+  50 0020 13 5C		bl	outport_write
+  51 0022 F7 5B		b	loop
+  52           	
+  53           	write_on:
+  54           		;add r0, r4, #128
+  55 0024 E1 63		mov r1, #addr
+  56 0026 F3 6F		mov r3, #0xFF
+  57 0028 C0 C1		and r0, r4, r3
+  58 002A 13 18		ldrb r3, [r1, r0]
+  59           	
+  60 002C 00 68		mov r0, #128
+  61 002E 0C 5C		bl	outport_write
+  62 0030 80 B1		mov r0, r3
+  63 0032 0E 5C		bl sleep
+  64           	
+  65 0034 10 68		mov r0, #129
+  66 0036 08 5C		bl	outport_write
+  67 0038 80 B1		mov r0, r3
+  68 003A 0A 5C		bl sleep
+  69           	
+  70 003C EA 5B		b	loop
+  71           	
+  72           	addr:
+  73 003E 62 00		.word duty50arr
+  74           	
+  75           	; Rotina:    inport_read
+  76           	; Descricao: Lê para o r0 o valor do inport
+  77           	; Entradas:  -
+  78           	; Saidas:    r0 - Contém o valor do inport
+  79           	; Efeitos:   r1 - Contém o endereço da parte baixa do inport
+  80           	inport_read:
+  81 0040 01 68		mov	r1, #INPORT_ADDRESS & 0xFF
+  82 0042 F1 7F		movt	r1, #(INPORT_ADDRESS >> 8) & 0xFF
+  83 0044 10 08		ldrb	r0, [r1, #0]
+  84 0046 0F B7		mov	pc, lr
+  85           	
+  86           	; Rotina:    outport_write
+  87           	; Descricao: Escreve o valor de r0 no porto de saída
+  88           	; Entradas:  r0 - Parâmetro para escrita
+  89           	; Saidas:    -
+  90           	; Efeitos:   r1 - Contém a parte baixa do endereço do porto de saída
+  91           	outport_write:
+  92 0048 01 6C		mov	r1, #OUTPORT_ADDRESS & 0xFF
+  93 004A F1 7F		movt	r1, #(OUTPORT_ADDRESS >> 8) & 0xFF
+  94 004C 10 28		strb	r0, [r1, #0]
+  95 004E 0F B7		mov	pc, lr
+  96           	
+  97           	; Rotina:    sleep
+  98           	; Descricao: *** Para completar ***
+  99           	; Entradas:  *** Para completar ***
+ 100           	; Saidas:    *** Para completar ***
+ 101           	; Efeitos:   *** Para completar ***
+ 102           	sleep:
+ 103 0050 00 C0		and	r0, r0, r0
+ 104 0052 06 40		beq	sleep_end
+ 105           	sleep_outer_loop:
+ 106 0054 E1 63		mov	r1, #0x3E
+ 107 0056 31 70		movt	r1, #0x03
+ 108           	sleep_inner_loop:
+ 109 0058 91 A8		sub	r1, r1, #1
+ 110 005A FE 47		bne	sleep_inner_loop
+ 111 005C 80 A8		sub	r0, r0, #1
+ 112 005E FA 47		bne	sleep_outer_loop
+ 113           	sleep_end:
+ 114 0060 0F B7		mov	pc, lr
+ 115           	
+ 116           	; Seccao:    data
+ 117           	; Descricao: Guarda as variáveis globais
+ 118           	;
+ 119           		.data
+ 120           		duty50arr:
+ 121 0062 05			.byte 5
+ 122 0063 0A			.byte 10
+ 123 0064 0F			.byte 15
+ 124 0065 14			.byte 20
+ 125 0066 19			.byte 25
+ 126 0067 1E			.byte 30
+ 127 0068 23			.byte 35
+ 128 0069 28			.byte 40
+ 129           	
+ 130           	; Seccao:    stack
+ 131           	; Descricao: Implementa a pilha com a dimensao definida pelo simbolo STACK_SIZE
+ 132           	;
+ 133           		.stack
+ 134 006A 00   		.space	STACK_SIZE
+ 134 .... ..
+ 134 00A9 00
+ 135           	stack_top:
+ 135           	

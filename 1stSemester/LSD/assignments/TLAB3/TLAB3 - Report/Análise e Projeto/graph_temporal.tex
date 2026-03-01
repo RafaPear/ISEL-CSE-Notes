@@ -1,0 +1,27 @@
+\begin{tikzpicture}[thick,node distance=1cm]
+    \begin{scope}[scale=0.8, transform shape]
+
+        % Nodes
+        \node (clk) {Clock};
+        \node[below = of clk.south east, anchor=north east] (in) {In/FFD ($D$)};
+        \node[below = of in.south east, anchor=north east] (q_ffd) {FFD ($Q$)};
+        \node[below = of q_ffd.south east, anchor=north east] (notq) {FFD ($\overline{Q}$)};
+        \node[below = of notq.south east, anchor=north east] (out) {Out};
+
+        % Draw Clock
+        \draw[arrow] ([yshift=-.5cm]clk.east) -- ++(1cm,0)  -- ++(0,1cm) -- ++(1cm,0) -- ++(0,-1cm) -- ++(1cm,0) -- ++(0,1cm) -- ++(1cm,0) -- ++(0,-1cm) -- ++(1cm,0) -- ++(0,1cm) -- ++(1cm,0) -- ++(0,-1cm) -- ++(1cm,0) -- ++(0,1cm) -- ++(1cm,0) -- ++(0,-1cm) -- ++(1cm,0) -- ++(0,1cm) -- ++(1cm,0) -- ++(0,-1cm) -- ++(1cm,0) -- ++(0,1cm) -- ++(1cm,0) -- ++(0,-1cm) -- ++(1cm,0) -- ++(0,1cm) -- ++(1cm,0) -- ++(0,-1cm) -- ++(1cm,0) -- ++(0,1cm) -- ++(1cm,0);
+
+        % Draw In/FFD (D)
+        \draw[arrow] ([yshift=-.5cm]in.east) -- ++(1cm,0) -- ++(1cm,0) -- ++(0,1cm) -- ++(1cm,0) -- ++(1cm,0) -- ++(1cm,0) -- ++(1cm,0) -- ++(0,-1cm) -- ++(1cm,0) -- ++(1cm,0) -- ++(0,1cm) -- ++(1cm,0) -- ++(1cm,0) -- ++(1cm,0) -- ++(1cm,0) -- ++(1cm,0) -- ++(0,-1cm) -- ++(1cm,0) -- ++(1cm,0) -- ++(1cm,0);
+
+        % Draw FFD (Q)
+        \draw[arrow] ([yshift=-.5cm]q_ffd.east) -- ++(1cm,0) -- ++(1cm,0) -- ++(1cm,0) -- ++(0,1cm) -- ++(1cm,0) -- ++(1cm,0) -- ++(1cm,0) -- ++(0,-1cm) -- ++(1cm,0) -- ++(1cm,0) -- ++(1cm,0) -- ++(0,1cm) -- ++(1cm,0) -- ++(1cm,0) -- ++(1cm,0) -- ++(1cm,0) -- ++(0,-1cm) -- ++(1cm,0) -- ++(1cm,0) -- ++(1cm,0);
+
+        % Draw FFD (not Q)
+        \draw[arrow] ([yshift=.5cm]notq.east) -- ++(1cm,0) -- ++(1cm,0) -- ++(1cm,0) -- ++(0,-1cm) -- ++(1cm,0) -- ++(1cm,0) -- ++(1cm,0) -- ++(0,1cm) -- ++(1cm,0) -- ++(1cm,0) -- ++(1cm,0) -- ++(0,-1cm) -- ++(1cm,0) -- ++(1cm,0) -- ++(1cm,0) -- ++(1cm,0) -- ++(0,1cm) -- ++(1cm,0) -- ++(1cm,0) -- ++(1cm,0);
+
+        % Draw Out
+        \draw[arrow] ([yshift=-.5cm]out.east) -- ++(1cm,0) -- ++(1cm,0) -- ++(0,1cm) -- ++(1cm,0) -- ++(0,-1cm) -- ++(1cm,0) -- ++(1cm,0) -- ++(1cm,0) -- ++(1cm,0) -- ++(1cm,0) -- ++(0,1cm) -- ++(1cm,0) -- ++(0,-1cm) -- ++(1cm,0) -- ++(1cm,0) -- ++(1cm,0) -- ++(1cm,0) -- ++(1cm,0) -- ++(1cm,0) -- ++(1cm,0);
+
+    \end{scope}
+\end{tikzpicture}

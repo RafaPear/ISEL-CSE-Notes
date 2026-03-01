@@ -1,0 +1,67 @@
+Análise da microarquitetura
+
+1. A afirmação é incorreta. A microarquitetura utiliza espaços de endereçamento separados para código e dados (256 endereços cada), caracterizando uma arquitetura do tipo Harvard, não von Neumann.
+
+2. O módulo Ext (Extensor) tem a função de estender valores imediatos (imm) para o tamanho do barramento de dados (8 bits). Por exemplo, se uma instrução usar um imediato de 4 bits, o Extensor fará a extensão (por exemplo, sinal ou zero) para 8 bits.
+
+3. As instruções b e bzs usam endereçamento relativo ao PC (deslocamento).
+Vantagens:
+    Densidade de código: Deslocamentos menores economizam bits.
+    Flexibilidade: Permite código posição-independente.
+
+Desvantagens:
+    Alcance limitado: Não permite saltos para endereços muito distantes.
+    Rotinas: Dificulta a implementação de rotinas em posições arbitrárias sem cálculos adicionais.
+
+Codificação das instruções
+
+4. Mapa de codificação (formato de 12 bits: 3 bits opcode + 3×3 bits registos):
+    Instrução	opcode	rz	ry	rx
+    and	        011	    rz	ry	rx
+    b           111     --- --- rx
+    bzs         101        imm8
+    ldr         001     rz  ry  rx
+    mov         100      imm6   rx
+    not         110     111 ry  rx
+    str         000     --- ry  rx
+    eor         010     rz  ry  rx
+
+5. Opcode das instruções restantes (justificação: 3 bits permitem 8 combinações; and = 011):
+and: 011
+b:   000
+bzs: 100
+ldr: 001
+mov: 101
+not: 110
+str: 111
+eor: 010
+
+    Vantagem: Decodificação simplificada (tamanho fixo). Desvantagem: Ineficiência em código (ex.: instruções simples usam muitos bits).
+
+Projeto do descodificador de instruções
+
+    Tabela de saídas do Instruction Decoder (exemplo para and):
+    Instrução	opcode	Z	SI	SE	SC	SD	ER	EP	nRD	nWR
+    and	011	0	0	0	1	1	1	0	1	1
+
+        Casos de indiferença: Campos não utilizados (ex.: not não usa ry).
+
+    Montagem 2 (ROM com opcode como entrada e saídas como palavras de controle). Justificativa: A ROM mapeia diretamente o opcode (3 bits) para os sinais de controle.
+
+    Capacidade da ROM: 8 palavras × 9 bits = 72 bits. Justificativa: 3 bits de opcode (2³ = 8 endereços) e 9 sinais de controle.
+
+Codificação de programas em linguagem máquina
+
+    Tradução para código máquina (hexadecimal):
+    | Instrução | Endereço | Código máquina |
+    |---------------------|----------|----------------|
+    | eor r0, r0, r0 | 0x000 | 0x000 |
+    | ldr r2, [r0, r0] | 0x001 | 0x280 |
+    | mov r1, #1 | 0x002 | 0x441 |
+    | ldr r3, [r0, r1] | 0x003 | 0x308 |
+    | and r4, r2, r3 | 0x004 | 0xB4C |
+    | not r5, r4 | 0x005 | 0x450 |
+    | bzs skip | 0x006 | 0x600 |
+    | str r5, [r1] | 0x007 | 0xF14 |
+    | skip: mov r6, #9 | 0x008 | 0x689 |
+    | b r6 | 0x009 | 0x586 |

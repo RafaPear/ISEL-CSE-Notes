@@ -1,0 +1,25 @@
+\renewcommand{\contentsname}{Conteúdo}
+
+\setcounter{page}{1}
+\pagenumbering{roman}
+\addcontentsline{toc}{section}{\protect\numberline{}Índice}
+\tableofcontents
+\newpage
+
+\listoffigures
+
+\listoftables
+
+\printglossary[
+    title=Glossário
+]
+
+\printglossary[
+    type=\acronymtype,
+    title=Siglas
+]
+
+\newpage
+
+\pagenumbering{arabic}
+\setcounter{page}{6}

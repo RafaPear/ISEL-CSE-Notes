@@ -1,0 +1,12 @@
+\begin{tikzpicture}[thick]
+
+    % Module block
+    \node[module] (Square) at (0, 0) {Square};
+
+    % Inputs on the left
+    \node[io, label=above:Input,label={[scale=.8]below:(4 bits)}] (In) at (0, 1.25) {};
+
+    % Outputs on the right
+    \node[io, label=below:Output,label={[scale=.8]above:(8 bits)}] (square) at (0, -1.25) {};
+
+\end{tikzpicture}

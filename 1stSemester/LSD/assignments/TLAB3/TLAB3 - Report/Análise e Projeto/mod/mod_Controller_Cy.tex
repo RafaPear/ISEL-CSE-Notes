@@ -1,0 +1,111 @@
+\begin{tikzpicture}
+    % Clip
+    \clip ([shift={(.4cm,2cm)}]step_o.north) rectangle ([shift={(2cm,0)}]ffd.north);
+    
+    % FFD
+    \node[minimodule] (ffd) {FFD};
+    \node[io, label={[yshift=.3cm]left:D}] (d_ffd) at (ffd.west) {};
+    \node[io, label={[yshift=.3cm]right:Q}] (q_ffd) at (ffd.east) {};
+    \node[io, label={[xshift=-.3cm,yshift=.1cm]below:E},xshift=-.25cm] (en_ffd) at (ffd.south) {};
+    \node[io, label={[xshift=.3cm,yshift=.1cm]below:R},xshift=.25cm] (rst_ffd) at (ffd.south) {};
+
+    % Inputs
+    \node[input, left of = d_ffd,xshift = -.5cm] (cin_i) {C In};
+    \node[io] (cin_i_o) at (cin_i.east) {};
+
+    \node[input, above of = cin_i, xshift = -4cm] (step_i) {Step};
+    \node[io] (step_i_o) at (step_i.east) {};
+
+    \node[input, below of = cin_i, xshift = -2cm] (start_i) {Start};
+    \node[io] (start_i_o) at (start_i.east) {};
+
+    \node[input, above of = ffd, xshift = 2.5cm, yshift = 1.5cm] (x2_i) {$x^2$};
+    \node[io] (x2_i_o) at (x2_i.east) {};
+
+    \node[input, above of = ffd, xshift = 5.5cm, yshift = 1.5cm] (sum_i) {Sum In};
+    \node[io] (sum_i_o) at (sum_i.west) {};
+    
+    % ------------- Begin Points -------------
+
+    % Start
+    \node[io, right of = ffd] (con1) {};
+    \node[io, xshift=.5cm] (con2_start_i) at (start_i.east) {};
+    \node[io, xshift=1cm] (con3_start_i) at (start_i.east) {};
+
+    % Step
+    \node[io, right of = step_i] (con4_step_i) {};
+
+    % ------------- End Points -------------
+    
+
+    % Not's
+    \node[not gate US, draw, yshift=-.5cm, right of = ffd, rotate=-90] (not1) {};
+    \node[not gate US, draw, right of = start_i, xshift = 1.5cm] (not2) {};
+    \node[not gate US, draw, below of = con2_start_i, rotate=-90] (not3) {};
+    \node[not gate US, draw, above of = ffd] (not4) {};
+
+    % MUX1
+    \node[mux,right of = not4, xshift=3cm] (mux1) {MUX};
+    \node[io, label={[yshift=.2cm]left:S}] (s_mux1) at (mux1.west) {};
+    \node[io, label={[xshift=-.2cm]above:A},xshift=-.4cm] (a_mux1) at (mux1.north) {};
+    \node[io, label={[xshift=-.2cm]above:B},xshift=.4cm] (b_mux1) at (mux1.north) {};
+    \node[io, label={[xshift=.2cm]below:R}] (r_mux1) at (mux1.south) {};
+
+    % MUX2
+    \node[mux,below of = mux1, xshift=-.4cm, yshift=-2cm] (mux2) {MUX};
+    \node[io, label={[yshift=.2cm]left:S}] (s_mux2) at (mux2.west) {};
+    \node[io, label={[xshift=-.2cm]above:A},xshift=-.4cm] (a_mux2) at (mux2.north) {};
+    \node[io, label={[xshift=-.2cm]above:B},xshift=.4cm] (b_mux2) at (mux2.north) {};
+    \node[io, label={[xshift=.2cm]below:R}] (r_mux2) at (mux2.south) {};
+    
+    % Outputs
+    \node[output,shift={(1.5cm,-4cm)}] (cy) at (ffd) {Cy};
+    \node[io] (cy_o) at (cy.north) {};
+
+    \node[output, below of = not3, yshift = -1cm] (reset) {Reset};
+    \node[io] (reset_o) at (reset.north) {};
+
+    \node[output, below of = con4_step_i, yshift = -4cm] (step_o) {Step};
+    \node[io] (step_o_o) at (step_o.north) {};
+
+    \node[output, below of = mux2, yshift = -1cm] (out_o) {Out};
+    \node[io] (out_o_o) at (out_o.north) {};
+
+
+    % ------------- Begin Connections -------------
+
+    % FFD
+    \draw (cin_i_o) -- (d_ffd);
+    \draw (ffd.east) -- (con1);
+    \draw (con1) -| (cy_o);
+    \draw (con1) -- (not1.input);
+    \draw (not1.output) --++(0,-.5cm) -| (en_ffd.south);
+    \draw (not2.output) -| (rst_ffd.south);
+
+    % Start
+    \draw (start_i_o) -- (con2_start_i);
+    \draw (con2_start_i) -- (con3_start_i);
+    \draw (con3_start_i) -- (not2.input);
+    \draw (con2_start_i) -- (not3.input);
+    \draw (not3.output) -- (reset_o);
+
+    % Step
+    \draw (step_i_o) -- (con4_step_i);
+    \draw (con4_step_i) -- (step_o_o);
+    \draw (con4_step_i) -- (not4.input);
+
+    % MUX1
+    \draw (not4.output) -- (s_mux1);
+    \draw (x2_i_o) -| (a_mux1);
+    \draw (sum_i_o) -| (b_mux1);
+
+    % MUX2
+    \draw (con3_start_i) |- (s_mux2);
+    \draw (r_mux1) -- (b_mux2);
+    
+    % Out
+    \draw (r_mux2) -- (out_o_o);
+
+    % ------------- End Connections -------------
+
+\end{tikzpicture}

@@ -1,0 +1,32 @@
+{
+    "todo-tree.regex.regex": "((//|#|<!--|;|/\\*|^|%|\\\\)\\s*($TAGS)\\{*|^\\s*- \\[ \\])",
+    "todo-tree.regex.regexCaseSensitive": false,
+    "todohighlight.isEnable": false,
+    "todo-tree.highlights.customHighlight": {
+
+        "BUG": {
+            "icon": "bug"
+        },
+        "HACK": {
+            "icon": "tools"
+        },
+        "FIXME": {
+            "icon": "flame"
+        },
+        "XXX": {
+            "icon": "x"
+        },
+        "[ ]": {
+            "icon": "issue-draft"
+        },
+        "[x]": {
+            "icon": "issue-closed"
+        }
+    },
+    "todo-tree.highlights.useColourScheme": true,
+    "todo-tree.highlights.enabled": false,
+    "cSpell.ignoreWords": [
+        "Quartus",
+        "VHDL"
+    ]
+}

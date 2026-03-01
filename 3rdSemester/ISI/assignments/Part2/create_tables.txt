@@ -1,0 +1,129 @@
+DROP SCHEMA public CASCADE;
+CREATE SCHEMA public;
+
+-- ===========================
+-- Tabela UTILIZADOR
+-- ===========================
+CREATE TABLE UTILIZADOR (
+    idUtilizador     INTEGER PRIMARY KEY,
+    email            VARCHAR(255),
+    alcunha          VARCHAR(100),
+    tipoUtilizador   VARCHAR(20),
+    CONSTRAINT chk_tipoUtil CHECK (
+        tipoUtilizador IN ('psicologo','moderador') OR tipoUtilizador IS NULL
+    )
+);
+
+-- ===========================
+-- Tabela PSICOLOGO (subtipo)
+-- ===========================
+CREATE TABLE PSICOLOGO (
+    idUtilizador        INTEGER PRIMARY KEY,
+    cedulaProfissional  VARCHAR(100) NOT NULL,
+    especializacao      VARCHAR(100),
+    FOREIGN KEY (idUtilizador) REFERENCES UTILIZADOR(idUtilizador)
+);
+
+-- ===========================
+-- Tabela MODERADOR (subtipo)
+-- ===========================
+CREATE TABLE MODERADOR (
+    idUtilizador        INTEGER PRIMARY KEY,
+    areaDeModeracao     VARCHAR(100),
+    nivelDeSenioridade  VARCHAR(50),
+    FOREIGN KEY (idUtilizador) REFERENCES UTILIZADOR(idUtilizador)
+);
+
+-- ===========================
+-- RECURSO_EDUCATIVO
+-- ===========================
+CREATE TABLE RECURSO_EDUCATIVO (
+    idRecurso      INTEGER PRIMARY KEY,
+    formato        VARCHAR(50) NOT NULL,
+    titulo         VARCHAR(255) NOT NULL,
+    url            VARCHAR(500),
+    especializacao VARCHAR(100)
+);
+
+-- ===========================
+-- INTERACAO
+-- ===========================
+CREATE TABLE INTERACAO (
+    idInteracao   INTEGER PRIMARY KEY,
+    idUtilizador  INTEGER NOT NULL,
+    data          TIMESTAMP NOT NULL,
+    tipo          VARCHAR(20) NOT NULL,
+    texto         TEXT,
+    FOREIGN KEY (idUtilizador) REFERENCES UTILIZADOR(idUtilizador),
+    CONSTRAINT chk_tipoInteracao CHECK (
+        tipo IN ('Mensagem','Comentário','Resposta')
+    )
+);
+
+-- ===========================
+-- PLATAFORMA (interação pode ocorrer em várias plataformas)
+-- ===========================
+CREATE TABLE PLATAFORMA (
+    idInteracao   INTEGER NOT NULL,
+    plataforma    VARCHAR(100) NOT NULL,
+    PRIMARY KEY (idInteracao, plataforma),
+    FOREIGN KEY (idInteracao) REFERENCES INTERACAO(idInteracao)
+);
+
+-- ===========================
+-- CONSULTA
+-- ===========================
+CREATE TABLE CONSULTA (
+    idUtilizador  INTEGER NOT NULL,
+    idRecurso     INTEGER NOT NULL,
+    data          TIMESTAMP NOT NULL,
+    PRIMARY KEY (idUtilizador, idRecurso),
+    FOREIGN KEY (idUtilizador) REFERENCES UTILIZADOR(idUtilizador),
+    FOREIGN KEY (idRecurso) REFERENCES RECURSO_EDUCATIVO(idRecurso)
+);
+
+-- ===========================
+-- ANALISA (Moderador analisa interação)
+-- ===========================
+CREATE TABLE ANALISA (
+    idUtilizador   INTEGER NOT NULL,
+    idInteracao    INTEGER NOT NULL,
+    data           TIMESTAMP NOT NULL,
+    justificacao   TEXT,
+    abusiva        BOOLEAN,
+    esclarecimento TEXT,
+    PRIMARY KEY (idUtilizador, idInteracao),
+    FOREIGN KEY (idUtilizador) REFERENCES MODERADOR(idUtilizador),
+    FOREIGN KEY (idInteracao) REFERENCES INTERACAO(idInteracao)
+);
+
+-- ===========================
+-- CASO_DE_CYBERBULLYING
+-- ===========================
+CREATE TABLE CASO_DE_CYBERBULLYING (
+    id              INTEGER PRIMARY KEY,
+    idInteracao     INTEGER NOT NULL,
+    dataDeAbertura  DATE NOT NULL,
+    estado          VARCHAR(20) NOT NULL,
+    dataDeFecho     DATE,
+    descricao       TEXT,
+    areaDeAtuacao   VARCHAR(100),
+    FOREIGN KEY (idInteracao) REFERENCES INTERACAO(idInteracao),
+    CONSTRAINT chk_estado CHECK (
+        estado IN ('iniciado','avaliado','fechado','publico','inativo')
+    )
+);
+
+-- ===========================
+-- AVALIA (psicólogo avalia caso)
+-- ===========================
+CREATE TABLE AVALIA (
+    idUtilizador            INTEGER NOT NULL,
+    idCasoDeCyberbullying   INTEGER NOT NULL,
+    dataDeAvaliacao         TIMESTAMP NOT NULL,
+    grauDeGravidade         INTEGER,
+    anotacao                TEXT,
+    PRIMARY KEY (idUtilizador, idCasoDeCyberbullying),
+    FOREIGN KEY (idUtilizador) REFERENCES PSICOLOGO(idUtilizador),
+    FOREIGN KEY (idCasoDeCyberbullying) REFERENCES CASO_DE_CYBERBULLYING(id)
+);

@@ -1,0 +1,33 @@
+\begin{tikzpicture}[thick,node distance=1.7cm]
+    % Input
+    \node[input] (in) {In};
+    \node[io] (in_o) at (in.east) {};
+    
+    % FFD
+    \node[minimodule, right of = in] (ffd) {FFD};
+    \node[io, label={[yshift=-.25cm]left:D}] (d_ffd) at (ffd.west) {};
+    \node[io, label={[yshift=-.25cm]right:Q}] (q_ffd) at (ffd.east) {};
+
+    % Not
+    \node[not gate US, draw, right of = ffd] (not) {};
+    
+    % And
+    \node[and gate US, draw, right of = not,logic gate inputs=nn,scale=1.5,yshift=.1cm] (and) {};
+
+    % Temp node
+    \node[above of = ffd,yshift=-.5cm] (tempnode) {};
+
+    % Output
+    \node[output,right of = and] (out) {Out};
+    \node[io] (out_o) at (out.west) {};
+
+    % Connections
+    \draw (in_o) -- (d_ffd);
+    \draw (in_o) ++(.3cm,0) node [io] {} |- (tempnode) ;
+
+    \draw (q_ffd) -- (not.input);
+    \draw (not.output) -- (and.input 2);
+    \draw (tempnode)++(-.5cm,0) -- ++(1.5cm,0) |- (and.input 1);
+    \draw (and.output) -- (out_o);
+
+\end{tikzpicture}

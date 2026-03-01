@@ -1,0 +1,86 @@
+V1.5
+- Mudança de blo/bcs e bhs/bcc para blo/bcc e bhs/bcs, respetivamente.
+  Mudança devida a alteração do significado da flag C nas instruções de subtração.
+- Atualização do manual de utilização.
+
+V1.4.3
+- Melhoramentos no manual.
+- Melhoramentos nas mensagens de erro.
+- Remoção de incoerências no cálculo de expressões.
+
+V1.4.2
+- Correção de erro na expressão regular da opção -s 
+- Correção de erro no operador unário +
+
+V1.4.1
+- Correção de erro na diretiva ASCIZ (não colocava terminadores no caso de uma sequência de strings). 
+- Assinalar warning no caso de diretiva .byte ou .word sem argumento.
+- Aceitar que a última linha não possua caracter de mudança de linha.
+ 
+V1.4.0
+- Mudança de nome de "PAS" para "p16as"
+- Emitir erro de sintaxe no caso das constantes, operandos de instruções, não serem precedidas de #
+- Emitir aviso em caso de secção vazia
+- Não permitir saltos diretos (branch label) entre secções
+- Na diretiva EQU limitar as constantes à representação de 16 bits
+- Eliminação do endereço final das secssões na tabela de secções no ficheiro de listagem
+- Alterações internas sem efeito na utilização
+- Aceitar secções vazias
+- .byte e .word com argumento diferente de zero produz erro em .bss
+- .byte e .word sem argumento não produz efeito
+- Melhoramentos nas mensagens de erro
+- Criação do manual do PAS
+
+V1.3.3 (Apr 11 2022)
+- Gerar ficheiro em formato Logisim com palavra a 16 bits
+- Verificação de erros na diretiva space
+- Verificação do alinhamento de endereço do código binário das instruções
+- Print da tabela de símbolos - garantir separação entre valores grandes e secção
+- Aceitar diretivas .byte e .word sem parâmetro
+- Case insensitive nas mnemónicas
+- Introdução das secções .bss .stack .rodata
+- Dimensões de memória em mensagens de erro apresentadas em bytes
+- Correção de erro na verificação do alcance das instruções branch
+- Assinalar erro no caso de comentário não fechado
+- Correção de erro na simulação do espaço de memória.
+
+V1.3.2 (Apr 23 2020)
+
+- Acrescentada opção -l para gerar ficheiros binários com conteúdos intercalados
+- Acrescentada opção -a para definir a gama de endereços a ser copiada para os ficheiros binários
+- Correção da listagem de símbolos grandes
+
+V1.3.1 (Sep 11 2019)
+- Não aceitar mnemónicas alternativas not, or, asciiz
+- Assinalar erro em constantes não definidas nas diretivas .space e .align
+- Na instrução ldr rd, [pc, <imm6>] :
+  - Assinalar erro se imm6 for negativo
+  - Assinalar erro se for ldrb
+  - Assinalar erro se se escrever str rd, [pc, <imm6>]
+- Valores expressos em binário davam sempre zero
+- Deixa de assinalar erro se a label não começar na primeira coluna
+- Distinguir sintaticamente mov de movt - assinalar erro em movt rd, rs
+- Ordenar o simbolos por ordem alfabética em .lst
+- Correção de erro nas relocations em directiva .word
+- Melhoramentos na opção -h
+- Correção de erro na directiva .align
+- Melhoramentos na legibilidade do conteúdo da memória em .lst
+
+V1.2 (Apr 11 2019)
+
+Erros corrigidos ou melhoramentos
+
+- Validação da magnitude de constantes negativas
+- Escrever valores hexadecimais em maiúsculas
+- Correção no processamento de símbolos .equ
+- Correção de erros relativos à não definição de secção
+- Aceitar .asciiz ou .asciz
+- Correção no operador lógico !
+- Aceitar or ou orr
+
+--------------------------------------------------------------------------------
+V1.1 (Mar 22 2019)
+
+Primeira versão publicada
+
+Ezequiel Conde (ezeq@cc.isel.ipl.pt)

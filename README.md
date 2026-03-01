@@ -48,17 +48,6 @@ All assignments are located inside their respective course folders. Some assignm
 
 > Note: Reports are written in Portuguese (the course teaching language). Documentation and code are mainly in English but may contain some Portuguese sections.
 
-```mermaid
-graph TD
-
-PG[PG - Programming] --> LIC[LIC - Computer Science Laboratory]
-LSD[LSD - Digital Systems Logic] --> LIC
-
-ISI[ISI - Introduction to Information Systems] --> LS[LS]
-IPW[IPW - Introduction to Web Programming] --> LS
-
-```
-
 ## Useful Learning Resources
 
 ### YouTube Channels

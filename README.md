@@ -61,8 +61,9 @@ All assignments are located inside their respective course folders. Some assignm
 ### YouTube Playlists and Videos
 
 - [3D Software Rendered Game - Tsoding Daily](https://www.youtube.com/playlist?list=PLpM-Dvs8t0VaOBDp6cVRLBScgSJ2L8blq)
-- [One Formula That Demystifies 3D Graphics - Tsoding Daily](https://www.youtube.com/watch?v=qjWkNZ0SXfo)
 - [Coding Adventure - Sebastian Lague](https://www.youtube.com/playlist?list=PLFt_AvWsXl0ehjAfLFsp1PGaatzAwo0uK)
+- [One Formula That Demystifies 3D Graphics - Tsoding Daily](https://www.youtube.com/watch?v=qjWkNZ0SXfo)
+- [The Chaotic State of GPU Programming - eisfrosch](https://www.youtube.com/watch?v=9-DiGrnz8l8)
 
 ### Cool Blog Posts
 

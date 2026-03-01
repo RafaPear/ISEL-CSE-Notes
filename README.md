@@ -2,7 +2,7 @@
 
 ## Contents
 
-1. [Youtube channels](#Youtube_Channels)
+1. [Youtube channels](#Youtube_channels)
 
 ## Youtube channels
 

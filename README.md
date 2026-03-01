@@ -50,6 +50,10 @@ All assignments are located inside their respective course folders. Some assignm
 
 ## Useful Learning Resources
 
+You can find a curated collection of learning materials inside the [LearningResources](./LearningResources) folder.
+
+This folder is organized by topic, where each subject has its own dedicated directory and descriptive `README.md`. It serves as a centralized space for structured study resources, reference material, and high-quality content collected over time across different areas of computer science and software engineering.
+
 ### YouTube Channels
 
 - [TsodingDaily](https://www.youtube.com/@TsodingDaily)

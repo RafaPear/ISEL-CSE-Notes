@@ -7,6 +7,7 @@
     1. [YouTube Channels](#youtube-channels)
     2. [YouTube Playlists and Videos](#youtube-playlists-and-videos)
     3. [Cool Blog Posts](#cool-blog-posts)
+    4. [Isel Related Repos](#isel-related-repos)
 3. [My Setup](#my-setup)
 
 ## Repository Structure
@@ -71,7 +72,7 @@ All assignments are located inside their respective course folders. Some assignm
 - [Layers in Software Architecture - Sagar Hudge](https://medium.com/@sagar.hudge/layers-in-software-architecture-c8cc16329ff6)
 - [10 Common Software Architectural Patterns in a Nutshell - Vijini Mallawaarachchi](https://medium.com/data-science/10-common-software-architectural-patterns-in-a-nutshell-a0b47a1e9013)
 
-### Isel related repos
+### Isel Related Repos
 
 - [ISEL LEIC Notes](https://isel-leic-notes.andrejesus.com/)
 - [ISEL-LEIC-Info-Hub](https://github.com/p4ulor/ISEL-LEIC-Info-Hub)

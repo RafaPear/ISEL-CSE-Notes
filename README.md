@@ -68,6 +68,7 @@ This folder is organized by topic, where each subject has its own dedicated dire
 - [Coding Adventure - Sebastian Lague](https://www.youtube.com/playlist?list=PLFt_AvWsXl0ehjAfLFsp1PGaatzAwo0uK)
 - [One Formula That Demystifies 3D Graphics - Tsoding Daily](https://www.youtube.com/watch?v=qjWkNZ0SXfo)
 - [The Chaotic State of GPU Programming - eisfrosch](https://www.youtube.com/watch?v=9-DiGrnz8l8)
+- [Design Spotify Like a Senior Engineer (System Design Interview) - Hayk Simonyan](https://www.youtube.com/watch?v=H7s1pvuhmTA)
 
 ### Cool Blog Posts
 

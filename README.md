@@ -73,6 +73,7 @@ This folder is organized by topic, where each subject has its own dedicated dire
 ### Cool Blog Posts
 
 - [Continuous Integration - Martin Fowler](https://martinfowler.com/articles/continuousIntegration.html)
+- [Patterns for Managing Source Code Branches - Martin Fowler](https://martinfowler.com/articles/branching-patterns.html)
 - [Finding Your Home in Game Graphics Programming - Alex Tardif](https://alextardif.com/LearningGraphics.html)
 - [Layered Architecture Pattern - Yasmine Cherif](https://dev.to/yasmine_ddec94f4d4/understanding-the-layered-architecture-pattern-a-comprehensive-guide-1e2j)
 - [Layers in Software Architecture - Sagar Hudge](https://medium.com/@sagar.hudge/layers-in-software-architecture-c8cc16329ff6)

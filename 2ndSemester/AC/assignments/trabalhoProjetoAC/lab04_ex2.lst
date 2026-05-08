@@ -1,0 +1,141 @@
+P16 assembler v1.5 (Feb  9 2024)	c:\Users\gusta\Desktop\ac\lab04\lab04_ex2.lst	Thu May 15 12:17:36 2025
+
+Sections
+Index   Name            Address   Size
+0       .text           0000      004C 76
+1       .data           004C      0001 1
+2       .stack          004E      0040 64
+
+Symbols
+Name                    Type      Value       Section
+ENABLE_EXTINT           ABSOLUTE  0010 16     .text
+FED_ADDRESS             ABSOLUTE  FF40 65344  .text
+isr                     LABEL     002A 42     .text
+main                    LABEL     000A 10     .text
+main_loop               LABEL     0020 32     .text
+OUTPORT_ADDRESS         ABSOLUTE  FFC0 65472  .text
+outport_write           LABEL     0044 68     .text
+program                 LABEL     0004 4      .text
+STACK_SIZE              ABSOLUTE  0040 64     .text
+stack_top               LABEL     008E 142    .stack
+stack_top_addr          LABEL     0008 8      .text
+var                     LABEL     004C 76     .data
+var_addr_isr            LABEL     0042 66     .text
+var_addr_main           LABEL     0028 40     .text
+VAR_INIT_VAL            ABSOLUTE  0000 0      .text
+
+Code listing
+   1           	; Ficheiro:  lab04_ex2.S
+   2           	; Descricao: Programa para a realizacao da 4a atividade laboratorial de
+   3           	;            Arquitetura de Computadores.
+   4           	; Autor:     Tiago M Dias (tiago.dias@isel.pt)
+   5           	; Data:      09-05-2025
+   6           	
+   7           	; Definicao dos valores dos simbolos utilizados no programa
+   8           	;
+   9          		.equ	STACK_SIZE, 64                ; Dimensao do stack, em bytes
+  10           	
+  11           	; *** Inicio de troco para completar ***
+  12          		.equ	ENABLE_EXTINT, 0x10         ;
+  13           	; *** Fim de troco para completar ***
+  14           	
+  15          		.equ	OUTPORT_ADDRESS, 0xFFC0       ; Endereco do porto de saida
+  16           	
+  17           	; *** Inicio de troco para completar ***
+  18          		.equ	FED_ADDRESS, 0xFF40           ; ??
+  19           	; *** Fim de troco para completar ***
+  20           	
+  21          		.equ	VAR_INIT_VAL, 0               ; Valor inicial de var
+  22           	
+  23           	; Seccao:    text
+  24           	; Descricao: Guarda o codigo do programa
+  25           	;
+  26           		.text
+  27 0000 01 58		b	program
+  28 0002 13 58		b	isr
+  29           	program:
+  30 0004 1D 0C		ldr	sp, stack_top_addr
+  31 0006 01 58	    b   main
+  32           	
+  33           	stack_top_addr:
+  34 0008 8E 00		.word	stack_top
+  35           	
+  36           	; Rotina:    main
+  37           	; Descricao: Inicializa a variável global `var` com zero, configura o periférico 
+  38           	;            FED para permitir interrupções externas e entra num ciclo infinito 
+  39           	;            onde lê o valor de `var` e o envia para o porto de saída.
+  40           	; Entradas:  Nenhuma
+  41           	; Saidas:    Nenhuma
+  42           	; Efeitos:   Escreve no porto de saída; ativa interrupções externas; altera o conteúdo de `var`
+  43           	
+  44           	main:
+  45 000A 00 60		mov	r0, #VAR_INIT_VAL
+  46 000C D1 0C		ldr	r1, var_addr_main
+  47 000E 10 28		strb	r0, [r1, #0]
+  48 0010 19 5C		bl	outport_write
+  49 0012 00 64		mov	r0, #FED_ADDRESS & 0xFF
+  50 0014 F0 7F		movt	r0, #(FED_ADDRESS >> 8) & 0xFF
+  51 0016 00 28		strb	r0, [r0, #0]
+  52 0018 60 B0		mrs	r0, cpsr
+  53 001A 01 61		mov	r1, #ENABLE_EXTINT
+  54 001C 80 C8		orr	r0, r0, r1
+  55 001E 40 B0		msr	cpsr, r0
+  56           	main_loop:
+  57 0020 30 0C		ldr	r0, var_addr_main
+  58 0022 00 08		ldrb	r0, [r0, #0]
+  59 0024 0F 5C		bl	outport_write
+  60 0026 FC 5B		b	main_loop
+  61           	
+  62           	var_addr_main:
+  63 0028 4C 00		.word	var
+  64           	
+  65           	; Rotina:    isr
+  66           	; Descricao: Rotina de serviço de interrupção que incrementa o valor da variável global `var`.
+  67           	; Entradas:  Nenhuma explícita (invocada por interrupção externa)
+  68           	; Saidas:    Nenhuma
+  69           	; Efeitos:   Atualiza `var`; limpa o pedido de interrupção no FED; usa e restaura r0 e r1
+  70           	isr:
+  71 002A 01 24		push	r1
+  72 002C 00 24		push	r0
+  73 002E 00 64		mov	r0, #FED_ADDRESS & 0xFF
+  74 0030 F0 7F		movt	r0, #(FED_ADDRESS >> 8) & 0xFF
+  75 0032 02 28		strb	r2, [r0, #0]
+  76 0034 60 0C		ldr	r0, var_addr_isr
+  77 0036 01 08		ldrb	r1, [r0, #0]
+  78 0038 91 A0		add	r1, r1, #1
+  79 003A 01 28		strb	r1, [r0, #0]
+  80 003C 00 04		pop	r0
+  81 003E 01 04		pop	r1
+  82 0040 20 B0		movs	pc, lr
+  83           	
+  84           	var_addr_isr:
+  85 0042 4C 00		.word	var
+  86           	
+  87           	; Rotina:    outport_write
+  88           	; Descricao: Escreve num porto de saida a 8 bits o valor passado como argumento.
+  89           	;            Interface exemplo: void outport_write( uint8_t value );
+  90           	; Entradas:  r0 - valor a escrever no porto de saida
+  91           	; Saidas:    -
+  92           	; Efeitos:   r1 - guarda o endereco do porto alvo da escrita
+  93           	outport_write:
+  94 0044 01 6C		mov	r1, #OUTPORT_ADDRESS & 0xFF
+  95 0046 F1 7F		movt	r1, #(OUTPORT_ADDRESS >> 8) & 0xFF
+  96 0048 10 28		strb	r0, [r1, #0]
+  97 004A 0F B7		mov	pc, lr
+  98           	
+  99           	; Seccao:    data
+ 100           	; Descricao: Guarda as variaveis globais
+ 101           	;
+ 102           		.data
+ 103           	var:
+ 104 004C 00   		.space	1
+ 105           	
+ 106           	; Seccao:    stack
+ 107           	; Descricao: Implementa a pilha com a dimensao definida pelo simbolo STACK_SIZE
+ 108           	;
+ 109           		.stack
+ 110 004E 00   		.space	STACK_SIZE
+ 110 .... ..
+ 110 008D 00
+ 111           	stack_top:
+ 111           	

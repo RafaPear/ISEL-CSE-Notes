@@ -1,0 +1,17 @@
+<changelist name="Uncommitted_changes_before_Update_at_06_04_2025_19_47_[Changes]" date="1743965261160" recycled="false" toDelete="true">
+  <option name="PATH" value="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_06_04_2025_19_47_[Changes]/shelved.patch" />
+  <option name="DESCRIPTION" value="Uncommitted changes before Update at 06/04/2025 19:47 [Changes]" />
+  <binary>
+    <option name="BEFORE_PATH" value="Hardware/KeyboardReader/KeyDecode/KeyScan/KeyScan.qws" />
+  </binary>
+  <binary>
+    <option name="BEFORE_PATH" value="Software/out/production/Software/HAL.class" />
+    <option name="AFTER_PATH" value="Software/out/production/Software/HAL.class" />
+    <option name="SHELVED_PATH" value="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_06_04_2025_19_47_[Changes]/HAL.class" />
+  </binary>
+  <binary>
+    <option name="BEFORE_PATH" value="Software/out/production/Software/LCD.class" />
+    <option name="AFTER_PATH" value="Software/out/production/Software/LCD.class" />
+    <option name="SHELVED_PATH" value="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_06_04_2025_19_47_[Changes]/LCD.class" />
+  </binary>
+</changelist>

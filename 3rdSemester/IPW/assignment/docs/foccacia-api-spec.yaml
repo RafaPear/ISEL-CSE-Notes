@@ -1,0 +1,577 @@
+openapi: 3.0.1
+info:
+  title: FOCCACIA
+  description: The FOCCACIA (FOotball Complete Clubs API and Chelas Internet App) service is a web-based application that aims to deliver football-related data, such as competitions, teams, and players, while also allowing users to create and manage their personalized "Best XI" groups — collections of their favorite players from specific competitions and seasons.
+  version: 1.0.0
+servers:
+  - url: http://localhost:{port}
+    variables:
+      port:
+        default: "3000"
+  - url: http://community.ddns.net:{port}
+    variables:
+      port:
+        default: "3000"
+tags:
+  - name: Competitions
+    description: Endpoints to obtain information about competitions and teams.
+  - name: Users
+    description: Operations about users.
+  - name: Groups
+    description: Operations about group management.
+  - name: Admin
+    description: Operations that are only possible with the admin token.
+security:
+  - bearerAuth: []
+paths:
+  /competitions:
+    get:
+      tags:
+        - Competitions
+      summary: Get available competitions.
+      description: Gets all available competitions.
+      operationId: getCompetitions
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Successful Operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Competition'
+        '400':
+          description: Bad Request
+        '500':
+          description: Internal Server Error
+        'default':
+          description: Error Format
+          content:
+            application/json:
+                schema:
+                  $ref: '#/components/schemas/Error'
+  /competitions/{competitionCode}/teams:
+    get:
+      tags:
+        - Competitions
+      summary: Get teams for a specific competition and season.
+      description: Get all teams for a specific competition and season. For each team, returns the team name, country, and the name and position of all its players.
+      operationId: getTeamsByCompetition
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: competitionCode
+          in: path
+          description: Code of the competition.
+          required: true
+          schema:
+            type: string
+          example: PL
+        - name: season
+          in: query
+          description: Year of the competition.
+          required: true
+          schema:
+            type: integer
+          example: 2024
+      responses:
+        '200':
+          description: Successful Operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Team'
+        '400':
+          description: Bad Request
+        '404':
+          description: Not Found
+        '500':
+          description: Internal Server Error
+        'default':
+          description: Error Format
+          content:
+            application/json:
+                schema:
+                  $ref: '#/components/schemas/Error'
+  /users:
+    post:
+      tags:
+        - Users
+      summary: Creates a new user.
+      description: Creates a new user, given their username. Returns the new user object with the username and token (UUID).
+      operationId: createUser
+      security:
+        - bearerAuth: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+            example:
+              username: username1
+        required: false
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '404':
+          description: Content Not Found
+        'default':
+          description: Error Format
+          content:
+            application/json:
+                schema:
+                  $ref: '#/components/schemas/Error'
+    get:
+      tags:
+        - Admin
+      summary: Shows all users.
+      description: Shows all users' usernames and their respective tokens.
+      operationId: getUsers
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Successful Operation
+        '404':
+          description: Content Not Found
+        '500':
+          description: Internal Server Error
+        'default':
+          description: Error Format
+          content:
+            application/json:
+                schema:
+                  $ref: '#/components/schemas/Error'
+    delete:
+      tags:
+        - Users
+      summary: Deletes a user.
+      description: Deletes a user.
+      operationId: deleteUser
+      security:
+        - bearerAuth: []
+      parameters: []
+      responses:
+        '204':
+          description: No Content
+        '400':
+          description: Bad Request
+        '404':
+          description: Content Not Found
+        'default':
+          description: Error Format
+          content:
+            application/json:
+                schema:
+                  $ref: '#/components/schemas/Error'
+  /groups:
+    post:
+      tags:
+        - Groups
+      summary: Creates a group.
+      description: Creates a group by providing its name, description, competition, and year.
+      operationId: createGroup
+      security:
+        - bearerAuth: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GroupCreate'
+        required: true
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Group'
+        '400':
+          description: Bad Request
+        'default':
+          description: Error Format
+          content:
+            application/json:
+                schema:
+                  $ref: '#/components/schemas/Error'
+    get:
+      tags:
+        - Groups
+      summary: Lists all groups.
+      description: List all groups of the user.
+      operationId: listAllGroups
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Successful Operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Group'
+        '401':
+          description: Unauthorized
+        '500':
+          description: Internal Server Error
+        'default':
+          description: Error Format
+          content:
+            application/json:
+                schema:
+                  $ref: '#/components/schemas/Error'
+  /groups/{groupId}:
+    get:
+      tags:
+        - Groups
+      summary: Gets a group's details.
+      description: Get a group's details.
+      operationId: getGroupDetails
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: groupId
+          in: path
+          description: ID of the group to get.
+          required: true
+          schema:
+            type: integer
+            example: 1
+      responses:
+        '200':
+          description: Successful Operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GroupDetails'
+        '400':
+          description: Bad Request
+        '404':
+          description: Content Not Found
+        'default':
+          description: Error Format
+          content:
+            application/json:
+                schema:
+                  $ref: '#/components/schemas/Error'
+    put:
+      tags:
+        - Groups
+      summary: Edits a group by ID.
+      description: Edits a group by changing its name and its description.
+      operationId: editGroup
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: groupId
+          in: path
+          description: ID of the group.
+          required: true
+          schema:
+            type: integer
+            example: 1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GroupEdit'
+        required: false
+      responses:
+        '200':
+          description: Successful Operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GroupNewDetails'
+        '400':
+          description: Bad Request
+        '401':
+          description: Unauthorized
+        '404':
+          description: Content Not Found
+        '500':
+          description: Internal Server Error
+        'default':
+          description: Error Format
+          content:
+            application/json:
+                schema:
+                  $ref: '#/components/schemas/Error'
+    delete:
+      tags:
+        - Groups
+      summary: Deletes a group by ID.
+      description: Delete a group by ID.
+      operationId: deleteGroup
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: groupId
+          in: path
+          description: ID of the group to be deleted.
+          required: true
+          schema:
+            type: integer
+            example: 1
+      responses:
+        '204':
+          description: No Content
+        '401':
+          description: Unauthorized
+        '404':
+          description: Content Not Found
+        'default':
+          description: Error Format
+          content:
+            application/json:
+                schema:
+                  $ref: '#/components/schemas/Error'
+  /groups/{groupId}/{playerId}:
+    post:
+      tags:
+        - Groups
+      summary: Adds a player to a certain group by ID.
+      description: Add a player to a certain group by ID.
+      operationId: addPlayer
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: groupId
+          in: path
+          description: ID of the group.
+          required: true
+          schema:
+            type: integer
+            example: 1
+        - name: playerId
+          in: path
+          description: ID of the player.
+          required: true
+          schema:
+            type: integer
+            example: 3221
+      responses:
+        '200':
+          description: Successful Operation
+        '400':
+          description: Bad Request
+        '404':
+          description: Content Not Found
+        '409':
+          description: Player already exists in the group
+        '500':
+          description: Internal Server Error
+        'default':
+          description: Error Format
+          content:
+            application/json:
+                schema:
+                  $ref: '#/components/schemas/Error'
+    delete:
+      tags:
+        - Groups
+      summary: Removes a player from a certain group by ID.
+      description: Remove a player from a certain group by ID.
+      operationId: removePlayer
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: groupId
+          in: path
+          description: ID of the group.
+          required: true
+          schema:
+            type: integer
+            example: 1
+        - name: playerId
+          in: path
+          description: ID of the player.
+          required: true
+          schema:
+            type: integer
+            example: 3221
+      responses:
+        '200':
+          description: Successful Operation
+        '400':
+          description: Bad Request
+        '401':
+          description: Unauthorized
+        '404':
+          description: Content Not Found
+        '500':
+          description: Internal Server Error
+        'default':
+          description: Error Format
+          content:
+            application/json:
+                schema:
+                  $ref: '#/components/schemas/Error'
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  schemas:
+    Competition:
+      type: object
+      properties:
+        code:
+          type: string
+          example: PL
+        name:
+          type: string
+          example: Premier League
+    Team:
+      type: object
+      properties:
+        name:
+          type: string
+          example: Manchester City FC
+        country:
+          type: string
+          example: England
+        players:
+          type: array
+          items:
+            type: object
+            properties:
+              name:
+                type: string
+                example: Rúben Dias
+              position:
+                type: string
+                example: Centre-Back
+    User:
+      type: object
+      properties:
+        username:
+          type: string
+          example: username1
+        token:
+          type: string
+          example: 23e92fd3-aec8-4806-b9c9-90f944e062e1
+    Group:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: MyGroup
+        description:
+          type: string
+          example: This is MyGroup.
+        competition:
+          $ref: '#/components/schemas/Competition'
+        year:
+          type: integer
+          example: 2025
+        owner:
+          type: string
+          example: user1
+    NewGroup:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: NewMyGroup
+        description:
+          type: string
+          example: This is NewMyGroup.
+        competition:
+          $ref: '#/components/schemas/Competition'
+        year:
+          type: integer
+          example: 2025
+        owner:
+          type: string
+          example: user1
+    GroupCreate:
+      type: object
+      required:
+        - name
+        - description
+        - competition
+        - year
+      properties:
+        name:
+          type: string
+          example: MyGroup
+        description:
+          type: string
+          example: This is MyGroup.
+        competition:
+          type: string
+          example: PL
+        year:
+          type: integer
+          example: 2025
+    GroupEdit:
+      type: object
+      properties:
+        name:
+          type: string
+          example: NewMyGroup
+        description:
+          type: string
+          example: This is NewMyGroup.
+    GroupDetails:
+      allOf:
+        - $ref: '#/components/schemas/GroupEdit'
+        - type: object
+          properties:
+            players:
+              type: array
+              items:
+                $ref: '#/components/schemas/Player'
+    GroupNewDetails:
+      allOf:
+        - $ref: '#/components/schemas/NewGroup'
+        - type: object
+          properties:
+            players:
+              type: array
+              items:
+                $ref: '#/components/schemas/Player'
+    Player:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 11
+        name:
+          type: string
+          example: Rúben Dias
+        position:
+          type: string
+          example: Centre-Back
+        nationality:
+          type: string
+          example: Portugal
+        age:
+          type: integer
+          example: 26
+        teamId:
+          type: integer
+          example: 43
+    Error:
+      type: object
+      properties:
+        error:
+          type: string
+        cause:
+          type: string
+x-original-swagger-version: '2.0'

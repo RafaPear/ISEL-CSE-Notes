@@ -1,0 +1,306 @@
+P16 assembler v1.5 (Feb  9 2024)	d:\1-ISEL\Semestre_2\AC\Trabalhos\AC_Trabalho1_Grupo1\src\main.lst	Sun Mar 30 21:59:03 2025
+
+Sections
+Index   Name            Address   Size
+0       .text           0000      00F8 248
+1       .data           00F8      000E 14
+2       .stack          0106      0028 40
+
+Symbols
+Name                    Type      Value       Section
+line#13                 LABEL     0002 2      .text
+main                    LABEL     00D0 208    .text
+main_end                LABEL     00F4 244    .text
+main_for                LABEL     00DC 220    .text
+main_for_init           LABEL     00DA 218    .text
+mod                     LABEL     0074 116    .text
+mod_end                 LABEL     0084 132    .text
+mod_loop                LABEL     007E 126    .text
+N                       ABSOLUTE  0005 5      .text
+program                 LABEL     00CA 202    .text
+rand                    LABEL     008A 138    .text
+RAND_MAX                ABSOLUTE  00FF 255    .text
+result                  LABEL     00F8 248    .data
+result_addr             LABEL     00F6 246    .text
+seed                    LABEL     0102 258    .data
+seed_addr               LABEL     00C8 200    .text
+srand                   LABEL     0068 104    .text
+STACK_SIZE              ABSOLUTE  0028 40     .text
+stack_top               LABEL     012E 302    .stack
+stack_top_addr          LABEL     00CE 206    .text
+umull32                 LABEL     0004 4      .text
+umull32_else_if         LABEL     0036 54     .text
+umull32_for             LABEL     001E 30     .text
+umull32_for_end         LABEL     0056 86     .text
+umull32_if              LABEL     0024 36     .text
+umull32_if_end          LABEL     0046 70     .text
+
+Code listing
+   1           	; 1.º Trabalho de Avaliação - Programação do Assembly do P16 - Arquitetura de Computadores
+   2           	; Professor: João Patriarca
+   3           	; Realizado por: Gustavo Costa, n.º 52808 # LEIC24D // Rafael Pereira, n.º 52880 # LEIC24D
+   4           	
+   5           	
+   6          	.equ STACK_SIZE, 40 ; Tamanho do stack (em bytes)
+   7          	.equ RAND_MAX, 0xFF ; Valor máximo para rand (8 bits)
+   8          	.equ N, 5 ; Número de iterações a realizar no loop principal
+   9           	
+  10           	    .text
+  11           	
+  12 0000 64 58	    b   program ; Salta para a função principal (main)
+  13 0002 FF 5B	    b . ; Reservado (ISR)
+  14           	
+  15           	    ; -------------------------------------------------------------
+  16           	    ; Função: umull32
+  17           	    ; Descrição: Multiplicação de 2 números de 32 bits
+  18           	    ; Entradas: r0, r1 => M (multiplicando)
+  19           	    ;           r2, r3 => m (multiplicador)
+  20           	    ; Internos: r6 => temp_A
+  21           	    ;           r7 => temp_B
+  22           	    ;           r8 => p_1
+  23           	    ;           r9 => i
+  24           	    ; Saídas: r4, r3, r2, r1 => M * m (resultado da multiplicação)
+  25           	    ; -------------------------------------------------------------
+  26           	
+  27           	    umull32:
+  28 0004 0E 24	        push lr ; Salva o link register
+  29 0006 04 24	        push r4 ; Salva r4 no stack
+  30 0008 05 24	        push r5 ; Salva r5 no stack
+  31 000A 06 24	        push r6 ; Salva r6 no stack
+  32 000C 07 24	        push r7 ; Salva r7 no stack
+  33 000E 08 24	        push r8 ; Salva r8 no stack
+  34 0010 09 24	        push r9 ; Salva r9 no stack
+  35           	
+  36           	        ; Como o R3 e R2 já representam o N,
+  37           	        ; para fazer int64_t p = N apenas preciso
+  38           	        ; de colocar os restantes registos de maior peso = 0,
+  39           	        ; ou seja, r5 e r4 = 0
+  40           	
+  41 0012 04 60	        mov r4, #0  ; Inicializa r4 com o valor 0
+  42 0014 05 60	        mov r5, #0  ; Inicializa r5 com o valor 0
+  43           	
+  44 0016 06 60	        mov r6, #0  ; Inicializa temp_A
+  45 0018 07 60	        mov r7, #0  ; Inicializa temp_B
+  46 001A 08 60	        mov r8, #0  ; Inicializa p_1
+  47 001C 09 60	        mov r9, #0  ; Inicializa i
+  48           	    
+  49           	    umull32_for:
+  50 001E 06 62	        mov r6, #32 ; Define r6 com o valor 32
+  51 0020 E0 BC	        cmp r6, r9  ; Compara r6 com r9 (32 com i)
+  52 0022 19 40	        beq umull32_for_end ; Se forem iguais (i == 32), salta para o fim do loop
+  53           	
+  54           	    umull32_if:
+  55 0024 16 60	        mov r6, #1  ; Define r6 com o valor 1
+  56 0026 27 C3	        and r7, r2, r6  ; Faz um and bit a bit entre r2 e r6 (r2 & 1) e armazena em r7
+  57 0028 06 44	        bzc umull32_else_if ; Se r7 for zero, salta para o else if
+  58           	
+  59 002A 16 60	        mov r6, #1  ; Define r6 com o valor 1
+  60 002C 60 BC	        cmp r6, r8  ; Compara r6 com r8 (1 com p_1)
+  61 002E 03 44	        bzc umull32_else_if ; Se forem iguais (p_1 == 1), salta para o else if
+  62           	
+  63 0030 44 80	        add r4, r4, r0  ; Adiciona r0 a r4
+  64 0032 D5 90	        adc r5, r5, r1  ; Adiciona r1 a r5 com carry
+  65 0034 08 58	        b umull32_if_end    ; Salta para o fim do if
+  66           	
+  67           	    umull32_else_if:
+  68           	
+  69 0036 16 60	        mov r6, #1  ; Define r6 com o valor 1
+  70 0038 27 C3	        and r7, r2, r6  ; Faz um and bit a bit entre r2 e r6 (r2 & 1) e armazena em r7
+  71 003A 05 40	        bzs umull32_if_end  ; Se r7 for zero, salta para o fim do if
+  72           	
+  73 003C 06 60	        mov r6, #0  ; Define r6 com o valor 0
+  74 003E 60 BC	        cmp r6, r8  ; Compara r6 com r8 (0 com p_1)
+  75 0040 02 44	        bzc umull32_if_end  ; Se forem iguais (p_1 == 0), salta para o fim do if
+  76           	
+  77 0042 44 88	        sub r4, r4, r0  ; Subtrai r0 de r4
+  78 0044 D5 98	        sbc r5, r5, r1  ; Subtrai r1 de r5 com borrow
+  79           	
+  80           	    umull32_if_end:
+  81           	
+  82 0046 16 60	        mov r6, #1  ; Define r6 com o valor 1
+  83 0048 28 C3	        and r8, r2, r6  ; Faz um and bit a bit entre r2 e r6 (r2 & 1) e armazena em r8
+  84           	
+  85 004A D5 F0	        asr r5, r5, #1  ; Faz um shift aritmético à direita em r5 (r5 >> 1)
+  86 004C 44 D8	        rrx r4, r4  ; Rotaciona r4 com carry
+  87 004E 33 D8	        rrx r3, r3  ; Rotaciona r3 com carry
+  88 0050 22 D8	        rrx r2, r2  ; Rotaciona r2 com carry
+  89           	
+  90 0052 E9 84	        add r9, r6, r9  ; Adiciona r6 a r9 (i + 1) - incrementa i
+  91 0054 E4 5B	        b umull32_for   ; Salta para o início do loop
+  92           	
+  93           	    umull32_for_end:
+  94 0056 00 B1	        mov r0, r2  ; Armazena o resultado em r0
+  95 0058 81 B1	        mov r1, r3  ; Armazena o resultado em r1
+  96           	
+  97 005A 09 04	        pop r9  ; Restaura r9 do stack
+  98 005C 08 04	        pop r8  ; Restaura r8 do stack
+  99 005E 07 04	        pop r7  ; Restaura r7 do stack
+ 100 0060 06 04	        pop r6  ; Restaura r6 do stack
+ 101 0062 05 04	        pop r5  ; Restaura r5 do stack
+ 102 0064 04 04	        pop r4  ; Restaura r4 do stack
+ 103 0066 0F 04	        pop pc  ; Retorna da função
+ 104           	
+ 105           	    ; --------------------------------------------------------
+ 106           	    ; Função: srand
+ 107           	    ; Descrição: Inicializa o gerador de números aleatórios
+ 108           	    ; Entradas: r0, r1 => seed
+ 109           	    ; Saídas: r0, r1 => seed (atualizada)
+ 110           	    ; --------------------------------------------------------
+ 111           	
+ 112           	    srand:
+ 113 0068 04 24	        push r4 ; Salva r4 no stack
+ 114 006A E4 0E	        ldr r4, seed_addr   ; Carrega o endereço da seed
+ 115 006C 40 20	        str r0, [r4]    ; Armazena a seed [parte baixa]
+ 116 006E C1 20	        str r1, [r4, #2]    ; Armazena a seed [parte alta]
+ 117 0070 04 04	        pop r4  ; Restaura r4 do stack
+ 118 0072 0F B7	        mov pc, lr  ; Retorna da função
+ 119           	
+ 120           	    ; --------------------------------------------------------
+ 121           	    ; Função: mod
+ 122           	    ; Descrição: Calcula o módulo de um número de 64 bits
+ 123           	    ; Entradas: r0, r1 => M (dividendo)
+ 124           	    ;           r2, r3 => m (divisor)
+ 125           	    ; Saídas: r0, r1 => M % m (resultado do módulo)
+ 126           	    ; --------------------------------------------------------
+ 127           	
+ 128           	    mod:
+ 129 0074 04 24	        push r4 ; Salva r4 no stack
+ 130 0076 05 24	        push r5 ; Salva r5 no stack
+ 131 0078 04 89	        sub r4, r0, r2  ; r4 = M - m
+ 132 007A 95 99	        sbc r5, r1, r3  ; r5 = M - m (com borrow)
+ 133 007C 03 4C	        bcc mod_end ; Se carry, i.e. se o resultado for negativo, salta para o fim do módulo
+ 134           	    mod_loop:
+ 135 007E 00 89	        sub r0, r0, r2  ; r0 = M - m
+ 136 0080 91 99	        sbc r1, r1, r3  ; r1 = M - m (com borrow)
+ 137 0082 FD 4B	        bcs mod_loop    ; Se houver carry, continua o loop
+ 138           	    mod_end:
+ 139 0084 05 04	        pop r5  ; Restaura r5 do stack
+ 140 0086 04 04	        pop r4  ; Restaura r4 do stack
+ 141 0088 0F B7	        mov pc, lr  ; Retorna da função
+ 142           	
+ 143           	    ; --------------------------------------------------------
+ 144           	    ; Função: rand
+ 145           	    ; Descrição: Gera um número aleatório, basado na seed
+ 146           	    ; Saída: r0 => rand_number (número aleatório gerado)
+ 147           	    ; --------------------------------------------------------
+ 148           	
+ 149           	    rand:
+ 150 008A 0E 24	        push lr ; Salva o link register
+ 151 008C 01 24	        push r1 ; Salva r1 no stack
+ 152 008E 02 24	        push r2 ; Salva r2 no stack
+ 153 0090 03 24	        push r3 ; Salva r3 no stack
+ 154 0092 04 24	        push r4 ; Salva r4 no stack
+ 155 0094 05 24	        push r5 ; Salva r5 no stack
+ 156           	
+ 157 0096 84 0D	        ldr r4, seed_addr   ; Carrega o endereço da seed
+ 158 0098 F5 6F	        mov r5, #RAND_MAX   ; Carrega RAND_MAX (0xFF) para r5
+ 159 009A F5 7F	        movt r5, #RAND_MAX  ; Carrega RAND_MAX (0xFF) para r5 (parte superior)
+ 160           	
+ 161 009C 40 00	        ldr r0, [r4]    ; Carrega a seed [parte baixa] para r0
+ 162 009E C1 00	        ldr r1, [r4, #2]    ; Carrega a seed [parte alta] para r1
+ 163           	
+ 164           	        ; prepara para umull32: seed * 214013
+ 165           	        ; 214013 = 0x000343FD (32 bits)
+ 166 00A0 D2 6F	        mov r2, #0xFD   ; parte inferior
+ 167 00A2 32 74	        movt r2, #0x43  ; parte superior
+ 168 00A4 33 60	        mov r3, #0x03   ; parte inferior
+ 169 00A6 AE 5F	        bl umull32  ; seed * 214013
+ 170           	
+ 171           	        ; adiciona 2531011 (0x00269EC3) ao resultado
+ 172           	        ; para 64 bits, é preciso carry
+ 173 00A8 32 6C	        mov r2, #0xC3   ; parte inferior
+ 174 00AA E2 79	        movt r2, #0x9E  ; parte superior
+ 175 00AC 63 62	        mov r3, #0x26   ; parte inferior
+ 176 00AE 00 81	        add r0, r0, r2  ; adiciona a constante ao resultado
+ 177 00B0 91 91	        adc r1, r1, r3  ; adiciona a constante ao resultado (com carry)
+ 178           	
+ 179 00B2 82 B2	        mov r2, r5  ; Prepara para o módulo
+ 180 00B4 83 B2	        mov r3, r5  ; Prepara para o módulo
+ 181           	
+ 182 00B6 DE 5F	        bl mod  ; Faz o módulo ((r0, r1) % (r2, r3))
+ 183 00B8 D7 5F	        bl srand    ; Atualiza a seed com o novo valor (r0, r1)
+ 184           	
+ 185           	        ; Retorna o resultado (seed >> 16)
+ 186 00BA 80 B0	        mov r0, r1  ; Retorna os 16 bits superiores
+ 187           	        
+ 188 00BC 05 04	        pop r5  ; Restaura r5 do stack
+ 189 00BE 04 04	        pop r4  ; Restaura r4 do stack
+ 190 00C0 03 04	        pop r3  ; Restaura r3 do stack
+ 191 00C2 02 04	        pop r2  ; Restaura r2 do stack
+ 192 00C4 01 04	        pop r1  ; Restaura r1 do stack
+ 193 00C6 0F 04	        pop pc  ; Retorna da função
+ 194           	
+ 195 00C8 02 01	    seed_addr: .word seed   ; Endereço da seed
+ 196           	
+ 197           	    program:
+ 198 00CA 1D 0C	        ldr sp, stack_top_addr  ; Inicializa o stack pointer (topo do stack)
+ 199 00CC 01 58	        b main  ; Salta para a função principal (main)
+ 200           	    stack_top_addr:
+ 201 00CE 2E 01	        .word stack_top ; Endereço do topo do stack
+ 202           	
+ 203           	    ; --------------------------------------------------------------------
+ 204           	    ; Função: main
+ 205           	    ; Descrição: Função principal do programa que compara números gerados
+ 206           	    ; --------------------------------------------------------------------
+ 207           	
+ 208           	main:
+ 209           	    ; -------- Variáveis --------
+ 210           	    ; r0 => rand_number
+ 211           	    ; r2 => temp_A
+ 212           	    ; r3 => temp_B
+ 213           	    ; r6 => i
+ 214           	    ; r5 => error
+ 215           	    ; ---------------------------
+ 216 00D0 05 60	    mov r5, #0  ; Inicializa r5 com 0 (error = 0)
+ 217           	
+ 218           	    ; Parametros para o srand
+ 219 00D2 F0 62	    mov r0, #0x2F  ; r0 = 47
+ 220 00D4 50 71	    movt r0, #0x15 ; r0 = 5423
+ 221 00D6 01 60	    mov r1, #0     ; r1 = 0
+ 222           	
+ 223 00D8 C7 5F	    bl srand    ; Inicializa o gerador de números aleatórios com a seed (r0, r1)
+ 224           	
+ 225           	
+ 226           	main_for_init:
+ 227 00DA 04 60	    mov r4, #0 ; Inicializa i = 0
+ 228           	
+ 229           	main_for:
+ 230 00DC 52 60	    mov r2, #N  ; r2 = N (5)
+ 231 00DE 40 B9	    cmp r4, r2  ; Compara i com N
+ 232           	    ; predefine r0 = 0 para error = 0 caso
+ 233           	    ; a condicao se verifique
+ 234 00E0 09 48	    bhs main_end   ; Se i >= N, salta para o fim do loop
+ 235           	
+ 236 00E2 D3 5F	    bl rand ; Chama a função rand para obter um número aleatório
+ 237           	    
+ 238 00E4 82 0C	    ldr r2, result_addr ; Carrega o endereço da variável result
+ 239 00E6 C3 E0	    lsl r3, r4, #1  ; i * 2 para indexar corretamente
+ 240 00E8 A3 11	    ldr r3, [r2, r3]    ; Carrega o valor de result[i] para r3
+ 241 00EA C4 A0	    add r4, r4, #1  ; Incrementa i (i++)
+ 242 00EC 80 B9	    cmp r0, r3  ; Compara o número aleatório (r0) com result[i] (r3)
+ 243 00EE F6 43	    bzs main_for    ; Se r0 <= result[i], salta para o início do loop
+ 244 00F0 15 60	    mov r5, #1  ; Se r0 > result[i], define error = 1
+ 245 00F2 00 58	    b main_end ; Salta para o fim do programa
+ 246           	
+ 247           	main_end:
+ 248 00F4 00 60	    mov r0, #0 ; return 0
+ 249           	
+ 250 00F6 F8 00	    result_addr: .word result   ; Endereço do array result
+ 251           	
+ 252           	    .data  ; Variáveis globais
+ 253           	
+ 254           	    result:
+ 255          	        .word 17747, 2055, 3664, 15611, 981 ; Valores esperados
+ 255 00F8 53 45 07 08 50 0E FB 3C D5 03
+ 256           	    
+ 257           	    seed:
+ 258          	        .word 1, 0  ; Seed do gerador de números aleatórios
+ 258 0102 01 00 00 00
+ 259           	
+ 260           	    .stack
+ 261           	
+ 262 0106 00   	    .space  STACK_SIZE  ; Espaço reservado para o stack
+ 262 .... ..
+ 262 012D 00
+ 263           	stack_top:
+ 263           	

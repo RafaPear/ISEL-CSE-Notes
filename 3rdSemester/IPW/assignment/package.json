@@ -1,0 +1,34 @@
+{
+  "name": "isel-leic-ipw-pi-2526i-foccacia-leic2526i-ipw32d-g01",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha ./src/test",
+    "start": "node ./src/main/foccacia-server.mjs"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/isel-leic-ipw/isel-leic-ipw-pi-2526i-foccacia-leic2526i-ipw32d-g01.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/isel-leic-ipw/isel-leic-ipw-pi-2526i-foccacia-leic2526i-ipw32d-g01/issues"
+  },
+  "homepage": "https://github.com/isel-leic-ipw/isel-leic-ipw-pi-2526i-foccacia-leic2526i-ipw32d-g01#readme",
+  "type": "module",
+  "devDependencies": {
+    "chai": "^6.2.0",
+    "mocha": "^11.7.4",
+    "sinon": "^21.0.0"
+  },
+  "dependencies": {
+    "dotenv": "^17.2.3",
+    "express": "^5.1.0",
+    "js-yaml": "^4.1.0",
+    "swagger-autogen": "^2.23.7",
+    "swagger-ui-express": "^5.0.1"
+  }
+}

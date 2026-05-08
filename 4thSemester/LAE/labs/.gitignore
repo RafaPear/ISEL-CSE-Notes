@@ -1,0 +1,7 @@
+.kotlin
+.idea
+bin/
+
+.gradle
+
+build

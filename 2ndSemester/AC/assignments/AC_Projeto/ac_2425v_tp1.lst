@@ -1,0 +1,304 @@
+P16 assembler v1.5 (Feb  9 2024)	d:\1-ISEL\Semestre_2\AC\Trabalhos\AC_Projeto\ac_2425v_tp1.lst	Wed Jun 04 13:16:56 2025
+
+Sections
+Index   Name            Address   Size
+0       .text           0000      00E4 228
+1       .data           00E4      000E 14
+2       .stack          00F2      0040 64
+
+Symbols
+Name                    Type      Value       Section
+line#22                 LABEL     0002 2      .text
+line#26                 LABEL     0008 8      .text
+main                    LABEL     00A8 168    .text
+main_loop               LABEL     00BA 186    .text
+main_ret                LABEL     00DA 218    .text
+main_skip_if            LABEL     00D6 214    .text
+N                       ABSOLUTE  0005 5      .text
+program                 LABEL     0004 4      .text
+rand                    LABEL     006A 106    .text
+RAND_MAX_H              ABSOLUTE  FFFF 65535  .text
+RAND_MAX_L              ABSOLUTE  FFFF 65535  .text
+rand_save_seed          LABEL     009C 156    .text
+result                  LABEL     00E4 228    .data
+result_addr             LABEL     00E2 226    .text
+seed                    LABEL     00EE 238    .data
+seed_addr_rand          LABEL     00A6 166    .text
+seed_addr_srand         LABEL     0068 104    .text
+srand                   LABEL     0060 96     .text
+STACK_SIZE              ABSOLUTE  0040 64     .text
+stack_top               LABEL     0132 306    .stack
+stack_top_addr          LABEL     000A 10     .text
+umull32                 LABEL     000C 12     .text
+umull32_else            LABEL     0036 54     .text
+umull32_loop            LABEL     001E 30     .text
+umull32_loop_end        LABEL     0040 64     .text
+umull32_ret             LABEL     0050 80     .text
+
+Code listing
+   1           	; Ficheiro:  ac_2425v_tp1.s
+   2           	; Descricao: Exemplo de solucao para o Trabalho Pratico 1 de Arquitetura de
+   3           	;            Computadores do semestre de verao do ano letivo 2024/2025.
+   4           	; Autor:     Tiago M Dias (tiago.dias@isel.pt)
+   5           	; Data:      31-05-2025
+   6           	
+   7           	; Definicao dos valores dos simbolos utilizados no programa
+   8           	;
+   9          		.equ	STACK_SIZE, 64			; Dimensao do stack, em bytes
+  10           	
+  11          			.equ	RAND_MAX_L, 0xFFFF		; Corresponde ao maior valor inteiro
+  12          			.equ	RAND_MAX_H, 0xFFFF		; sem sinal codificavel com 32 bits
+  13           	
+  14          		.equ	N, 5
+  15           	
+  16           	
+  17           	; Seccao:    text
+  18           	; Descricao: Guarda o codigo do programa
+  19           	;
+  20           		.text
+  21 0000 01 58		b	program
+  22 0002 FF 5B		b	.		; Reservado para a ISR
+  23           	program:
+  24 0004 2D 0C		ldr	sp, stack_top_addr
+  25 0006 50 5C		bl	main
+  26 0008 FF 5B		b	.
+  27           	
+  28           	stack_top_addr:
+  29 000A 32 01		.word	stack_top
+  30           	
+  31           	; Rotina:    umull32
+  32           	; Descricao: Realiza a multiplicacao de dois numeros naturais codificados com
+  33           	;            32 bits.
+  34           	;            Interface exemplo: uint32_t umull( uint32_t M, uint32_t m );
+  35           	; Entradas:  R1:R0 - Valor do multiplicando (M)
+  36           	;            R3:R2 - Valor do multiplicador (m)
+  37           	; Saidas:    R1:R0 - Valor do produto
+  38           	; Efeitos:   R5:R4 - Parte alta (bits 63..32) do produto (p), pois R3:R2 contem
+  39           	;                    a parte baixa (bits 31..0)
+  40           	;            R6    - Mapeia a variavel p_1
+  41           	;            R7    - guarda o valor da iteracao do ciclo for (i)
+  42           	;            R8    - guarda valores temporariamente
+  43           	;
+  44           	umull32:
+  45           		; Prologo
+  46 000C 08 24		push	r8
+  47 000E 07 24		push	r7
+  48 0010 06 24		push	r6
+  49 0012 05 24		push	r5
+  50 0014 04 24		push	r4
+  51           	
+  52           		; Iniciar p fazendo a extensao de sinal aos 16 MSb
+  53 0016 B4 F7		asr	r4, r3, #15
+  54 0018 05 B2		mov	r5, r4
+  55           		; Inicia p_1
+  56 001A 06 60		mov	r6, #0
+  57           		; Implementacao do ciclo for
+  58 001C 07 60		mov	r7, #0	; Inicia i
+  59           	umull32_loop:
+  60 001E 08 62		mov	r8, #32	; Avaliar o limite maximo de i
+  61 0020 70 BC		cmp	r7, r8
+  62 0022 16 48		bhs	umull32_ret
+  63           		; Implementacao do if
+  64 0024 18 60		mov	r8, #1
+  65 0026 28 C4		and	r8, r2, r8
+  66 0028 06 44		bzc	umull32_else
+  67 002A 18 60		mov	r8, #1
+  68 002C 60 BC		cmp	r6, r8
+  69 002E 08 44		bne	umull32_loop_end
+  70 0030 44 80		add	r4, r4, r0	; Atualizar o valor de p
+  71 0032 D5 90		adc	r5, r5, r1
+  72 0034 05 58		b	umull32_loop_end
+  73           	umull32_else:
+  74           		; Implementacao otimizada do else
+  75 0036 08 60		mov	r8, #0
+  76 0038 60 BC		cmp	r6, r8
+  77 003A 02 44		bne	umull32_loop_end
+  78 003C 44 88		sub	r4, r4, r0	; Atualizar o valor de p
+  79 003E D5 98		sbc	r5, r5, r1
+  80           	umull32_loop_end:
+  81 0040 18 60		mov	r8, #1	; Definir o novo valor de p_1
+  82 0042 26 C4		and	r6, r2, r8
+  83 0044 D5 F0		asr	r5, r5, #1
+  84 0046 44 D8		rrx	r4, r4
+  85 0048 33 D8		rrx	r3, r3
+  86 004A 22 D8		rrx	r2, r2
+  87 004C F7 A0		add	r7, r7, #1	; Incrementar i
+  88 004E E7 5B		b	umull32_loop
+  89           	
+  90           	umull32_ret:
+  91           		; Epilogo
+  92 0050 00 B1		mov	r0, r2	; Preparar o valor a devolver
+  93 0052 81 B1		mov	r1, r3
+  94           	
+  95 0054 04 04		pop	r4
+  96 0056 05 04		pop	r5
+  97 0058 06 04		pop	r6
+  98 005A 07 04		pop	r7
+  99 005C 08 04		pop	r8
+ 100 005E 0F B7		mov	pc, lr
+ 101           	
+ 102           	; Rotina:    srand
+ 103           	; Descricao: Afeta a variavel global seed com um novo valor (semente),
+ 104           	;            recebido por parametro.
+ 105           	;            Interface exemplo: void srand( uint32_t nseed );
+ 106           	; Entradas:  R0 - Parte baixa (bits 0..15) do novo valor de seed
+ 107           	;            R1 - Parte alta (bits 16..31) do novo valor de seed
+ 108           	; Saidas:    -
+ 109           	; Efeitos:   Altera o valor da variavel global seed
+ 110           	;            R2 - guarda valores temporariamente
+ 111           	;
+ 112           	srand:
+ 113 0060 32 0C		ldr	r2, seed_addr_srand
+ 114 0062 20 20		str	r0, [r2, #0]
+ 115 0064 A1 20		str	r1, [r2, #2]
+ 116 0066 0F B7		mov	pc, lr
+ 117           	
+ 118           	seed_addr_srand:
+ 119 0068 EE 00		.word	seed
+ 120           	
+ 121           	; Rotina:    rand
+ 122           	; Descricao: Implementa um gerador congruencial linear (LCG) para gerar numeros
+ 123           	;            pseudo-aleatorios entre zero e RAND_MAX.
+ 124           	;            Interface exemplo: uint16_t rand( void );
+ 125           	; Entradas:  -
+ 126           	; Saidas:    R0 - O valor pseudo-aleatorio gerado
+ 127           	; Efeitos:   Altera o valor da variavel global seed
+ 128           	;            R0 - guarda valores temporariamente
+ 129           	;            R1 - guarda valores temporariamente
+ 130           	;            R2 - guarda valores temporariamente
+ 131           	;            R3 - guarda valores temporariamente
+ 132           	;
+ 133           	rand:
+ 134           		; Prologo
+ 135 006A 0E 24		push	lr
+ 136           		; Obter o valor atual de seed
+ 137 006C C2 0D		ldr	r2, seed_addr_rand
+ 138 006E 20 00		ldr	r0, [r2, #0]
+ 139 0070 A1 00		ldr	r1, [r2, #2]
+ 140           		; Calcular a multiplicacao a 32 bits
+ 141 0072 D2 6F		mov	r2, #( 0x43FD >> 0 ) & 0xFF	; Carregar o valor 214013
+ 142 0074 32 74		movt	r2, #( 0x43FD >> 8 ) & 0xFF
+ 143 0076 33 60		mov	r3, #( 0x0003 >> 0 ) & 0xFF
+ 144 0078 03 70		movt	r3, #( 0x0003 >> 8 ) & 0xFF
+ 145 007A C8 5F		bl	umull32
+ 146           		; Calcular a adicao a 32 bits
+ 147 007C 32 6C		mov	r2, #( 0x9EC3 >> 0 ) & 0xFF	; Carregar o valor 2531011
+ 148 007E E2 79		movt	r2, #( 0x9EC3 >> 8 ) & 0xFF
+ 149 0080 63 62		mov	r3, #( 0x0026 >> 0 ) & 0xFF
+ 150 0082 03 70		movt	r3, #( 0x0026 >> 8 ) & 0xFF
+ 151 0084 00 81		add	r0, r0, r2
+ 152 0086 91 91		adc	r1, r1, r3
+ 153           	
+ 154           	    ; Nao e necessario implementar a divisao modulo, pois a operacao realizada
+ 155           	    ; com valores de 32 bits nunca ultrapassa o valor RAND_MAX (0xFFFFFFFF).
+ 156           	    ; No entanto, a operacao % RAND_MAX deve devolver 0 quando o novo valor de
+ 157           	    ; seed e exatamente igual a RAND_MAX. Assim, e suficiente verificar este
+ 158           	    ; caso e forcar seed a zero.
+ 159 0088 F2 6F		mov	r2, #( RAND_MAX_L >> 0 ) & 0xFF
+ 160 008A F2 7F		movt	r2, #( RAND_MAX_L >> 8 ) & 0xFF
+ 161 008C 00 B9		cmp r0, r2
+ 162 008E 06 44		bne rand_save_seed
+ 163 0090 F3 6F		mov	r3, #( RAND_MAX_H >> 0 ) & 0xFF
+ 164 0092 F3 7F		movt	r3, #( RAND_MAX_H >> 8 ) & 0xFF
+ 165 0094 90 B9		cmp r1, r3
+ 166 0096 02 44		bne rand_save_seed
+ 167 0098 00 60		mov r0, #0  	; Atribuir a seed o valor 0
+ 168 009A 01 60		mov r1, #0
+ 169           	
+ 170           	rand_save_seed:
+ 171           		; Atualizar o valor de seed
+ 172 009C 42 0C		ldr	r2, seed_addr_rand
+ 173 009E 20 20		str	r0, [r2, #0]
+ 174 00A0 A1 20		str	r1, [r2, #2]
+ 175           		; Epilogo
+ 176 00A2 80 B0		mov	r0, r1	; Preparar o valor a devolver (16 MSb do valor)
+ 177 00A4 0F 04		pop	pc
+ 178           	
+ 179           	seed_addr_rand:
+ 180 00A6 EE 00		.word	seed
+ 181           	
+ 182           	; Rotina:    main
+ 183           	; Descricao: Implementa o programa de teste para a rotina rand.
+ 184           	;            Interface exemplo: int main( void );
+ 185           	; Entradas:  -
+ 186           	; Saidas:    -
+ 187           	; Efeitos:   R0 - guarda valores temporariamente
+ 188           	;            R1 - guarda valores temporariamente
+ 189           	;            R2 - guarda valores temporariamente
+ 190           	;            R3 - guarda valores temporariamente
+ 191           	;            R4 - mapeia a variavel error
+ 192           	;            R5 - guarda o valor da iteracao do ciclo for (i)
+ 193           	;
+ 194           	main:
+ 195           		; Prologo
+ 196 00A8 0E 24		push	lr
+ 197 00AA 05 24		push	r5
+ 198 00AC 04 24		push	r4
+ 199           	
+ 200 00AE 04 60		mov	r4, #0	; Iniciar error
+ 201           		; Iniciar seed com o valor 5423
+ 202 00B0 F0 62		mov	r0, #( 5423 >> 0 ) & 0xFF	; Carregar o valor 5423 (tipo uint32_t)
+ 203 00B2 50 71		movt	r0, #( 5423 >> 8 ) & 0xFF
+ 204 00B4 01 60		mov	r1, #0
+ 205 00B6 D4 5F		bl	srand
+ 206           		; Implementacao do ciclo for
+ 207 00B8 05 60		mov	r5, #0	; Iniciar i
+ 208           	main_loop:
+ 209           		; Avaliar se error ainda toma o valor zero
+ 210 00BA 00 60		mov	r0, #0
+ 211 00BC 40 B8		cmp	r4, r0
+ 212 00BE 0D 44		bne	main_ret
+ 213           		; Avaliar se o valor de i ainda e inferior a N
+ 214           		; Nota: Considera-se que N pode tomar qualquer valor no dominio de i
+ 215 00C0 50 60		mov	r0, #( N >> 0 ) & 0xFF
+ 216 00C2 00 70		movt	r0, #( N >> 8 ) & 0xFF
+ 217 00C4 50 B8		cmp	r5, r0
+ 218 00C6 09 48		bhs	main_ret
+ 219           		; Obter um novo numero pseudo-aleatorio 
+ 220 00C8 D0 5F		bl	rand
+ 221           		; Avaliar se o numero pseudo-aleatorio corresponde ao valor esperado
+ 222 00CA B1 0C		ldr	r1, result_addr
+ 223 00CC D2 E0		lsl	r2, r5, #1
+ 224 00CE 13 11		ldr	r3, [r1, r2]
+ 225 00D0 80 B9		cmp	r0, r3
+ 226 00D2 01 40		beq	main_skip_if
+ 227 00D4 14 60		mov	r4, #1	; Atribuir o valor 1 a error
+ 228           	main_skip_if:
+ 229 00D6 D5 A0		add	r5, r5, #1
+ 230 00D8 F0 5B		b	main_loop
+ 231           	main_ret:
+ 232           		; Epilogo
+ 233 00DA 00 60		mov	r0, #0	; Preparar o valor a devolver
+ 234 00DC 04 04		pop	r4
+ 235 00DE 05 04		pop	r5
+ 236 00E0 0F 04		pop	pc
+ 237           	
+ 238           	result_addr:
+ 239 00E2 E4 00		.word	result
+ 240           	
+ 241           	; Seccao:    data
+ 242           	; Descricao: Guarda as variaveis globais
+ 243           	;
+ 244           		.data
+ 245           		; Definicao do array com os resultados para teste, do tipo uint16_t
+ 246           	result:
+ 247          		.word	17747, 2055, 3664, 15611, 9816
+ 247 00E4 53 45 07 08 50 0E FB 3C 58 26
+ 248           	
+ 249           		; Definicao da variavel global do tipo uint32_t com valor inicial 1
+ 250           		; Como o processador P16 utiliza ordenacao little endian, o byte menos
+ 251           		; significativo (LSB) é armazenado no endereço mais baixo, logo, o valor
+ 252           		; um (0x00000001) é escrito primeiro
+ 253           	seed:
+ 254          		.word	1, 0
+ 254 00EE 01 00 00 00
+ 255           	
+ 256           	; Seccao:    stack
+ 257           	; Descricao: Implementa a pilha com a dimensao definida pelo simbolo STACK_SIZE
+ 258           	;
+ 259           		.stack
+ 260 00F2 00   		.space	STACK_SIZE
+ 260 .... ..
+ 260 0131 00
+ 261           	stack_top:
+ 261           	

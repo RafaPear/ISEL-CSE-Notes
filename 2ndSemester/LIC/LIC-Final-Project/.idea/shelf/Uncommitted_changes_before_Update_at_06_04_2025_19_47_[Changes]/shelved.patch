@@ -1,0 +1,669 @@
+Index: Simul.properties
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>#Sat Apr 05 20:40:52 WEST 2025\r\nSimDig=839,105\r\nSimDig_SIZE=654,508\r\nUsbPort=-1,0\r\nd7s=284,1\r\ndec=160,1\r\nkbd=182,-1\r\nkit=105,227\r\nlcd=58,249\r\nlcd_SIZE=550,179\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>ISO-8859-1
+===================================================================
+diff --git a/Simul.properties b/Simul.properties
+--- a/Simul.properties	(revision 0ebd2eed8ae5b3a0f1c7be2748837f87a70a4a95)
++++ b/Simul.properties	(date 1743965039756)
+@@ -1,4 +1,8 @@
++<<<<<<< HEAD
+ #Sat Apr 05 20:40:52 WEST 2025
++=======
++#Sun Apr 06 18:15:01 WEST 2025
++>>>>>>> 7b8c9c793b3bfaf6f906f62b787b95aa614452c7
+ SimDig=839,105
+ SimDig_SIZE=654,508
+ UsbPort=-1,0
+Index: Software/src/TUI.kt
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>import isel.leic.utils.Time\r\n\r\nfun main(){\r\n    TUI.init()\r\n    TUI.loadingScreen(500) {false}\r\n}\r\n\r\nobject TUI {\r\n    private var canWrite: Boolean = true\r\n\r\n    fun init(){\r\n        KBD.init()\r\n        LCD.init()\r\n    }\r\n\r\n    fun capture(){\r\n        canWrite = true\r\n\r\n        while (true){\r\n            var key = KBD.getKey()\r\n\r\n            if (key == '*') {\r\n                LCD.clear()\r\n            }\r\n            else if (canWrite && key != KBD.NONE) {\r\n                LCD.write(key)\r\n                canWrite = false\r\n            }\r\n            else if (key == KBD.NONE)\r\n                canWrite = true\r\n        }\r\n    }\r\n\r\n    fun writeSplited(text: String) {\r\n\r\n        var count = 0\r\n        var words = text.split(Regex(\"(?<=\\\\s)|(?=\\\\s)\"))\r\n        for (word in words) {\r\n            if (count + word.length > LCD.COLS) {\r\n                LCD.cursor(1, 0)\r\n                count = 0\r\n            }\r\n            for (i in word)\r\n                LCD.write(i)\r\n            count += word.length\r\n        }\r\n    }\r\n\r\n    fun writeRight(text: String) {\r\n\r\n        val newText = \" \".repeat(LCD.COLS - text.length) + text\r\n\r\n        var count = 0\r\n\r\n        for (c in newText) {\r\n            LCD.write(c)\r\n        }\r\n    }\r\n\r\n\r\n    fun writeCenter(text: String) {\r\n\r\n        val words = text.split(Regex(\" +\"))\r\n        var line = \"\"\r\n\r\n        for (word in words) {\r\n            if (line.length + word.length >= LCD.COLS) {\r\n                val padding = (LCD.COLS - line.length) / 2\r\n                val centeredLine = \" \".repeat(padding) + line.trim()\r\n                for (i in centeredLine)\r\n                    LCD.write(i)\r\n                LCD.cursor(1, 0)\r\n                line = \"\"\r\n            }\r\n\r\n            if (line.isNotEmpty()) {\r\n                line += \" \"\r\n            }\r\n            line += word\r\n        }\r\n\r\n        if (line.isNotEmpty()) {\r\n            val padding = (LCD.COLS - line.length) / 2\r\n            val centeredLine = \" \".repeat(padding) + line.trim()\r\n            for (i in centeredLine)\r\n                LCD.write(i)\r\n        }\r\n    }\r\n\r\n    fun loadingScreen(time: Long, condition: () -> Boolean) {\r\n        LCD.clear()\r\n        writeCenter(\"Loading\")\r\n\r\n        var i = 0\r\n        while (!condition()) {\r\n            LCD.write(\".\",false)\r\n\r\n            if (i == 3) {\r\n                i = -1\r\n                LCD.clear()\r\n                writeCenter(\"Loading\")\r\n            }\r\n            i++\r\n            Time.sleep(time)\r\n        }\r\n        LCD.clear()\r\n    }\r\n\r\n    fun writeWalkText(time: Long, text: String) {\r\n        for (a in 0..text.length / 40) {\r\n            val newText = text.subSequence(0, ((a + 1) * 40).coerceIn(0, text.length)).toString()\r\n            for (i in a * 40 + 1 until (a + 1) * 40 + 1) {\r\n                if (LCD.COLS - i >= 0) {\r\n                    LCD.cursor(0, LCD.COLS - i)\r\n                    var count = 0\r\n                    for (c in newText) {\r\n                        LCD.write(c,false)\r\n                        count++\r\n                    }\r\n                } else {\r\n                    var count = 0\r\n                    for (c in newText) {\r\n                        LCD.write(c,false)\r\n                        count++\r\n                    }\r\n                }\r\n                Time.sleep(time)\r\n                LCD.clear()\r\n            }\r\n        }\r\n        Time.sleep(time)\r\n    }\r\n}
+===================================================================
+diff --git a/Software/src/TUI.kt b/Software/src/TUI.kt
+--- a/Software/src/TUI.kt	(revision 0ebd2eed8ae5b3a0f1c7be2748837f87a70a4a95)
++++ b/Software/src/TUI.kt	
+@@ -8,6 +8,7 @@
+ object TUI {
+     private var canWrite: Boolean = true
+ 
++<<<<<<< HEAD
+     fun init(){
+         KBD.init()
+         LCD.init()
+@@ -15,18 +16,26 @@
+ 
+     fun capture(){
+         canWrite = true
++=======
++    fun init() {
++        LCD.init()
++        KBD.init()
++    }
++>>>>>>> 7b8c9c793b3bfaf6f906f62b787b95aa614452c7
+ 
+-        while (true){
++    fun write(str: String) = LCD.write(str)
++
++    fun capture() {
++        while (true) {
+             var key = KBD.getKey()
+ 
+             if (key == '*') {
+                 LCD.clear()
+-            }
+-            else if (canWrite && key != KBD.NONE) {
++            } else if (canWrite && key != KBD.NONE) {
+                 LCD.write(key)
++                key == KBD.NONE
+                 canWrite = false
+-            }
+-            else if (key == KBD.NONE)
++            } else if (key == KBD.NONE)
+                 canWrite = true
+         }
+     }
+@@ -46,54 +55,77 @@
+         }
+     }
+ 
+-    fun writeRight(text: String) {
++    fun writeRight(str: String) {
++        if (str.length > LCD.COLS * 2) error("String very Big")
++        if (str.length > LCD.COLS) {
++            // se a String for maior que a primeira linha ele quebra e escreve nas duas linhas
++            writeRightLine(str.substring(0, LCD.COLS))
++            writeRightLine(str.substring(LCD.COLS, str.length))
++        } else writeCenterLine(str)
++    }
++    fun writeRightLine(text: String) {
+ 
+         val newText = " ".repeat(LCD.COLS - text.length) + text
+ 
+-        var count = 0
+ 
+         for (c in newText) {
+             LCD.write(c)
+         }
+     }
+ 
++    fun writeCenter(str: String) {
++        if (str.length > LCD.COLS * 2) error("String verry Big")
++        if (str.length > LCD.COLS) {
++            // se a String for maior que a primeira linha ele quebra e escreve nas duas linhas
++            writeCenterLine(str.substring(0, LCD.COLS), 0)
++            writeCenterLine(str.substring(LCD.COLS, str.length), 1)
++        } else writeCenterLine(str)
++    }
+ 
+-    fun writeCenter(text: String) {
++    fun writeCenterLine(str: String, line: Int = 0) {
++        if (line !in 0..1) error("invalid line")
+ 
+-        val words = text.split(Regex(" +"))
+-        var line = ""
++        val cols = LCD.COLS
++        val listChar = CharArray(cols) // cada elemento do array corresponde a uma coluna do LCD
+ 
+-        for (word in words) {
+-            if (line.length + word.length >= LCD.COLS) {
+-                val padding = (LCD.COLS - line.length) / 2
+-                val centeredLine = " ".repeat(padding) + line.trim()
+-                for (i in centeredLine)
+-                    LCD.write(i)
+-                LCD.cursor(1, 0)
+-                line = ""
+-            }
++        //serve para ajustar quando a frase for ímpar e não ficar exatamente no centro
++        val parity = if (str.length % 2 == 0) 0 else 1
++
++        for (i in str.indices) {//adiciona a frase a lista
++            listChar[i] = str[i]
++        }
+ 
+-            if (line.isNotEmpty()) {
+-                line += " "
+-            }
+-            line += word
+-        }
++        var leftSize = 0
++        var rightSize = listChar.lastIndex - str.lastIndex
++
++        while (true) {//move para a direita a frase até estar centrada
++            if (leftSize == rightSize - parity) break
++            moveStrInArray(listChar)
++            leftSize++
++            rightSize--
++        }
++
++        LCD.cursor(line, leftSize)
++        LCD.write(str, false)
++    }
+ 
+-        if (line.isNotEmpty()) {
+-            val padding = (LCD.COLS - line.length) / 2
+-            val centeredLine = " ".repeat(padding) + line.trim()
+-            for (i in centeredLine)
+-                LCD.write(i)
++    fun moveStrInArray(str: CharArray, dir: Int = 1) {//move 1 posição a frase dentro do array
++        val lastCH = str.indexOfLast { it != '\u0000' }
++        if (lastCH != str.lastIndex) {
++            for (i in lastCH downTo 0) {
++                str[i + dir] = str[i]
++                str[i] = '\u0000'
++            }
+         }
+     }
+ 
+-    fun loadingScreen(time: Long, condition: () -> Boolean) {
++    fun loadingScreen(time: Long = 200, condition: () -> Boolean) {
+         LCD.clear()
+         writeCenter("Loading")
+ 
+         var i = 0
+         while (!condition()) {
+-            LCD.write(".",false)
++            LCD.write('.', false)
+ 
+             if (i == 3) {
+                 i = -1
+@@ -106,28 +138,32 @@
+         LCD.clear()
+     }
+ 
+-    fun writeWalkText(time: Long, text: String) {
+-        for (a in 0..text.length / 40) {
+-            val newText = text.subSequence(0, ((a + 1) * 40).coerceIn(0, text.length)).toString()
+-            for (i in a * 40 + 1 until (a + 1) * 40 + 1) {
+-                if (LCD.COLS - i >= 0) {
+-                    LCD.cursor(0, LCD.COLS - i)
+-                    var count = 0
+-                    for (c in newText) {
+-                        LCD.write(c,false)
+-                        count++
+-                    }
+-                } else {
+-                    var count = 0
+-                    for (c in newText) {
+-                        LCD.write(c,false)
+-                        count++
+-                    }
+-                }
+-                Time.sleep(time)
+-                LCD.clear()
+-            }
++    fun writeWalkText(str: String,time: Long = 200) {
++        var window = ""
++
++        for (i in 0 until LCD.COLS - 1) {
++            window += " "
++        }
++        window += str
++
++        for (i in 0 until LCD.COLS - 1) {
++            window += " "
++        }
++        var l = 0
++        var r = LCD.COLS - 1
++
++        while (true) {
++            if (r == window.length) {
++                r = LCD.COLS - 1
++                l = 0
++            }
++            for (i in l..r) {
++                LCD.write(window[i], false)
++            }
++            l++
++            r++
++            Time.sleep(time)
++            LCD.clear()
+         }
+-        Time.sleep(time)
+     }
+ }
+\ No newline at end of file
+Index: Software/src/LCD.kt
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>import isel.leic.utils.Time\r\nimport kotlin.text.iterator\r\n\r\n// Escreve no LCD usando a interface a 4 bits.\r\nobject LCD {\r\n\t//para ter uma melhor noção por onde anda o cursor\r\n\tvar cursorPos: Pair<Int,Int> = Pair(0,0) // (linha, coluna)\r\n\r\n\t// Dimensão do display.\r\n\tconst val LINES = 2\r\n\tconst val COLS = 16\r\n\tprivate const val NIBBLE = 3\r\n\r\n\t// Define se a interface é Série ou Paralela.\r\n\tprivate const val SERIAL_INTERFACE = false\r\n\r\n\tvar E_MASK = if (SERIAL_INTERFACE) 1 else 0b0010_0000\r\n\tvar RS_MASK = if (SERIAL_INTERFACE) 1 else 0b0001_0000\r\n\tvar NIBBLE_MASK = if (SERIAL_INTERFACE) 1 else 0b0000_1111\r\n\r\n\t// Escreve um nibble de comando/dados no LCD em paralelo.\r\n\tprivate fun writeNibbleParallel(rs: Boolean, data: Int) {\r\n\t\t// Envia rs\r\n        rs.toBit(RS_MASK)\r\n    \r\n\t\tTime.sleep(1)\r\n\r\n\t\t// Envia E On\r\n\t\tHAL.setBits(E_MASK)\r\n\r\n\t\tTime.sleep(1)\r\n\r\n\t\t// Envia data\r\n\t\tHAL.writeBits(NIBBLE_MASK, data)\r\n\r\n\t\tTime.sleep(1)\r\n\r\n\t\t// Envia E Off\r\n\t\tHAL.clrBits(E_MASK)\r\n\r\n\t\tTime.sleep(1)\r\n\r\n\t}\r\n\r\n\t// Escreve um nibble de comando/dados no LCD em série.\r\n\tprivate fun writeNibbleSerial(rs: Boolean, data: Int) {\r\n\t\t// Envia rs\r\n\t\tHAL.writeBits(RS_MASK, rs.toInt())\r\n\t\t// Envia E On\r\n\t\tHAL.setBits(E_MASK)\r\n\t\t// Envia data\r\n\t\tfor (i in NIBBLE..0) {\r\n\t\t\tval bit = data.isBit(i)\r\n\t\t\tHAL.writeBits(NIBBLE_MASK, bit.toInt())\r\n\t\t}\r\n\t\t// Envia E Off\r\n\t\tHAL.clrBits(E_MASK)\r\n\t}\r\n\r\n\t// Escreve um nibble de comando/dados no LCD.\r\n\tprivate fun writeNibble(rs: Boolean, data: Int) {\r\n\t\tif (SERIAL_INTERFACE)\r\n\t\t\twriteNibbleSerial(rs, data)\r\n\t\telse\r\n\t\t\twriteNibbleParallel(rs, data)\r\n\t}\r\n\r\n\t// Escreve um byte de comando/dados no LCD.\r\n\tprivate fun writeByte(rs: Boolean, data: Int) {\r\n\t\twriteNibble(rs, data.rotateRight(4))\r\n\t\twriteNibble(rs, data and 0b0000_1111)\r\n\t}\r\n\r\n\t// Escreve um comando no LCD.\r\n\tprivate fun writeCMD(data: Int) {\r\n\t\twriteByte(false, data)\r\n\t}\r\n\r\n\t// Escreve um dado no LCD.\r\n\tprivate fun writeDATA(data: Int) {\r\n\t\twriteByte(true, data)\r\n\t}\r\n\r\n\t// Envia a sequência de iniciação para comunicação a 4 bits.\r\n\tfun init() {\r\n\t\tHAL.init()\r\n\t\tval time_list = longArrayOf(15, 5, 1)\r\n\t\tval init_Code = intArrayOf(\r\n\t\t\t0b0000_0011,\r\n\t\t\t0b0000_0010,\r\n\t\t\t0b0000_0010,\r\n\t\t\t0b0000_1000,\r\n\t\t\t0b0000_0000,\r\n\t\t\t0b0000_1000,\r\n\t\t\t0b0000_0000,\r\n\t\t\t0b0000_0001,\r\n\t\t\t0b0000_0000,\r\n\t\t\t0b0000_0110,\r\n\r\n\t\t\t0b0000_0001, // Clear display\r\n\t\t\t0b0000_0010, // Return home\r\n\t\t\t0b0000_1100 /// Cursor On / Blinking On\r\n\t\t)\r\n\r\n\t\tfor (time in time_list) {\r\n\t\t\tTime.sleep(time)\r\n\t\t\twriteNibble(false, init_Code[0])\r\n\t\t}\r\n\r\n\t\twriteNibble(false, init_Code[1])\r\n\r\n\t\tfor (i in 2 until init_Code.size) {\r\n\t\t\twriteByte(false, init_Code[i])\r\n\t\t}\r\n\t}\r\n\r\n\t// Escreve um caractere na posição corrente.\r\n\tfun write(c: Char, wrap: Boolean = true) {\r\n\t\tautoCursor(wrap)\r\n\t\twriteDATA(c.code)\r\n\t}\r\n\r\n\t// Escreve uma string na posição corrente.\r\n\tfun write(text: String, wrap: Boolean = true) {\r\n\t\tfor (c in text) {\r\n\t\t\twrite(c,wrap)\r\n\t\t}\r\n\t}\r\n\r\n\r\n\r\n\t// Envia comando para posicionar o cursor.\r\n\t// (line: 0..LINES-1, column: 0..COLS-1)\r\n\tfun cursor(line: Int, column: Int) {\r\n\t\tif (line in 0 until LINES && column in 0 until COLS) {\r\n\t\t\tval address = when (line) {\r\n\t\t\t\t0 -> (column + 0b1000_0000)\r\n\t\t\t\t1 -> (column + 0b1100_0000)\r\n\t\t\t\telse -> 0\r\n\t\t\t}\r\n\t\t\tcursorPos = Pair(line,column)\r\n\t\t\twriteCMD(address)\r\n\t\t} else {\r\n\t\t\tthrow IllegalArgumentException(\"Posição Inválida.\")\r\n\t\t}\r\n\t}\r\n\r\n\t// Envia comando para limpar o ecrã e posicionar o cursor em (0,0).\r\n\tfun clear() { /* Implementação */\r\n\t\twriteCMD(1)\r\n\t\tcursorPos = Pair(0,0)\r\n\t}\r\n\r\n\tfun autoCursor(wrap: Boolean) {\r\n\t\tif (wrap && cursorPos == Pair(0,16)) cursor(1,0)\r\n\t\telse cursorPos = cursorPos.copy(second = cursorPos.second + 1)\r\n\t}\r\n}\r\n
+===================================================================
+diff --git a/Software/src/LCD.kt b/Software/src/LCD.kt
+--- a/Software/src/LCD.kt	(revision 0ebd2eed8ae5b3a0f1c7be2748837f87a70a4a95)
++++ b/Software/src/LCD.kt	
+@@ -3,156 +3,147 @@
+ 
+ // Escreve no LCD usando a interface a 4 bits.
+ object LCD {
+-	//para ter uma melhor noção por onde anda o cursor
+-	var cursorPos: Pair<Int,Int> = Pair(0,0) // (linha, coluna)
++    //para ter uma melhor noção por onde anda o cursor
++    var cursorPos: Pair<Int, Int> = Pair(0, 0) // (linha, coluna)
+ 
+-	// Dimensão do display.
+-	const val LINES = 2
+-	const val COLS = 16
+-	private const val NIBBLE = 3
++    // Dimensão do display.
++    const val LINES = 2
++    const val COLS = 16
++    private const val NIBBLE = 3
+ 
+-	// Define se a interface é Série ou Paralela.
+-	private const val SERIAL_INTERFACE = false
++    // Define se a interface é Série ou Paralela.
++    private const val SERIAL_INTERFACE = false
+ 
+-	var E_MASK = if (SERIAL_INTERFACE) 1 else 0b0010_0000
+-	var RS_MASK = if (SERIAL_INTERFACE) 1 else 0b0001_0000
+-	var NIBBLE_MASK = if (SERIAL_INTERFACE) 1 else 0b0000_1111
++    var E_MASK = if (SERIAL_INTERFACE) 1 else 0b0010_0000
++    var RS_MASK = if (SERIAL_INTERFACE) 1 else 0b0001_0000
++    var NIBBLE_MASK = if (SERIAL_INTERFACE) 1 else 0b0000_1111
+ 
+-	// Escreve um nibble de comando/dados no LCD em paralelo.
+-	private fun writeNibbleParallel(rs: Boolean, data: Int) {
+-		// Envia rs
++    // Escreve um nibble de comando/dados no LCD em paralelo.
++    private fun writeNibbleParallel(rs: Boolean, data: Int) {
++        // Envia rs
+         rs.toBit(RS_MASK)
+-    
+-		Time.sleep(1)
+ 
+-		// Envia E On
+-		HAL.setBits(E_MASK)
++        // Envia E On
++        HAL.setBits(E_MASK)
+ 
+-		Time.sleep(1)
+-
+-		// Envia data
+-		HAL.writeBits(NIBBLE_MASK, data)
++        // Envia data
++        HAL.writeBits(NIBBLE_MASK, data)
+ 
+-		Time.sleep(1)
+-
+-		// Envia E Off
+-		HAL.clrBits(E_MASK)
++        // Envia E Off
++        HAL.clrBits(E_MASK)
+ 
+-		Time.sleep(1)
+-
+-	}
++    }
+ 
+-	// Escreve um nibble de comando/dados no LCD em série.
+-	private fun writeNibbleSerial(rs: Boolean, data: Int) {
+-		// Envia rs
+-		HAL.writeBits(RS_MASK, rs.toInt())
+-		// Envia E On
+-		HAL.setBits(E_MASK)
+-		// Envia data
+-		for (i in NIBBLE..0) {
+-			val bit = data.isBit(i)
+-			HAL.writeBits(NIBBLE_MASK, bit.toInt())
+-		}
+-		// Envia E Off
+-		HAL.clrBits(E_MASK)
+-	}
++    // Escreve um nibble de comando/dados no LCD em série.
++    private fun writeNibbleSerial(rs: Boolean, data: Int) {
++        // Envia rs
++        HAL.writeBits(RS_MASK, rs.toInt())
++        // Envia E On
++        HAL.setBits(E_MASK)
++        // Envia data
++        for (i in NIBBLE..0) {
++            val bit = data.isBit(i)
++            HAL.writeBits(NIBBLE_MASK, bit.toInt())
++        }
++        // Envia E Off
++        HAL.clrBits(E_MASK)
++    }
+ 
+-	// Escreve um nibble de comando/dados no LCD.
+-	private fun writeNibble(rs: Boolean, data: Int) {
+-		if (SERIAL_INTERFACE)
+-			writeNibbleSerial(rs, data)
+-		else
+-			writeNibbleParallel(rs, data)
+-	}
++    // Escreve um nibble de comando/dados no LCD.
++    private fun writeNibble(rs: Boolean, data: Int) {
++        if (SERIAL_INTERFACE)
++            writeNibbleSerial(rs, data)
++        else
++            writeNibbleParallel(rs, data)
++    }
+ 
+-	// Escreve um byte de comando/dados no LCD.
+-	private fun writeByte(rs: Boolean, data: Int) {
+-		writeNibble(rs, data.rotateRight(4))
+-		writeNibble(rs, data and 0b0000_1111)
+-	}
++    // Escreve um byte de comando/dados no LCD.
++    private fun writeByte(rs: Boolean, data: Int) {
++        writeNibble(rs, data.rotateRight(4))
++        writeNibble(rs, data and 0b0000_1111)
++    }
+ 
+-	// Escreve um comando no LCD.
+-	private fun writeCMD(data: Int) {
+-		writeByte(false, data)
+-	}
++    // Escreve um comando no LCD.
++    private fun writeCMD(data: Int) {
++        writeByte(false, data)
++    }
+ 
+-	// Escreve um dado no LCD.
+-	private fun writeDATA(data: Int) {
+-		writeByte(true, data)
+-	}
++    // Escreve um dado no LCD.
++    private fun writeDATA(data: Int) {
++        writeByte(true, data)
++    }
+ 
+-	// Envia a sequência de iniciação para comunicação a 4 bits.
+-	fun init() {
+-		HAL.init()
+-		val time_list = longArrayOf(15, 5, 1)
+-		val init_Code = intArrayOf(
+-			0b0000_0011,
+-			0b0000_0010,
+-			0b0000_0010,
+-			0b0000_1000,
+-			0b0000_0000,
+-			0b0000_1000,
+-			0b0000_0000,
+-			0b0000_0001,
+-			0b0000_0000,
+-			0b0000_0110,
++    // Envia a sequência de iniciação para comunicação a 4 bits.
++    fun init() {
++        HAL.init()
++        val time_list = longArrayOf(15, 5, 1)
++        val init_Code = intArrayOf(
++            0b0000_0011,
++            0b0000_0010,
++            0b0000_0010,
++            0b0000_1000,
++            0b0000_0000,
++            0b0000_1000,
++            0b0000_0000,
++            0b0000_0001,
++            0b0000_0000,
++            0b0000_0110,
+ 
+-			0b0000_0001, // Clear display
+-			0b0000_0010, // Return home
+-			0b0000_1100 /// Cursor On / Blinking On
+-		)
++            0b0000_0001, // Clear display
++            0b0000_0010, // Return home
++            0b0000_1100 /// Cursor On / Blinking On
++        )
+ 
+-		for (time in time_list) {
+-			Time.sleep(time)
+-			writeNibble(false, init_Code[0])
+-		}
++        for (time in time_list) {
++            Time.sleep(time)
++            writeNibble(false, init_Code[0])
++        }
+ 
+-		writeNibble(false, init_Code[1])
++        writeNibble(false, init_Code[1])
+ 
+-		for (i in 2 until init_Code.size) {
+-			writeByte(false, init_Code[i])
+-		}
+-	}
++        for (i in 2 until init_Code.size) {
++            writeByte(false, init_Code[i])
++        }
++    }
+ 
+-	// Escreve um caractere na posição corrente.
+-	fun write(c: Char, wrap: Boolean = true) {
+-		autoCursor(wrap)
+-		writeDATA(c.code)
+-	}
++    // Escreve um caractere na posição corrente.
++    fun write(c: Char, wrap: Boolean = true) {
++        writeDATA(c.code)
++        autoCursor(wrap)
++    }
+ 
+-	// Escreve uma string na posição corrente.
+-	fun write(text: String, wrap: Boolean = true) {
+-		for (c in text) {
+-			write(c,wrap)
+-		}
+-	}
++    // Escreve uma string na posição corrente.
++    fun write(text: String, wrap: Boolean = true) {
++        for (c in text) {
++            write(c, wrap)
++        }
++    }
+ 
+ 
+-
+-	// Envia comando para posicionar o cursor.
+-	// (line: 0..LINES-1, column: 0..COLS-1)
+-	fun cursor(line: Int, column: Int) {
+-		if (line in 0 until LINES && column in 0 until COLS) {
+-			val address = when (line) {
+-				0 -> (column + 0b1000_0000)
+-				1 -> (column + 0b1100_0000)
+-				else -> 0
+-			}
+-			cursorPos = Pair(line,column)
+-			writeCMD(address)
+-		} else {
+-			throw IllegalArgumentException("Posição Inválida.")
+-		}
+-	}
++    // Envia comando para posicionar o cursor.
++    // (line: 0..LINES-1, column: 0..COLS-1)
++    fun cursor(line: Int, column: Int) {
++        if (line in 0 until LINES && column in 0 until COLS) {
++            val address = when (line) {
++                0 -> (column + 0b1000_0000)
++                1 -> (column + 0b1100_0000)
++                else -> 0
++            }
++            cursorPos = Pair(line, column)
++            writeCMD(address)
++        } else {
++            throw IllegalArgumentException("Posição Inválida.")
++        }
++    }
+ 
+-	// Envia comando para limpar o ecrã e posicionar o cursor em (0,0).
+-	fun clear() { /* Implementação */
+-		writeCMD(1)
+-		cursorPos = Pair(0,0)
+-	}
++    // Envia comando para limpar o ecrã e posicionar o cursor em (0,0).
++    fun clear() { /* Implementação */
++        writeCMD(1)
++        cursorPos = Pair(0, 0)
++    }
+ 
+-	fun autoCursor(wrap: Boolean) {
+-		if (wrap && cursorPos == Pair(0,16)) cursor(1,0)
+-		else cursorPos = cursorPos.copy(second = cursorPos.second + 1)
+-	}
++    fun autoCursor(wrap: Boolean) {
++        if (wrap && cursorPos.second >= LCD.COLS-1 && cursorPos.first == 0) cursor(1, 0)
++        else cursorPos = cursorPos.copy(second = cursorPos.second + 1)
++    }
+ }
+Index: Software/src/HAL.kt
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>import isel.leic.UsbPort\r\n\r\nobject HAL {\r\n    // Guarda o valor do array de LEDs\r\n    var light = 0b0000_0000\r\n\r\n    // NOTE: Inicia o objeto\r\n    fun init(){\r\n        writeBits(0b1111_1111,light)\r\n    }\r\n\r\n    // NOTE: Retorna 'true' se o bit definido pela mask está com o valor lógico '1' no UsbPort\r\n    fun isBit(mask: Int): Boolean{\r\n        if (mask.countOneBits() == 1){\r\n            if (UsbPort.read().and(mask).countOneBits() == 1)\r\n                return true\r\n        }\r\n        return false\r\n    }\r\n\r\n    // NOTE: Retorna os valores dos bits representados por mask presentes no UsbPort\r\n    fun readBits(mask: Int): Int{\r\n        println(UsbPort.read().and(mask))\r\n        return UsbPort.read().and(mask)\r\n    }\r\n\r\n    // NOTE: Escreve nos bits representados por mask os valores dos bits correspondentes em value\r\n    fun writeBits(mask: Int, value: Int){\r\n        light = (mask.inv().and(light)).or(value.and(mask))\r\n        UsbPort.write(light)\r\n    }\r\n\r\n    // NOTE: Coloca os bits representados por mask no valor lógico '1'\r\n    fun setBits(mask: Int){\r\n        light = mask.or(light)\r\n        UsbPort.write(light)\r\n    }\r\n\r\n    // NOTE: Coloca os bits representados por mask no valor lógico '0'\r\n    fun clrBits(mask: Int){\r\n        light = mask.inv().and(light)\r\n        UsbPort.write(light)\r\n    }\r\n}
+===================================================================
+diff --git a/Software/src/HAL.kt b/Software/src/HAL.kt
+--- a/Software/src/HAL.kt	(revision 0ebd2eed8ae5b3a0f1c7be2748837f87a70a4a95)
++++ b/Software/src/HAL.kt	
+@@ -20,7 +20,6 @@
+ 
+     // NOTE: Retorna os valores dos bits representados por mask presentes no UsbPort
+     fun readBits(mask: Int): Int{
+-        println(UsbPort.read().and(mask))
+         return UsbPort.read().and(mask)
+     }
+ 
+Index: Hardware/KeyboardReader/KeyDecode/KeyScan/Test-Benches/KScan_tb.vhd
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>library ieee;\r\nuse ieee.std_logic_1164.all;\r\n\r\nentity KScan_tb is\r\nend KScan_tb;\r\n\r\narchitecture behavioral of KScan_tb is\r\n    component KeyScan\r\n        port (\r\n            CLK: in std_logic;\r\n            RESET: in std_logic;\r\n            LIN: in std_logic_vector(3 downto 0);\r\n            Kscan: in std_logic;\r\n            COL: out std_logic_vector(3 downto 0);\r\n            Kpress: out std_logic;\r\n            K: out std_logic_vector(3 downto 0)\r\n        );\r\n    end component;\r\n\r\n    constant MCLK_PERIOD: time := 20 ns;\r\n    constant MCLK_HALF_PERIOD: time := MCLK_PERIOD / 2;\r\n\r\n    signal CLK_tb: std_logic;\r\n    signal RESET_tb: std_logic;\r\n    signal Kscan_tb: std_logic;\r\n    signal Kpress_tb: std_logic;\r\n    signal LIN_tb: std_logic_vector(3 downto 0);\r\n    signal COL_tb: std_logic_vector(3 downto 0);\r\n    signal K_tb: std_logic_vector(3 downto 0);\r\nbegin\r\n    test: KeyScan port map(\r\n        CLK => CLK_tb,\r\n        RESET => RESET_tb,\r\n        Kscan => Kscan_tb,\r\n        LIN => LIN_tb,\r\n        COL => COL_tb,\r\n        Kpress => Kpress_tb,\r\n        K => K_tb\r\n    );\r\n\r\n    CLK_gen: process\r\n    begin\r\n        CLK_tb <= '0';\r\n        wait for MCLK_HALF_PERIOD;\r\n        CLK_tb <= '1';\r\n        wait for MCLK_HALF_PERIOD;\r\n    end process;\r\n\r\n    stimulus: process\r\n    begin\r\n        RESET_tb <= '1';\r\n        LIN_tb <= \"1111\";\r\n        wait for MCLK_PERIOD;\r\n        RESET_tb <= '0';\r\n        \r\n        LIN_tb <= \"1110\";\r\n        \r\n        wait for MCLK_HALF_PERIOD / 2;\r\n\r\n        LIN_tb <= \"1111\";\r\n        \r\n        wait for MCLK_HALF_PERIOD / 2;\r\n\r\n        LIN_tb <= \"1101\";\r\n        \r\n        wait for MCLK_HALF_PERIOD / 2;\r\n\r\n        LIN_tb <= \"1111\";\r\n        \r\n        wait for MCLK_HALF_PERIOD / 2;\r\n\r\n        LIN_tb <= \"1011\";\r\n        \r\n        wait for MCLK_HALF_PERIOD / 2;\r\n\r\n        LIN_tb <= \"1111\";\r\n        \r\n        wait for MCLK_HALF_PERIOD / 2;\r\n\r\n        LIN_tb <= \"0111\";\r\n        \r\n        wait for MCLK_HALF_PERIOD / 2;\r\n\r\n        LIN_tb <= \"1111\";\r\n        \r\n        wait for MCLK_HALF_PERIOD / 2;\r\n    end process;\r\nend behavioral;
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/Hardware/KeyboardReader/KeyDecode/KeyScan/Test-Benches/KScan_tb.vhd b/Hardware/KeyboardReader/KeyDecode/KeyScan/Test-Benches/KScan_tb.vhd
+--- a/Hardware/KeyboardReader/KeyDecode/KeyScan/Test-Benches/KScan_tb.vhd	(revision 0ebd2eed8ae5b3a0f1c7be2748837f87a70a4a95)
++++ b/Hardware/KeyboardReader/KeyDecode/KeyScan/Test-Benches/KScan_tb.vhd	
+@@ -1,88 +1,0 @@
+-library ieee;
+-use ieee.std_logic_1164.all;
+-
+-entity KScan_tb is
+-end KScan_tb;
+-
+-architecture behavioral of KScan_tb is
+-    component KeyScan
+-        port (
+-            CLK: in std_logic;
+-            RESET: in std_logic;
+-            LIN: in std_logic_vector(3 downto 0);
+-            Kscan: in std_logic;
+-            COL: out std_logic_vector(3 downto 0);
+-            Kpress: out std_logic;
+-            K: out std_logic_vector(3 downto 0)
+-        );
+-    end component;
+-
+-    constant MCLK_PERIOD: time := 20 ns;
+-    constant MCLK_HALF_PERIOD: time := MCLK_PERIOD / 2;
+-
+-    signal CLK_tb: std_logic;
+-    signal RESET_tb: std_logic;
+-    signal Kscan_tb: std_logic;
+-    signal Kpress_tb: std_logic;
+-    signal LIN_tb: std_logic_vector(3 downto 0);
+-    signal COL_tb: std_logic_vector(3 downto 0);
+-    signal K_tb: std_logic_vector(3 downto 0);
+-begin
+-    test: KeyScan port map(
+-        CLK => CLK_tb,
+-        RESET => RESET_tb,
+-        Kscan => Kscan_tb,
+-        LIN => LIN_tb,
+-        COL => COL_tb,
+-        Kpress => Kpress_tb,
+-        K => K_tb
+-    );
+-
+-    CLK_gen: process
+-    begin
+-        CLK_tb <= '0';
+-        wait for MCLK_HALF_PERIOD;
+-        CLK_tb <= '1';
+-        wait for MCLK_HALF_PERIOD;
+-    end process;
+-
+-    stimulus: process
+-    begin
+-        RESET_tb <= '1';
+-        LIN_tb <= "1111";
+-        wait for MCLK_PERIOD;
+-        RESET_tb <= '0';
+-        
+-        LIN_tb <= "1110";
+-        
+-        wait for MCLK_HALF_PERIOD / 2;
+-
+-        LIN_tb <= "1111";
+-        
+-        wait for MCLK_HALF_PERIOD / 2;
+-
+-        LIN_tb <= "1101";
+-        
+-        wait for MCLK_HALF_PERIOD / 2;
+-
+-        LIN_tb <= "1111";
+-        
+-        wait for MCLK_HALF_PERIOD / 2;
+-
+-        LIN_tb <= "1011";
+-        
+-        wait for MCLK_HALF_PERIOD / 2;
+-
+-        LIN_tb <= "1111";
+-        
+-        wait for MCLK_HALF_PERIOD / 2;
+-
+-        LIN_tb <= "0111";
+-        
+-        wait for MCLK_HALF_PERIOD / 2;
+-
+-        LIN_tb <= "1111";
+-        
+-        wait for MCLK_HALF_PERIOD / 2;
+-    end process;
+-end behavioral;
+\ No newline at end of file
+Index: Hardware/KeyboardReader/KeyDecode/KeyScan/KeyScan.qsf
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+># -------------------------------------------------------------------------- #\r\n#\r\n# Copyright (C) 2019  Intel Corporation. All rights reserved.\r\n# Your use of Intel Corporation's design tools, logic functions \r\n# and other software and tools, and any partner logic \r\n# functions, and any output files from any of the foregoing \r\n# (including device programming or simulation files), and any \r\n# associated documentation or information are expressly subject \r\n# to the terms and conditions of the Intel Program License \r\n# Subscription Agreement, the Intel Quartus Prime License Agreement,\r\n# the Intel FPGA IP License Agreement, or other applicable license\r\n# agreement, including, without limitation, that your use is for\r\n# the sole purpose of programming logic devices manufactured by\r\n# Intel and sold by Intel or its authorized distributors.  Please\r\n# refer to the applicable agreement for further details, at\r\n# https://fpgasoftware.intel.com/eula.\r\n#\r\n# -------------------------------------------------------------------------- #\r\n#\r\n# Quartus Prime\r\n# Version 19.1.0 Build 670 09/22/2019 SJ Lite Edition\r\n# Date created = 09:10:56  March 05, 2025\r\n#\r\n# -------------------------------------------------------------------------- #\r\n#\r\n# Notes:\r\n#\r\n# 1) The default values for assignments are stored in the file:\r\n#\t\tKeyScan_assignment_defaults.qdf\r\n#    If this file doesn't exist, see file:\r\n#\t\tassignment_defaults.qdf\r\n#\r\n# 2) Altera recommends that you do not modify this file. This\r\n#    file is updated automatically by the Quartus Prime software\r\n#    and any changes you make may be lost or overwritten.\r\n#\r\n# -------------------------------------------------------------------------- #\r\n\r\n\r\nset_global_assignment -name FAMILY \"MAX 10\"\r\nset_global_assignment -name DEVICE 10M08DAF484C8G\r\nset_global_assignment -name FAMILY \"MAX 10\"\r\nset_global_assignment -name TOP_LEVEL_entity KeyScan\r\nset_global_assignment -name ORIGINAL_QUARTUS_VERSION 19.1.0\r\nset_global_assignment -name PROJECT_CREATION_TIME_DATE \"09:10:56  MARCH 05, 2025\"\r\nset_global_assignment -name LAST_QUARTUS_VERSION \"19.1.0 Lite Edition\"
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/Hardware/KeyboardReader/KeyDecode/KeyScan/KeyScan.qsf b/Hardware/KeyboardReader/KeyDecode/KeyScan/KeyScan.qsf
+--- a/Hardware/KeyboardReader/KeyDecode/KeyScan/KeyScan.qsf	(revision 0ebd2eed8ae5b3a0f1c7be2748837f87a70a4a95)
++++ b/Hardware/KeyboardReader/KeyDecode/KeyScan/KeyScan.qsf	(date 1743965039753)
+@@ -37,10 +37,28 @@
+ # -------------------------------------------------------------------------- #
+ 
+ 
+-set_global_assignment -name FAMILY "MAX 10"
+ set_global_assignment -name DEVICE 10M08DAF484C8G
+ set_global_assignment -name FAMILY "MAX 10"
+ set_global_assignment -name TOP_LEVEL_entity KeyScan
+ set_global_assignment -name ORIGINAL_QUARTUS_VERSION 19.1.0
+ set_global_assignment -name PROJECT_CREATION_TIME_DATE "09:10:56  MARCH 05, 2025"
+-set_global_assignment -name LAST_QUARTUS_VERSION "19.1.0 Lite Edition"
+\ No newline at end of file
++set_global_assignment -name LAST_QUARTUS_VERSION "19.1.0 Lite Edition"
++set_global_assignment -name PARTITION_NETLIST_TYPE SOURCE -section_id Top
++set_global_assignment -name PARTITION_FITTER_PRESERVATION_LEVEL PLACEMENT_AND_ROUTING -section_id Top
++set_global_assignment -name PARTITION_COLOR 16764057 -section_id Top
++set_global_assignment -name VHDL_FILE PENC.vhd
++set_global_assignment -name VHDL_FILE KeyScan.vhd
++set_global_assignment -name VHDL_FILE Decoder_tb.vhd
++set_global_assignment -name VHDL_FILE Decoder.vhd
++set_global_assignment -name VHDL_FILE Counter/Reg2.vhd
++set_global_assignment -name VHDL_FILE Counter/FULLADDER.vhd
++set_global_assignment -name VHDL_FILE Counter/FFD.vhd
++set_global_assignment -name VHDL_FILE Counter/Counter.vhd
++set_global_assignment -name VHDL_FILE Counter/ADDER2.vhd
++set_global_assignment -name MIN_CORE_JUNCTION_TEMP 0
++set_global_assignment -name MAX_CORE_JUNCTION_TEMP 85
++set_global_assignment -name POWER_PRESET_COOLING_SOLUTION "23 MM HEAT SINK WITH 200 LFPM AIRFLOW"
++set_global_assignment -name POWER_BOARD_THERMAL_MODEL "NONE (CONSERVATIVE)"
++set_instance_assignment -name PARTITION_HIERARCHY root_partition -to | -section_id Top
++set_global_assignment -name EDA_SIMULATION_TOOL "ModelSim-Altera (Verilog)"
++set_global_assignment -name EDA_OUTPUT_DATA_FORMAT "VERILOG HDL" -section_id eda_simulation
+\ No newline at end of file

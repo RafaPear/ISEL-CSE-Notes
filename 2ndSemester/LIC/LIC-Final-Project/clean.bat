@@ -1,0 +1,5 @@
+FOR /d /r . %%d IN (db) DO @IF EXIST "%%d" rd /s /q "%%d"
+FOR /d /r . %%d IN (devkits) DO @IF EXIST "%%d" rd /s /q "%%d"
+FOR /d /r . %%d IN (incremental_db) DO @IF EXIST "%%d" rd /s /q "%%d"
+FOR /d /r . %%d IN (output_files) DO @IF EXIST "%%d" rd /s /q "%%d"
+FOR /d /r . %%d IN (simulation) DO @IF EXIST "%%d" rd /s /q "%%d"

@@ -1,0 +1,30 @@
+// Runs a test on 2 file with just 5 points
+
+cd Tests
+
+l sTestA.co sTestB.co
+
+clr
+
+print -------------------------------
+print Union
+print -------------------------------
+
+time u result.co
+prtf result.co
+wfu Continue?
+
+print -------------------------------
+print Intersection
+print -------------------------------
+
+time i result.co
+prtf result.co
+wfu Continue?
+
+print -------------------------------
+print Difference
+print -------------------------------
+
+time d result.co
+prtf result.co

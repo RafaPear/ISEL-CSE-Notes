@@ -1,0 +1,22 @@
+// Test file script
+
+// Create a test file with 1000 positive points between 0 and 100000
+mtf Tests/A.co 1000 0 100000 0 100000
+
+// Create a second test file with 1000 positive points between 0 and 100000
+mtf Tests/B.co 1000 0 100000 0 100000
+
+// Move into the Tests directory
+cd Tests
+
+// Measure the time taken to load the files A and B
+time load A.co B.co
+
+// Measure the time taken to perform the union operation on the two files
+time u result.co
+
+// Measure the time taken to perform the intersection operation on the two files
+time i result.co
+
+// Measure the time taken to perform the difference operation on the two files
+time d result.co

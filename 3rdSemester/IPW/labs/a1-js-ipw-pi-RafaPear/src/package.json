@@ -1,0 +1,20 @@
+{
+  "name": "src",
+  "version": "1.0.0",
+  "description": "",
+  "main": "ex1.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "mocha"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "module",
+  "devDependencies": {
+    "chain": "^0.4.2",
+    "mocha": "^11.7.3"
+  }
+}

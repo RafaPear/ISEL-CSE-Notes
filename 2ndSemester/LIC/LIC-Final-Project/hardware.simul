@@ -1,0 +1,3 @@
+## --- Additional packages with Hardware to Simulator
+package isel.leic.simul
+UsbPort = UsbPort

@@ -1,0 +1,844 @@
+{
+  "count": 20,
+  "filters": {
+    "season": 2025
+  },
+  "competition": {
+    "id": 2021,
+    "name": "Premier League",
+    "code": "PL",
+    "type": "LEAGUE",
+    "emblem": "https://crests.football-data.org/PL.png"
+  },
+  "season": {
+    "id": 2403,
+    "startDate": "2025-08-15",
+    "endDate": "2026-05-24",
+    "currentMatchday": 12,
+    "winner": null
+  },
+  "teams": [
+    {
+      "area": {
+        "id": 2072,
+        "name": "England",
+        "code": "ENG",
+        "flag": "https://crests.football-data.org/770.svg"
+      },
+      "id": 57,
+      "name": "Arsenal FC",
+      "shortName": "Arsenal",
+      "tla": "ARS",
+      "crest": "https://crests.football-data.org/57.png",
+      "address": "75 Drayton Park London N5 1BU",
+      "website": "http://www.arsenal.com",
+      "founded": 1886,
+      "clubColors": "Red / White",
+      "venue": "Emirates Stadium",
+      "runningCompetitions": [
+        {
+          "id": 2021,
+          "name": "Premier League",
+          "code": "PL",
+          "type": "LEAGUE",
+          "emblem": "https://crests.football-data.org/PL.png"
+        },
+        {
+          "id": 2001,
+          "name": "UEFA Champions League",
+          "code": "CL",
+          "type": "CUP",
+          "emblem": "https://crests.football-data.org/CL.png"
+        }
+      ],
+      "coach": {
+        "id": 179744,
+        "firstName": "",
+        "lastName": "Mikel Arteta",
+        "name": "Mikel Arteta",
+        "dateOfBirth": "1982-03-26",
+        "nationality": "Spain",
+        "contract": {
+          "start": "2019-12",
+          "until": "2027-06"
+        }
+      },
+      "squad": [
+        {
+          "id": 3189,
+          "name": "Kepa Arrizabalaga",
+          "position": "Goalkeeper",
+          "dateOfBirth": "1994-10-03",
+          "nationality": "Spain"
+        },
+        {
+          "id": 4832,
+          "name": "David Raya",
+          "position": "Goalkeeper",
+          "dateOfBirth": "1995-09-15",
+          "nationality": "Spain"
+        },
+        {
+          "id": 171455,
+          "name": "Tommy Setford",
+          "position": "Goalkeeper",
+          "dateOfBirth": "2006-03-13",
+          "nationality": "England"
+        },
+        {
+          "id": 270668,
+          "name": "Aleksei Fedorushchenko",
+          "position": "Goalkeeper",
+          "dateOfBirth": "2005-09-28",
+          "nationality": "Russia"
+        },
+        {
+          "id": 285128,
+          "name": "Max Dowman",
+          "position": "Midfield",
+          "dateOfBirth": "2009-12-31",
+          "nationality": "England"
+        },
+        {
+          "id": 285598,
+          "name": "Andre Harriman-Annous",
+          "position": "Offence",
+          "dateOfBirth": "2007-12-27",
+          "nationality": "England"
+        },
+        {
+          "id": 244120,
+          "name": "Myles Lewis-Skelly",
+          "position": "Left-Back",
+          "dateOfBirth": "2006-09-26",
+          "nationality": "England"
+        },
+        {
+          "id": 188476,
+          "name": "Ethan Nwaneri",
+          "position": "Attacking Midfield",
+          "dateOfBirth": "2007-03-21",
+          "nationality": "England"
+        },
+        {
+          "id": 172839,
+          "name": "Cristhian Mosquera",
+          "position": "Centre-Back",
+          "dateOfBirth": "2004-06-27",
+          "nationality": "Spain"
+        },
+        {
+          "id": 167720,
+          "name": "Noni Madueke",
+          "position": "Right Winger",
+          "dateOfBirth": "2002-03-10",
+          "nationality": "England"
+        },
+        {
+          "id": 133512,
+          "name": "Riccardo Calafiori",
+          "position": "Left-Back",
+          "dateOfBirth": "2002-05-19",
+          "nationality": "Italy"
+        },
+        {
+          "id": 125674,
+          "name": "Piero Hincapié",
+          "position": "Centre-Back",
+          "dateOfBirth": "2002-01-09",
+          "nationality": "Ecuador"
+        },
+        {
+          "id": 115035,
+          "name": "Martín Zubimendi",
+          "position": "Defensive Midfield",
+          "dateOfBirth": "1999-02-02",
+          "nationality": "Spain"
+        },
+        {
+          "id": 99813,
+          "name": "Bukayo Saka",
+          "position": "Right Winger",
+          "dateOfBirth": "2001-09-05",
+          "nationality": "England"
+        },
+        {
+          "id": 98816,
+          "name": "Jurrien Timber",
+          "position": "Right-Back",
+          "dateOfBirth": "2001-06-17",
+          "nationality": "Netherlands"
+        },
+        {
+          "id": 80171,
+          "name": "William Saliba",
+          "position": "Centre-Back",
+          "dateOfBirth": "2001-03-24",
+          "nationality": "France"
+        },
+        {
+          "id": 61450,
+          "name": "Martinelli",
+          "position": "Left Winger",
+          "dateOfBirth": "2001-06-18",
+          "nationality": "Brazil"
+        },
+        {
+          "id": 24102,
+          "name": "Christian Nørgaard",
+          "position": "Defensive Midfield",
+          "dateOfBirth": "1994-03-10",
+          "nationality": "Denmark"
+        },
+        {
+          "id": 23128,
+          "name": "Gabriel",
+          "position": "Centre-Back",
+          "dateOfBirth": "1997-12-19",
+          "nationality": "Brazil"
+        },
+        {
+          "id": 8984,
+          "name": "Leandro Trossard",
+          "position": "Left Winger",
+          "dateOfBirth": "1994-12-04",
+          "nationality": "Belgium"
+        },
+        {
+          "id": 8279,
+          "name": "Viktor Gyökeres",
+          "position": "Centre-Forward",
+          "dateOfBirth": "1998-06-04",
+          "nationality": "Sweden"
+        },
+        {
+          "id": 8215,
+          "name": "Declan Rice",
+          "position": "Central Midfield",
+          "dateOfBirth": "1999-01-14",
+          "nationality": "England"
+        },
+        {
+          "id": 7935,
+          "name": "Mikel Merino",
+          "position": "Central Midfield",
+          "dateOfBirth": "1996-06-22",
+          "nationality": "Spain"
+        },
+        {
+          "id": 7427,
+          "name": "Martin Ødegaard",
+          "position": "Attacking Midfield",
+          "dateOfBirth": "1998-12-17",
+          "nationality": "Norway"
+        },
+        {
+          "id": 6154,
+          "name": "Ben White",
+          "position": "Right-Back",
+          "dateOfBirth": "1997-10-08",
+          "nationality": "England"
+        },
+        {
+          "id": 4032,
+          "name": "Eberechi Eze",
+          "position": "Attacking Midfield",
+          "dateOfBirth": "1998-06-29",
+          "nationality": "England"
+        },
+        {
+          "id": 3236,
+          "name": "Gabriel Jesus",
+          "position": "Centre-Forward",
+          "dateOfBirth": "1997-04-03",
+          "nationality": "Brazil"
+        },
+        {
+          "id": 171,
+          "name": "Kai Havertz",
+          "position": "Centre-Forward",
+          "dateOfBirth": "1999-06-11",
+          "nationality": "Germany"
+        }
+      ],
+      "staff": [],
+      "lastUpdated": "2022-02-10T19:48:56Z"
+    },
+    {
+      "area": {
+        "id": 2072,
+        "name": "England",
+        "code": "ENG",
+        "flag": "https://crests.football-data.org/770.svg"
+      },
+      "id": 58,
+      "name": "Aston Villa FC",
+      "shortName": "Aston Villa",
+      "tla": "AVL",
+      "crest": "https://crests.football-data.org/58.png",
+      "address": "Villa Park Birmingham B6 6HE",
+      "website": "http://www.avfc.co.uk",
+      "founded": 1872,
+      "clubColors": "Claret / Sky Blue",
+      "venue": "Villa Park",
+      "runningCompetitions": [
+        {
+          "id": 2021,
+          "name": "Premier League",
+          "code": "PL",
+          "type": "LEAGUE",
+          "emblem": "https://crests.football-data.org/PL.png"
+        },
+        {
+          "id": 2146,
+          "name": "UEFA Europa League",
+          "code": "EL",
+          "type": "CUP",
+          "emblem": "https://crests.football-data.org/EL.png"
+        }
+      ],
+      "coach": {
+        "id": 11616,
+        "firstName": "",
+        "lastName": "Unai Emery",
+        "name": "Unai Emery",
+        "dateOfBirth": "1971-11-03",
+        "nationality": "Spain",
+        "contract": {
+          "start": "2022-11",
+          "until": "2029-06"
+        }
+      },
+      "squad": [
+        {
+          "id": 3141,
+          "name": "Emiliano Martínez",
+          "position": "Goalkeeper",
+          "dateOfBirth": "1992-09-02",
+          "nationality": "Argentina"
+        },
+        {
+          "id": 7675,
+          "name": "Marco Bizot",
+          "position": "Goalkeeper",
+          "dateOfBirth": "1991-03-10",
+          "nationality": "Netherlands"
+        },
+        {
+          "id": 204460,
+          "name": "James Wright",
+          "position": "Goalkeeper",
+          "dateOfBirth": "2004-12-02",
+          "nationality": "England"
+        },
+        {
+          "id": 244962,
+          "name": "Sam Proctor",
+          "position": "Goalkeeper",
+          "dateOfBirth": "2006-12-21",
+          "nationality": "England"
+        },
+        {
+          "id": 286821,
+          "name": "Russ Oakley",
+          "position": "Goalkeeper",
+          "dateOfBirth": "2008-09-16",
+          "nationality": "England"
+        },
+        {
+          "id": 270628,
+          "name": "Ben Broggio",
+          "position": "Midfield",
+          "dateOfBirth": "2007-01-29",
+          "nationality": "England"
+        },
+        {
+          "id": 270631,
+          "name": "Aidan Borland",
+          "position": "Midfield",
+          "dateOfBirth": "2007-04-25",
+          "nationality": "Scotland"
+        },
+        {
+          "id": 270633,
+          "name": "Jamaldeen Jimoh",
+          "position": "Midfield",
+          "dateOfBirth": "2006-10-02",
+          "nationality": "England"
+        },
+        {
+          "id": 274024,
+          "name": "Bradley Burrowes",
+          "position": "Midfield",
+          "dateOfBirth": "2008-03-04",
+          "nationality": "England"
+        },
+        {
+          "id": 33109,
+          "name": "Pau Torres",
+          "position": "Centre-Back",
+          "dateOfBirth": "1997-01-16",
+          "nationality": "Spain"
+        },
+        {
+          "id": 31941,
+          "name": "Emiliano Buendía",
+          "position": "Attacking Midfield",
+          "dateOfBirth": "1996-12-25",
+          "nationality": "Argentina"
+        },
+        {
+          "id": 11644,
+          "name": "Matty Cash",
+          "position": "Right-Back",
+          "dateOfBirth": "1997-08-07",
+          "nationality": "Poland"
+        },
+        {
+          "id": 8346,
+          "name": "Boubacar Kamara",
+          "position": "Defensive Midfield",
+          "dateOfBirth": "1999-11-23",
+          "nationality": "France"
+        },
+        {
+          "id": 8235,
+          "name": "Tyrone Mings",
+          "position": "Centre-Back",
+          "dateOfBirth": "1993-03-13",
+          "nationality": "England"
+        },
+        {
+          "id": 7817,
+          "name": "Ross Barkley",
+          "position": "Central Midfield",
+          "dateOfBirth": "1993-12-05",
+          "nationality": "England"
+        },
+        {
+          "id": 7457,
+          "name": "Donyell Malen",
+          "position": "Right Winger",
+          "dateOfBirth": "1999-01-19",
+          "nationality": "Netherlands"
+        },
+        {
+          "id": 6317,
+          "name": "Ezri Konsa",
+          "position": "Centre-Back",
+          "dateOfBirth": "1998-04-06",
+          "nationality": "England"
+        },
+        {
+          "id": 4444,
+          "name": "Ollie Watkins",
+          "position": "Centre-Forward",
+          "dateOfBirth": "1995-12-30",
+          "nationality": "England"
+        },
+        {
+          "id": 3658,
+          "name": "Youri Tielemans",
+          "position": "Central Midfield",
+          "dateOfBirth": "1997-05-07",
+          "nationality": "Belgium"
+        },
+        {
+          "id": 3492,
+          "name": "Victor Nilsson-Lindelöf",
+          "position": "Centre-Back",
+          "dateOfBirth": "1994-07-17",
+          "nationality": "Sweden"
+        },
+        {
+          "id": 3359,
+          "name": "Lucas Digne",
+          "position": "Left-Back",
+          "dateOfBirth": "1993-07-20",
+          "nationality": "France"
+        },
+        {
+          "id": 146,
+          "name": "Jadon Sancho",
+          "position": "Left Winger",
+          "dateOfBirth": "2000-03-25",
+          "nationality": "England"
+        },
+        {
+          "id": 204428,
+          "name": "Travis Patterson",
+          "position": "Left-Back",
+          "dateOfBirth": "2005-10-06",
+          "nationality": "England"
+        },
+        {
+          "id": 203594,
+          "name": "Andrés Garcia",
+          "position": "Right-Back",
+          "dateOfBirth": "2003-02-07",
+          "nationality": "Spain"
+        },
+        {
+          "id": 172899,
+          "name": "Lamare Bogarde",
+          "position": "Defensive Midfield",
+          "dateOfBirth": "2004-01-05",
+          "nationality": "Netherlands"
+        },
+        {
+          "id": 131120,
+          "name": "Ian Maatsen",
+          "position": "Left-Back",
+          "dateOfBirth": "2002-03-10",
+          "nationality": "Netherlands"
+        },
+        {
+          "id": 128710,
+          "name": "Evann Guessand",
+          "position": "Centre-Forward",
+          "dateOfBirth": "2001-07-01",
+          "nationality": "France"
+        },
+        {
+          "id": 124824,
+          "name": "Harvey Elliott",
+          "position": "Central Midfield",
+          "dateOfBirth": "2003-04-04",
+          "nationality": "England"
+        },
+        {
+          "id": 114024,
+          "name": "Amadou Onana",
+          "position": "Defensive Midfield",
+          "dateOfBirth": "2001-08-16",
+          "nationality": "Belgium"
+        },
+        {
+          "id": 82140,
+          "name": "Morgan Rogers",
+          "position": "Attacking Midfield",
+          "dateOfBirth": "2002-07-26",
+          "nationality": "England"
+        },
+        {
+          "id": 34646,
+          "name": "John McGinn",
+          "position": "Central Midfield",
+          "dateOfBirth": "1994-10-18",
+          "nationality": "Scotland"
+        }
+      ],
+      "staff": [],
+      "lastUpdated": "2022-04-03T16:22:14Z"
+    },
+    {
+      "area": {
+        "id": 2072,
+        "name": "England",
+        "code": "ENG",
+        "flag": "https://crests.football-data.org/770.svg"
+      },
+      "id": 61,
+      "name": "Chelsea FC",
+      "shortName": "Chelsea",
+      "tla": "CHE",
+      "crest": "https://crests.football-data.org/61.png",
+      "address": "Fulham Road London SW6 1HS",
+      "website": "http://www.chelseafc.com",
+      "founded": 1905,
+      "clubColors": "Royal Blue / White",
+      "venue": "Stamford Bridge",
+      "runningCompetitions": [
+        {
+          "id": 2021,
+          "name": "Premier League",
+          "code": "PL",
+          "type": "LEAGUE",
+          "emblem": "https://crests.football-data.org/PL.png"
+        },
+        {
+          "id": 2001,
+          "name": "UEFA Champions League",
+          "code": "CL",
+          "type": "CUP",
+          "emblem": "https://crests.football-data.org/CL.png"
+        }
+      ],
+      "coach": {
+        "id": 172279,
+        "firstName": "Enzo",
+        "lastName": "Maresca",
+        "name": "Enzo Maresca",
+        "dateOfBirth": "1980-02-10",
+        "nationality": "Italy",
+        "contract": {
+          "start": "2024-07",
+          "until": "2029-06"
+        }
+      },
+      "squad": [
+        {
+          "id": 135555,
+          "name": "Robert Sánchez",
+          "position": "Goalkeeper",
+          "dateOfBirth": "1997-11-18",
+          "nationality": "Spain"
+        },
+        {
+          "id": 137544,
+          "name": "Gabriel Slonina",
+          "position": "Goalkeeper",
+          "dateOfBirth": "2004-05-15",
+          "nationality": "USA"
+        },
+        {
+          "id": 153828,
+          "name": "Filip Jörgensen",
+          "position": "Goalkeeper",
+          "dateOfBirth": "2002-04-16",
+          "nationality": "Denmark"
+        },
+        {
+          "id": 246715,
+          "name": "Max Merrick",
+          "position": "Goalkeeper",
+          "dateOfBirth": "2005-11-10",
+          "nationality": "England"
+        },
+        {
+          "id": 277888,
+          "name": "Landon Emenalo",
+          "position": "Defence",
+          "dateOfBirth": "2008-01-18",
+          "nationality": "USA"
+        },
+        {
+          "id": 276866,
+          "name": "Reggie Walsh",
+          "position": "Midfield",
+          "dateOfBirth": "2008-10-20",
+          "nationality": "England"
+        },
+        {
+          "id": 244778,
+          "name": "Estevao",
+          "position": "Offence",
+          "dateOfBirth": "2006-04-24",
+          "nationality": "Brazil"
+        },
+        {
+          "id": 272058,
+          "name": "Shumaira Mheuka",
+          "position": "Offence",
+          "dateOfBirth": "2007-10-20",
+          "nationality": "England"
+        },
+        {
+          "id": 287945,
+          "name": "Ryan Kavuma-McQueen",
+          "position": "Offence",
+          "dateOfBirth": "2009-01-01",
+          "nationality": "England"
+        },
+        {
+          "id": 165314,
+          "name": "Dario Essugo",
+          "position": "Defensive Midfield",
+          "dateOfBirth": "2005-03-14",
+          "nationality": "Portugal"
+        },
+        {
+          "id": 152498,
+          "name": "Malo Gusto",
+          "position": "Right-Back",
+          "dateOfBirth": "2003-05-19",
+          "nationality": "France"
+        },
+        {
+          "id": 151095,
+          "name": "Liam Delap",
+          "position": "Centre-Forward",
+          "dateOfBirth": "2003-02-08",
+          "nationality": "England"
+        },
+        {
+          "id": 144892,
+          "name": "Cole Palmer",
+          "position": "Attacking Midfield",
+          "dateOfBirth": "2002-05-06",
+          "nationality": "England"
+        },
+        {
+          "id": 121103,
+          "name": "Moisés Caicedo",
+          "position": "Defensive Midfield",
+          "dateOfBirth": "2001-11-02",
+          "nationality": "Ecuador"
+        },
+        {
+          "id": 103125,
+          "name": "João Pedro",
+          "position": "Centre-Forward",
+          "dateOfBirth": "2001-09-26",
+          "nationality": "Brazil"
+        },
+        {
+          "id": 102603,
+          "name": "Enzo Fernández",
+          "position": "Central Midfield",
+          "dateOfBirth": "2001-01-17",
+          "nationality": "Argentina"
+        },
+        {
+          "id": 98978,
+          "name": "Mykhailo Mudryk",
+          "position": "Left Winger",
+          "dateOfBirth": "2001-01-05",
+          "nationality": "Ukraine"
+        },
+        {
+          "id": 56628,
+          "name": "Reece James",
+          "position": "Right-Back",
+          "dateOfBirth": "1999-12-08",
+          "nationality": "England"
+        },
+        {
+          "id": 15863,
+          "name": "Cucurella",
+          "position": "Left-Back",
+          "dateOfBirth": "1998-07-22",
+          "nationality": "Spain"
+        },
+        {
+          "id": 8545,
+          "name": "Wesley Fofana",
+          "position": "Centre-Back",
+          "dateOfBirth": "2000-12-17",
+          "nationality": "France"
+        },
+        {
+          "id": 7880,
+          "name": "Tosin Adarabioyo",
+          "position": "Centre-Back",
+          "dateOfBirth": "1997-09-24",
+          "nationality": "England"
+        },
+        {
+          "id": 7810,
+          "name": "Trevoh Chalobah",
+          "position": "Centre-Back",
+          "dateOfBirth": "1999-07-05",
+          "nationality": "England"
+        },
+        {
+          "id": 3329,
+          "name": "Raheem Sterling",
+          "position": "Right Winger",
+          "dateOfBirth": "1994-12-08",
+          "nationality": "England"
+        },
+        {
+          "id": 2074,
+          "name": "Pedro Neto",
+          "position": "Right Winger",
+          "dateOfBirth": "2000-03-09",
+          "nationality": "Portugal"
+        },
+        {
+          "id": 813,
+          "name": "Axel Disasi",
+          "position": "Centre-Back",
+          "dateOfBirth": "1998-03-11",
+          "nationality": "France"
+        },
+        {
+          "id": 250436,
+          "name": "Tyrique George",
+          "position": "Left Winger",
+          "dateOfBirth": "2006-02-04",
+          "nationality": "England"
+        },
+        {
+          "id": 249320,
+          "name": "Josh Acheampong",
+          "position": "Right-Back",
+          "dateOfBirth": "2006-05-05",
+          "nationality": "England"
+        },
+        {
+          "id": 247243,
+          "name": "Ollie Harrison",
+          "position": "Defensive Midfield",
+          "dateOfBirth": "2007-08-07",
+          "nationality": "England"
+        },
+        {
+          "id": 207109,
+          "name": "Marc Guiu",
+          "position": "Centre-Forward",
+          "dateOfBirth": "2006-01-04",
+          "nationality": "Spain"
+        },
+        {
+          "id": 189477,
+          "name": "Jorrel Hato",
+          "position": "Centre-Back",
+          "dateOfBirth": "2006-03-07",
+          "nationality": "Netherlands"
+        },
+        {
+          "id": 184273,
+          "name": "Facundo Buonanotte",
+          "position": "Attacking Midfield",
+          "dateOfBirth": "2004-12-23",
+          "nationality": "Argentina"
+        },
+        {
+          "id": 181901,
+          "name": "Alejandro Garnacho",
+          "position": "Left Winger",
+          "dateOfBirth": "2004-07-01",
+          "nationality": "Argentina"
+        },
+        {
+          "id": 179460,
+          "name": "Jamie Bynoe-Gittens",
+          "position": "Left Winger",
+          "dateOfBirth": "2004-08-08",
+          "nationality": "England"
+        },
+        {
+          "id": 172738,
+          "name": "Romeo Lavia",
+          "position": "Defensive Midfield",
+          "dateOfBirth": "2004-01-06",
+          "nationality": "Belgium"
+        },
+        {
+          "id": 170440,
+          "name": "Levi Colwill",
+          "position": "Centre-Back",
+          "dateOfBirth": "2003-02-26",
+          "nationality": "England"
+        },
+        {
+          "id": 170426,
+          "name": "Benoît Badiashile",
+          "position": "Centre-Back",
+          "dateOfBirth": "2001-03-26",
+          "nationality": "France"
+        },
+        {
+          "id": 166366,
+          "name": "Andrey Santos",
+          "position": "Central Midfield",
+          "dateOfBirth": "2004-05-03",
+          "nationality": "Brazil"
+        }
+      ],
+      "staff": [],
+      "lastUpdated": "2022-02-10T19:24:40Z"
+    }
+  ]
+}

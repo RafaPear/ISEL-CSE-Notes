@@ -1,0 +1,52 @@
+// Get the available competitions.
+GET http://localhost:3000/competitions
+###
+// Get the details of a team for a specific season.
+GET http://localhost:3000/competitions/PL/teams?season=2025
+###
+// Create a user.
+POST http://localhost:3000/users
+Content-Type: application/json
+{
+  	"username": "user1"
+}
+###
+// Show all users (Requires admin token).
+GET http://localhost:3000/users
+Authorization: Bearer supersecrettoken123
+
+###
+// Create a group.
+POST http://localhost:3000/groups
+Content-Type: application/json
+// Authorization: <insert-token>
+{
+	//description,
+	//competition,
+	//year
+}
+### 
+// List all groups
+GET http://localhost:3000/groups
+Content-Type: application/json
+// Authorization: <insert-token>
+###
+// Get a group's details.
+GET http://localhost:3000/groups/1
+Content-Type: application/json
+// Authorization: <insert-token>
+###
+// Delete a group.
+DELETE http://localhost:3000/groups/1
+Content-Type: application/json
+// Authorization: <insert-token>
+###
+// Add a player to a group.
+POST http://localhost:3000/groups/1/1111
+Content-Type: application/json
+// Authorization: <insert-token>
+###
+// Remove a player from a group.
+DELETE http://localhost:3000/groups/1/1111
+Content-Type: application/json
+// Authorization: <insert-token>

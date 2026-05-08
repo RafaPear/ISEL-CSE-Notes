@@ -1,0 +1,1 @@
+class Student : Person() { init { } }

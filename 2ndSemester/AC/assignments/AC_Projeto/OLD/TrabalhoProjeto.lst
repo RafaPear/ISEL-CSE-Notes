@@ -1,0 +1,387 @@
+P16 assembler v1.5 (Feb  9 2024)	d:\1-ISEL\Semestre_2\AC\Trabalhos\AC_Projeto\TrabalhoProjeto.lst	Tue May 27 19:05:21 2025
+
+Sections
+Index   Name            Address   Size
+0       .text           0000      0140 320
+1       .data           0140      005C 92
+
+Symbols
+Name                    Type      Value       Section
+COUNTER_10S             ABSOLUTE  0004 4      .text
+COUNTER_1S              ABSOLUTE  0003 3      .text
+data_start              LABEL     0145 325    .data
+data_start_addr         LABEL     0016 22     .text
+digitos_tab             LABEL     014A 330    .data
+digitos_tab_addr        LABEL     00C4 196    .text
+EN_MSK                  ABSOLUTE  0001 1      .text
+ENABLE_EXTINT           ABSOLUTE  0010 16     .text
+FED_ADDRESS             ABSOLUTE  FF40 65344  .text
+fx_loop                 LABEL     00D4 212    .text
+fx_visual               LABEL     00C6 198    .text
+gerador_num             LABEL     007E 126    .text
+gerador_num_end         LABEL     00AC 172    .text
+inport_addr             LABEL     007C 124    .text
+INPORT_ADDRESS          ABSOLUTE  FF80 65408  .text
+inport_read             LABEL     0048 72     .text
+isr                     LABEL     010A 266    .text
+isr_end                 LABEL     0136 310    .text
+LAST_SIDES              ABSOLUTE  0000 0      .text
+main                    LABEL     0018 24     .text
+main_loop               LABEL     0020 32     .text
+MASK_BYTE               ABSOLUTE  00FF 255    .text
+mod6_done               LABEL     00A8 168    .text
+mod6_loop               LABEL     009E 158    .text
+mod_done                LABEL     0090 144    .text
+mod_loop                LABEL     0088 136    .text
+outport_addr            LABEL     00F2 242    .text
+OUTPORT_ADDRESS         ABSOLUTE  FFC0 65472  .text
+program                 LABEL     0004 4      .text
+read_sides              LABEL     003A 58     .text
+READ_SIDES_SHIFT        ABSOLUTE  0002 2      .text
+roll_falling_edge_unblocked LABEL     004E 78     .text
+roll_last               LABEL     0144 324    .data
+roll_last_addr          LABEL     007A 122    .text
+roll_trg_unblocked_ret  LABEL     0072 114    .text
+seq_tab                 LABEL     0154 340    .data
+seq_tab_addr            LABEL     00F0 240    .text
+show_num                LABEL     00AE 174    .text
+sides_die               LABEL     0140 320    .data
+sides_die_addr          LABEL     0046 70     .text
+SIDES_MASK              ABSOLUTE  000C 12     .text
+stack_top               LABEL     015C 348    .data
+stack_top_addr          LABEL     0008 8      .text
+start                   LABEL     000A 10     .text
+STATE                   ABSOLUTE  0002 2      .text
+TIMER_CNT               ABSOLUTE  0001 1      .text
+VAR_INIT_VAL            ABSOLUTE  0000 0      .text
+wait_inner              LABEL     00FC 252    .text
+wait_outer              LABEL     00FA 250    .text
+wait_xms                LABEL     00F4 244    .text
+
+Code listing
+   1           	; Ficheiro:  TrabalhoProjeto.s
+   2           	; Descricao: Programa para a realizacao do Trabalho de Projeto de Arquitetura de Computadores.
+   3           	; Autores:   Gustavo Costa, Rafael Pereira
+   4           	; Data:      27-05-2025
+   5           	
+   6          	.equ    LAST_SIDES, 0
+   7          	.equ    TIMER_CNT, 1
+   8          	.equ    STATE, 2
+   9          	.equ    COUNTER_1S, 3
+  10          	.equ    COUNTER_10S, 4
+  11          	.equ    ENABLE_EXTINT, 0x10
+  12          	.equ    EN_MSK, 0x0001
+  13          	.equ    INPORT_ADDRESS, 0xFF80
+  14          	.equ    OUTPORT_ADDRESS, 0xFFC0
+  15          	.equ    FED_ADDRESS, 0xFF40
+  16          	.equ    VAR_INIT_VAL, 0
+  17          	.equ    SIDES_MASK, 0x0C
+  18          	.equ    READ_SIDES_SHIFT, 2
+  19          	.equ    MASK_BYTE, 0xFF
+  20           	
+  21           	.text
+  22 0000 01 58	    b   program
+  23 0002 83 58	    b   isr
+  24           	
+  25           	program:
+  26 0004 1D 0C	    ldr sp, stack_top_addr
+  27 0006 01 58	    b   start
+  28           	
+  29           	stack_top_addr:
+  30 0008 5C 01	    .word stack_top
+  31           	
+  32           	start:
+  33 000A 56 0C	    ldr r6, data_start_addr ; Carrega o endereço de data_start
+  34 000C 60 08	    ldrb r0, [r6, #0] ; Carrega valor inicial
+  35 000E 15 5C	    bl read_sides 
+  36 0010 60 28	    strb r0, [r6, #LAST_SIDES]
+  37 0012 35 5C	    bl gerador_num
+  38 0014 4C 5C	    bl show_num
+  39           	
+  40           	data_start_addr:
+  41 0016 45 01	    .word data_start
+  42           	
+  43           	main:
+  44 0018 60 B0	    mrs r0, cpsr
+  45 001A 01 61	    mov r1, #ENABLE_EXTINT
+  46 001C 80 C8	    orr r0, r0, r1
+  47 001E 40 B0	    msr cpsr, r0
+  48           	
+  49           	main_loop:
+  50 0020 50 00	    ldr r0, [r5]
+  51 0022 15 5C	    bl roll_falling_edge_unblocked
+  52 0024 07 60	    mov r7, #0
+  53 0026 80 BB	    cmp r0, r7
+  54 0028 FB 43	    beq main_loop
+  55           	
+  56 002A 07 5C	    bl read_sides
+  57 002C 60 28	    strb r0, [r6, #LAST_SIDES]
+  58 002E 10 60	    mov r0, #1
+  59 0030 60 29	    strb r0, [r6, #STATE]
+  60 0032 00 60	    mov r0, #0
+  61 0034 E0 28	    strb r0, [r6, #TIMER_CNT]
+  62           	
+  63 0036 47 5C	    bl fx_visual
+  64 0038 F3 5B	    b main_loop
+  65           	
+  66           	;-------------------------------------------------------
+  67           	; Leitura do número de lados
+  68           	;-------------------------------------------------------
+  69           	read_sides:
+  70 003A C2 60	    mov r2, #SIDES_MASK
+  71 003C 00 C1	    and r0, r0, r2
+  72 003E 00 E9	    lsr r0, r0, #READ_SIDES_SHIFT
+  73 0040 21 0C	    ldr r1, sides_die_addr
+  74 0042 10 18	    ldrb r0, [r1, r0]
+  75 0044 0F B7	    mov pc, lr
+  76           	
+  77           	sides_die_addr:
+  78 0046 40 01	    .word sides_die
+  79           	
+  80           	;-------------------------------------------------------
+  81           	; Ler o porto de entrada
+  82           	;-------------------------------------------------------
+  83           	inport_read:
+  84 0048 90 0D		ldr	r0, inport_addr
+  85 004A 00 00		ldr	r0, [r0, #0]
+  86 004C 0F B7		mov	pc, lr
+  87           	;-------------------------------------------------------
+  88           	; Detecção de transição descendente
+  89           	;-------------------------------------------------------
+  90           	roll_falling_edge_unblocked:
+  91 004E 01 24	    push r1
+  92 0050 02 24	    push r2
+  93 0052 03 24	    push r3
+  94 0054 0E 24	    push lr
+  95           	
+  96 0056 20 0D	    ldr r0, inport_addr
+  97 0058 00 00	    ldr r0, [r0]
+  98 005A 17 60	    mov r7, #EN_MSK & 0xFF
+  99 005C 07 70	    movt r7, #EN_MSK >> 8
+ 100 005E 81 C3	    and r1, r0, r7
+ 101 0060 C2 0C	    ldr r2, roll_last_addr
+ 102 0062 23 00	    ldr r3, [r2]
+ 103 0064 21 20	    str r1, [r2]
+ 104 0066 00 60	    mov r0, #0
+ 105 0068 B3 C1	    and r3, r3, r3
+ 106 006A 03 40	    bzs roll_trg_unblocked_ret
+ 107 006C 91 C0	    and r1, r1, r1
+ 108 006E 01 44	    bzc roll_trg_unblocked_ret
+ 109 0070 10 60	    mov r0, #1
+ 110           	
+ 111           	roll_trg_unblocked_ret:
+ 112 0072 03 04	    pop r3
+ 113 0074 02 04	    pop r2
+ 114 0076 01 04	    pop r1
+ 115 0078 0F 04	    pop pc
+ 116           	
+ 117           	roll_last_addr:
+ 118 007A 44 01	    .word roll_last
+ 119           	
+ 120           	inport_addr:
+ 121 007C 80 FF	    .word INPORT_ADDRESS 
+ 122           	;-------------------------------------------------------
+ 123           	; Gerador pseudoaleatório // O stor vai dar o código do gerador //
+ 124           	;-------------------------------------------------------
+ 125           	gerador_num:
+ 126 007E 63 08	    ldrb r3, [r6, #LAST_SIDES]
+ 127 0080 41 00	    ldr r1, [r4]
+ 128 0082 91 A1	    add r1, r1, #3
+ 129 0084 41 20	    str r1, [r4]
+ 130 0086 82 B0	    mov r2, r1
+ 131           	
+ 132           	mod_loop:
+ 133 0088 20 B8	    cmp r2, r0
+ 134 008A 02 4C	    blo mod_done
+ 135 008C 22 88	    sub r2, r2, r0
+ 136 008E FC 5B	    b mod_loop
+ 137           	
+ 138           	mod_done:
+ 139 0090 A2 A0	    add r2, r2, #1
+ 140 0092 00 B1	    mov r0, r2
+ 141           	
+ 142 0094 C7 60	    mov r7, #12
+ 143 0096 80 BB	    cmp r0, r7
+ 144 0098 09 44	    bne gerador_num_end
+ 145           	
+ 146 009A 41 00	    ldr r1, [r4]
+ 147 009C 82 B0	    mov r2, r1
+ 148           	
+ 149           	mod6_loop:
+ 150 009E 67 60	    mov r7, #6
+ 151 00A0 A0 BB	    cmp r2, r7
+ 152 00A2 02 4C	    blo mod6_done
+ 153 00A4 22 AB	    sub r2, r2, #6
+ 154 00A6 FB 5B	    b mod6_loop
+ 155           	
+ 156           	mod6_done:
+ 157 00A8 A2 A0	    add r2, r2, #1
+ 158 00AA 00 B1	    mov r0, r2
+ 159           	
+ 160           	gerador_num_end:
+ 161 00AC 0F B7	    mov pc, lr
+ 162           	;-------------------------------------------------------
+ 163           	; Mostrar número no display
+ 164           	;-------------------------------------------------------
+ 165           	show_num:
+ 166 00AE 01 24	    push r1
+ 167 00B0 02 24	    push r2
+ 168 00B2 0E 24	    push lr
+ 169 00B4 80 A8	    sub r0, r0, #1
+ 170 00B6 61 0C	    ldr r1, digitos_tab_addr
+ 171 00B8 12 18	    ldrb r2, [r1, r0]
+ 172 00BA B1 0D	    ldr r1, outport_addr
+ 173 00BC 12 20	    str r2, [r1]
+ 174 00BE 02 04	    pop r2
+ 175 00C0 01 04	    pop r1
+ 176 00C2 0F 04	    pop pc
+ 177           	
+ 178           	digitos_tab_addr:
+ 179 00C4 4A 01	    .word digitos_tab
+ 180           	;-------------------------------------------------------
+ 181           	; Animação
+ 182           	;-------------------------------------------------------
+ 183           	fx_visual:
+ 184 00C6 00 24	    push r0
+ 185 00C8 01 24	    push r1
+ 186 00CA 02 24	    push r2
+ 187 00CC 03 24	    push r3
+ 188 00CE 0E 24	    push lr
+ 189           	
+ 190 00D0 03 60	    mov r3, #0
+ 191 00D2 E1 0C	    ldr r1, seq_tab_addr
+ 192           	
+ 193           	fx_loop:
+ 194 00D4 92 19	    ldrb r2, [r1, r3]
+ 195 00D6 D0 0C	    ldr r0, outport_addr
+ 196 00D8 02 20	    str r2, [r0]
+ 197           	
+ 198 00DA 20 63	    mov r0, #50
+ 199 00DC 0B 5C	    bl wait_xms
+ 200           	
+ 201 00DE B3 A0	    add r3, r3, #1
+ 202 00E0 87 60	    mov r7, #8
+ 203 00E2 B0 BB	    cmp r3, r7
+ 204 00E4 F7 4F	    blo fx_loop
+ 205           	
+ 206 00E6 03 04	    pop r3
+ 207 00E8 02 04	    pop r2
+ 208 00EA 01 04	    pop r1
+ 209 00EC 00 04	    pop r0
+ 210 00EE 0F 04	    pop pc
+ 211           	
+ 212           	seq_tab_addr:
+ 213 00F0 54 01	    .word seq_tab
+ 214           	
+ 215           	outport_addr:
+ 216 00F2 C0 FF	    .word OUTPORT_ADDRESS
+ 217           	
+ 218           	;-------------------------------------------------------
+ 219           	; Espera de X × 125ms
+ 220           	;-------------------------------------------------------
+ 221           	wait_xms:
+ 222 00F4 01 24	    push r1
+ 223 00F6 02 24	    push r2
+ 224 00F8 01 B0	    mov r1, r0
+ 225           	
+ 226           	wait_outer:
+ 227 00FA F2 6F	    mov r2, #0xFF
+ 228           	
+ 229           	wait_inner:
+ 230 00FC A2 A8	    sub r2, r2, #1
+ 231 00FE FE 47	    bne wait_inner
+ 232 0100 91 A8	    sub r1, r1, #1
+ 233 0102 FB 47	    bne wait_outer
+ 234 0104 02 04	    pop r2
+ 235 0106 01 04	    pop r1
+ 236 0108 0F B7	    mov pc, lr
+ 237           	;-------------------------------------------------------
+ 238           	; ISR do FED
+ 239           	;-------------------------------------------------------
+ 240           	isr:
+ 241 010A 00 24	    push r0
+ 242 010C 01 24	    push r1
+ 243 010E 02 24	    push r2
+ 244 0110 0E 24	    push lr
+ 245           	    
+ 246 0112 E0 09	    ldrb r0, [r6, #COUNTER_1S]
+ 247 0114 80 A0	    add r0, r0, #1
+ 248 0116 E0 29	    strb r0, [r6, #COUNTER_1S]
+ 249           	    
+ 250 0118 A7 60	    mov r7, #10
+ 251 011A 80 BB	    cmp r0, r7
+ 252 011C 0C 4C	    blo isr_end
+ 253           	    
+ 254 011E 00 60	    mov r0, #0
+ 255 0120 E0 29	    strb r0, [r6, #COUNTER_1S]
+ 256           	    
+ 257 0122 61 0A	    ldrb r1, [r6, #COUNTER_10S]
+ 258 0124 91 A0	    add r1, r1, #1
+ 259 0126 61 2A	    strb r1, [r6, #COUNTER_10S]
+ 260           	    
+ 261 0128 A7 60	    mov r7, #10
+ 262 012A 90 BB	    cmp r1, r7
+ 263 012C 04 4C	    blo isr_end
+ 264           	    
+ 265 012E 01 60	    mov r1, #0
+ 266 0130 61 2A	    strb r1, [r6, #COUNTER_10S]
+ 267 0132 A5 5F	    bl gerador_num
+ 268 0134 BC 5F	    bl show_num
+ 269           	    
+ 270           	isr_end:
+ 271 0136 02 04	    pop r2
+ 272 0138 01 04	    pop r1
+ 273 013A 00 04	    pop r0
+ 274 013C 0F 04	    pop pc
+ 275 013E 20 B0	    movs pc, lr
+ 276           	
+ 277           	;-------------------------------------------------------
+ 278           	; Secção .data
+ 279           	;-------------------------------------------------------
+ 280           	.data
+ 281           	
+ 282           	sides_die:
+ 283          	    .byte 0x04, 0x06, 0x08, 0x0C ; Número de lados do dado: 4, 6, 8, 12
+ 283 0140 04 06 08 0C
+ 284           	
+ 285           	roll_last:
+ 286 0144 00	    .byte 0x00 ; Último estado do dado (para detecção de transição descendente)
+ 287           	
+ 288           	data_start:
+ 289 0145 04	    .byte 0x04   ; LAST_SIDES
+ 290 0146 00	    .byte 0x00   ; TIMER_CNT
+ 291 0147 00	    .byte 0x00   ; STATE
+ 292 0148 00	    .byte 0x00   ; COUNTER_1S
+ 293 0149 00	    .byte 0x00   ; COUNTER_10S
+ 294          	    .align 1
+ 295           	
+ 296           	;4_die:
+ 297           	;    .byte 0x01, 0x02, 0x03, 0x04 ; Dado de 4 lados: 1, 2, 3, 4
+ 298           	
+ 299           	;6_die:
+ 300           	;    .byte 0x01, 0x02, 0x03, 0x04, 0x05, 0x06 ; Dado de 6 lados: 1, 2, 3, 4, 5, 6
+ 301           	
+ 302           	;8_die:
+ 303           	;    .byte 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08 ; Dado de 8 lados: 1, 2, 3, 4, 5, 6, 7, 8
+ 304           	
+ 305           	;12_die:
+ 306           	;    .byte 0x01, 0x01, 0x02, 0x02, 0x03, 0x03 ; Dado de 12 lados: 1, 1, 2, 2, 3, 3
+ 307           	;    .byte 0x04, 0x04, 0x05, 0x05, 0x06, 0x06 ; 4, 4, 5, 5, 6, 6
+ 308           	
+ 309           	digitos_tab:
+ 310          	    .byte 0x06, 0x5B, 0x4F, 0x66, 0x6D, 0x7D, 0x07, 0x7F, 0x6F ; 1, 2, 3, 4, 5, 6, 7, 8, 9
+ 310 014A 06 5B 4F 66 6D 7D 07 7F 6F
+ 311 0153 00  	    .align 1
+ 312           	
+ 313           	seq_tab:
+ 314          	    .byte 0x01, 0x02, 0x40, 0x10, 0x08, 0x04, 0x40, 0x20 ; Efeito luminoso em '8'
+ 314 0154 01 02 40 10 08 04 40 20
+ 315           	
+ 316           	;-------------------------------------------------------
+ 317           	; Stack
+ 318           	;-------------------------------------------------------
+ 319           	stack_top:
+ 320 015C 00   	    .space 64
+ 320 .... ..
+ 320 019B 00
+ 320           	

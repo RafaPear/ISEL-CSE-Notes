@@ -1,0 +1,57 @@
+#============================================================
+# Altera DE10-Lite board settings
+#============================================================
+
+set_global_assignment -name FAMILY "MAX 10 FPGA"
+set_global_assignment -name DEVICE 10M50DAF484C6GES
+set_global_assignment -name TOP_LEVEL_entity "DE10_Lite"
+set_global_assignment -name DEVICE_FILTER_PACKAGE FBGA
+set_global_assignment -name SDC_FILE DE10_Lite.sdc
+set_global_assignment -name INTERNAL_FLASH_UPDATE_MODE "SINGLE IMAGE WITH ERAM"
+
+#============================================================
+# CLOCK
+#============================================================
+
+#set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to CLK
+set_location_assignment PIN_P11 -to CLK
+
+#============================================================
+# SW
+#============================================================
+
+set_location_assignment PIN_C10     -to    RESET
+#set_location_assignment PIN_C11     -to    lcdSel
+#set_location_assignment PIN_D12     -to    InBit
+#set_location_assignment PIN_C12    -to     ackti
+#set_location_assignment PIN_A12    -to    SW[4]
+#set_location_assignment PIN_B12    -to    SW[5]
+#set_location_assignment PIN_A13    -to    SW[6]
+#set_location_assignment PIN_A14    -to    SW[7]
+#set_location_assignment PIN_B14    -to    SW[8]
+#set_location_assignment PIN_F15    -to    SW[9]
+
+#============================================================
+# LED
+#============================================================
+
+#set_location_assignment PIN_A8      -to    K[0]
+#set_location_assignment PIN_A9      -to    K[1]
+#set_location_assignment PIN_A10     -to    K[2]
+#set_location_assignment PIN_B10     -to    K[3]
+
+#============================================================
+# LCD (Expansion Board)
+#============================================================
+
+set_location_assignment PIN_W8     -to L_Dout[4]
+set_location_assignment PIN_V5     -to L_E
+
+set_location_assignment PIN_AA15   -to L_Dout[0]
+set_location_assignment PIN_W13    -to L_Dout[1]
+set_location_assignment PIN_AB13   -to L_Dout[2]
+set_location_assignment PIN_Y11    -to L_Dout[3]
+#set_location_assignment PIN_W11    -to L_Dout[0]
+#set_location_assignment PIN_AA10   -to L_Dout[1]
+#set_location_assignment PIN_Y8     -to L_Dout[2]
+#set_location_assignment PIN_Y7     -to L_Dout[3]

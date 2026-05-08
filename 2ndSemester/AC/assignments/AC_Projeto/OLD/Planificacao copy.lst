@@ -1,0 +1,302 @@
+P16 assembler v1.5 (Feb  9 2024)	d:\1-ISEL\Semestre_2\AC\Trabalhos\AC_Projeto\Planificacao copy.lst	Thu May 29 20:17:35 2025
+
+Sections
+Index   Name            Address   Size
+0       .text           0000      00D6 214
+1       .data           00D6      0022 34
+2       .stack          00F8      0040 64
+
+Symbols
+Name                    Type      Value       Section
+action                  LABEL     004C 76     .text
+action_end              LABEL     0066 102    .text
+anim                    LABEL     0086 134    .text
+anim_break              LABEL     00B8 184    .text
+ANIM_fRAME_TIME         ABSOLUTE  000A 10     .text
+anim_loop               LABEL     009A 154    .text
+anim_sequence           LABEL     00E8 232    .data
+DICE_MASK               ABSOLUTE  000C 12     .text
+digitos_tab             LABEL     00D7 215    .data
+FED_ADDRESS             ABSOLUTE  FF40 65344  .text
+game                    LABEL     0028 40     .text
+game_loop               LABEL     0032 50     .text
+getDiceMax              LABEL     0072 114    .text
+getDiceMax_end          LABEL     0080 128    .text
+INPORT_ADDRESS          ABSOLUTE  FF80 65408  .text
+inport_read             LABEL     00C6 198    .text
+isr                     LABEL     000E 14     .text
+line#24                 LABEL     0002 2      .text
+main                    LABEL     000C 12     .text
+MAX_ANIMATIONS          ABSOLUTE  0008 8      .text
+max_sides               LABEL     00E0 224    .data
+OUTPORT_ADDRESS         ABSOLUTE  FFC0 65472  .text
+outport_write           LABEL     00CE 206    .text
+program                 LABEL     0004 4      .text
+ptr_anim_sequence       LABEL     00C4 196    .text
+randGen                 LABEL     0084 132    .text
+roll                    LABEL     006A 106    .text
+ROLL_MASK               ABSOLUTE  0001 1      .text
+ROLL_TIME               ABSOLUTE  000A 10     .text
+STACK_SIZE              ABSOLUTE  0040 64     .text
+stack_top               LABEL     0138 312    .stack
+stack_top_addr          LABEL     000A 10     .text
+TOTAL_SIDES             ABSOLUTE  0004 4      .text
+var                     LABEL     00D6 214    .data
+var_addr_isr            LABEL     0026 38     .text
+
+Code listing
+   1           	; Ficheiro:  TrabalhoProjeto.s
+   2           	; Descricao: Programa para a realizacao do Trabalho de Projeto de Arquitetura de Computadores.
+   3           	; Autores:   Gustavo Costa, Rafael Pereira
+   4           	; Data:      27-05-2025
+   5           	; ALL COMMENTS IN ENGLISH
+   6           	
+   7           	; Initialization of constants
+   8          	.equ    INPORT_ADDRESS, 0xFF80 ; Input port address
+   9          	.equ    OUTPORT_ADDRESS, 0xFFC0 ; Output port address
+  10          	.equ    FED_ADDRESS, 0xFF40 ; Falling edge detection address
+  11           	
+  12          	.equ    ROLL_TIME, 10 ; Time seconds to mantain the rolling state
+  13          	.equ    ANIM_fRAME_TIME, 10 ; Time in milliseconds for each animation frame
+  14          	.equ    MAX_ANIMATIONS, 8 ; Maximum number of animations
+  15          	.equ    TOTAL_SIDES, 4 ; Total number of sides for the die
+  16           	
+  17          	.equ    DICE_MASK, 0x0C ; Mask for the die sides
+  18          	.equ    ROLL_MASK, 0x01 ; Mask for the roll switch
+  19           	
+  20          	.equ    STACK_SIZE, 64 ; Stack size in bytes
+  21           	
+  22           		.text
+  23 0000 01 58		b	program
+  24 0002 FF 5B		b	.		; Reservado para a ISR
+  25           	program:
+  26 0004 2D 0C		ldr	sp, stack_top_addr
+  27 0006 02 58		b	main
+  28 0008 02 58	    b   isr
+  29           	
+  30           	stack_top_addr:
+  31 000A 38 01		.word	stack_top
+  32           	
+  33           	main:
+  34 000C 0D 5C	    bl game ; Start the game
+  35           	
+  36           	    
+  37           	; Rotina:    isr
+  38           	; Descricao: *** Para completar ***
+  39           	; Entradas:  *** Para completar ***
+  40           	; Saidas:    *** Para completar ***
+  41           	; Efeitos:   *** Para completar ***
+  42           	isr:
+  43 000E 01 24		push	r1
+  44 0010 00 24		push	r0
+  45 0012 00 64		mov	r0, #FED_ADDRESS & 0xFF
+  46 0014 F0 7F		movt	r0, #(FED_ADDRESS >> 8) & 0xFF
+  47 0016 02 28		strb	r2, [r0, #0]
+  48 0018 60 0C		ldr	r0, var_addr_isr
+  49 001A 01 08		ldrb	r1, [r0, #0]
+  50 001C 91 A0		add	r1, r1, #1
+  51 001E 01 28		strb	r1, [r0, #0]
+  52 0020 00 04		pop	r0
+  53 0022 01 04		pop	r1
+  54 0024 20 B0		movs	pc, lr
+  55           	
+  56           	var_addr_isr:
+  57 0026 D6 00		.word	var
+  58           	
+  59           	game:
+  60 0028 0E 24	    push lr ; Save the link register
+  61 002A 04 24	    push r4 ; Save r4 on the stack
+  62           	
+  63 002C 54 60	    mov r4, #5 ; Initialize r4 to 0 (die index)
+  64 002E 00 B2	    mov r0, r4 ; Load the initial die index into r0
+  65 0030 4E 5C	    bl outport_write ; Output the initial value to the display
+  66           	
+  67           	game_loop:
+  68 0032 00 B2	    mov r0, r4 ; Load the previous die index into r0
+  69 0034 0B 5C	    bl action ; Call the action function to roll the dice
+  70 0036 04 B0	    mov r4, r0 ; Store the new die index in r4
+  71 0038 46 5C	    bl inport_read ; Read the input port to check the roll switch state
+  72 003A 11 60	    mov r1, #ROLL_MASK ; Load the roll switch mask
+  73 003C 80 C0	    and r0, r0, r1 ; Mask the input to get the roll switch state
+  74 003E F9 43	    beq game_loop ; If not pressed, continue the game loop
+  75           	
+  76 0040 22 5C	    bl anim ; Start the 7SegmentDisplay animation
+  77 0042 00 B2	    mov r0, r4 ; Load the die index into r0
+  78 0044 12 5C	    bl roll ; Call the roll function to generate a random number
+  79 0046 43 5C	    bl outport_write ; Output the new random number to the display
+  80 0048 A0 60	    mov r0, #ROLL_TIME ; Load the roll time into r0
+  81           	    ; TODO SACAR O TEMPO DO FED
+  82           	    ;bl wait ; Wait for a while before the next action
+  83 004A F3 5B	    b game_loop ; Repeat the game loop
+  84           	
+  85           	
+  86           	; ------------------------------------------------------------
+  87           	; Roll a dice action
+  88           	; -------------------------------------------------------------
+  89           	; Input:
+  90           	; r0 - Previous die index (0 for d4, 1 for d6, 2 for d8, 3 for d12)
+  91           	; Returns:
+  92           	; r0 - New die index (0 for d4, 1 for d6, 2 for d8, 3 for d12)
+  93           	action:
+  94 004C 0E 24	    push lr ; Save the link register
+  95 004E 04 24	    push r4 ; Save r4 on the stack
+  96 0050 04 B0	    mov r4, r0 ; Store the previous die index in r4
+  97           	
+  98 0052 39 5C	    bl inport_read ; Read the input port
+  99 0054 C5 60	    mov r5, #DICE_MASK ; Load the die sides mask
+ 100 0056 80 C2	    and r0, r0, r5 ; Mask the input to get the roll switch state
+ 101 0058 00 E9	    lsr r0, r0, #2
+ 102 005A 00 BA	    cmp r0, r4
+ 103 005C 04 40	    beq action_end ; If the roll switch state is the same, return
+ 104 005E 04 B0	    mov r4, r0
+ 105 0060 04 5C	    bl roll ; Call the roll function to generate a new die index
+ 106 0062 35 5C	    bl outport_write ; Output the new die index to the display
+ 107 0064 00 B2	    mov r0, r4 ; Update r4 with the new die index
+ 108           	
+ 109           	action_end:
+ 110 0066 04 04	    pop r4 ; Restore r4
+ 111 0068 0F 04	    pop pc ; Return from action
+ 112           	
+ 113           	; ------------------------------------------------------------
+ 114           	; Roll
+ 115           	; ------------------------------------------------------------
+ 116           	; Input:
+ 117           	; r0 - Die index (0 for d4, 1 for d6, 2 for d8, 3 for d12)
+ 118           	; Returns:
+ 119           	; r0 - Random number generated based on the die sides
+ 120           	roll:
+ 121 006A 0E 24	    push lr
+ 122 006C 02 5C	    bl getDiceMax ; Get the maximum sides for the die
+ 123 006E 0A 5C	    bl randGen ; Generate a random number
+ 124 0070 0F 04	    pop pc ; Return from roll
+ 125           	
+ 126           	; ------------------------------------------------------------
+ 127           	; Get the maximum sides for the die based on the index
+ 128           	; Input:
+ 129           	; r0 - Die index (0 for d4, 1 for d6, 2 for d8, 3 for d12)
+ 130           	; Returns:
+ 131           	; r0 - Maximum sides for the die
+ 132           	getDiceMax:
+ 133 0072 04 24	    push r4 ; Save r4 on the stack
+ 134 0074 44 60	    mov r4, #TOTAL_SIDES ; Load the total number of sides for the die
+ 135 0076 00 BA	    cmp r0, r4 ; Compare the input with the total sides
+ 136 0078 03 50	    bge getDiceMax_end ; If input is greater or equal, return
+ 137 007A 80 E0	    lsl r0, r0, #1 ; Double the input value (to match the die sides)
+ 138 007C 04 6E	    mov r4, #max_sides
+ 139 007E 40 10	    ldr r0, [r4, r0] ; Load the maximum sides for the die
+ 140           	getDiceMax_end:
+ 141 0080 04 04	    pop r4 ; Restore r4
+ 142 0082 0F B7	    mov pc, lr ; Return from getDiceMax
+ 143           	
+ 144           	
+ 145           	randGen:
+ 146 0084 0F B7	    mov pc, lr ; Return from randGen
+ 147           	
+ 148           	; ---------------------------------------
+ 149           	;       7SegmentDisplay Animation
+ 150           	; ---------------------------------------
+ 151           	; r0 - Current animation step
+ 152           	; r4 - Index for the animation sequence
+ 153           	; r5 - Counter for the animation loop
+ 154           	; r6 - Pointer to the animation sequence
+ 155           	; r7 - Temporary register for comparison
+ 156           	; ---------------------------------------
+ 157           	
+ 158           	anim:
+ 159 0086 0E 24	    push lr        ; salva o endereço de retorno
+ 160 0088 00 24	    push r0        ; mantém valor do chamador em r0
+ 161 008A 04 24	    push r4
+ 162 008C 05 24	    push r5
+ 163 008E 06 24	    push r6
+ 164 0090 07 24	    push r7
+ 165           	
+ 166 0092 A6 0E	    ldr  r6, anim_sequence   ; ponteiro para a sequência
+ 167 0094 04 60	    mov  r4, #0               ; índice da sequência
+ 168 0096 05 60	    mov  r5, #0               ; contador do loop
+ 169 0098 00 58	    b    anim_loop
+ 170           	
+ 171           	anim_loop:
+ 172 009A A0 60	    mov r0, #ANIM_fRAME_TIME ; tempo de cada frame
+ 173           	    ; TODO VER TIKS TO FED TODO
+ 174           	    ;bl   wait                ; espera o tempo do frame
+ 175 009C 60 12	    ldr r0, [r6, r4]         ; r0 ← passo actual
+ 176 009E 17 5C	    bl   outport_write        ; envia para o display
+ 177           	
+ 178           	    ; AJEITAR AQUI PARA O FED
+ 179 00A0 D5 A0	    add  r5, r5, #1           ; ++contador
+ 180 00A2 A7 60	    mov  r7, #ROLL_TIME
+ 181 00A4 77 E5	    lsl  r7, r7, #10          ; seg → iterações
+ 182 00A6 D0 BB	    cmp  r5, r7
+ 183 00A8 07 40	    beq  anim_break           ; tempo esgotado?
+ 184           	
+ 185 00AA 44 A1	    add  r4, r4, #2        ; próximo passo
+ 186 00AC 07 61	    mov  r7, #MAX_ANIMATIONS << 1
+ 187 00AE F7 A0	    add  r7, r7, #1           ; r7 = número de passos na sequência
+ 188 00B0 C0 BB	    cmp  r4, r7
+ 189 00B2 F3 57	    blt  anim_loop            ; ainda na sequência
+ 190 00B4 04 60	    mov  r4, #0               ; reinicia índice
+ 191 00B6 F1 5B	    b    anim_loop
+ 192           	
+ 193           	anim_break:
+ 194 00B8 07 04	    pop  r7
+ 195 00BA 06 04	    pop  r6
+ 196 00BC 05 04	    pop  r5
+ 197 00BE 04 04	    pop  r4
+ 198 00C0 00 04	    pop  r0                   ; repõe r0 original
+ 199 00C2 0F 04	    pop  pc                   ; retorna do anim
+ 200           	
+ 201           	ptr_anim_sequence:
+ 202 00C4 E8 00	    .word   anim_sequence
+ 203           	
+ 204           	
+ 205           	;-------------------------------------------------------
+ 206           	; Input Port Routines
+ 207           	;-------------------------------------------------------
+ 208           	inport_read:
+ 209 00C6 01 68		mov	r1, #INPORT_ADDRESS & 0xFF
+ 210 00C8 F1 7F		movt	r1, #(INPORT_ADDRESS >> 8) & 0xFF
+ 211 00CA 10 08		ldrb	r0, [r1, #0]
+ 212 00CC 0F B7		mov	pc, lr
+ 213           	
+ 214           	;-------------------------------------------------------
+ 215           	; Output Port Routines
+ 216           	;-------------------------------------------------------
+ 217           	outport_write:
+ 218 00CE 01 6C		mov	r1, #OUTPORT_ADDRESS & 0xFF
+ 219 00D0 F1 7F		movt	r1, #(OUTPORT_ADDRESS >> 8) & 0xFF
+ 220 00D2 10 28		strb	r0, [r1, #0]
+ 221 00D4 0F B7		mov	pc, lr
+ 222           	
+ 223           	.data
+ 224           	
+ 225           	    var:
+ 226 00D6 00   		    .space	1
+ 227           	    digitos_tab:
+ 228          	        .byte 0x06, 0x5B, 0x4F, 0x66, 0x6D, 0x7D, 0x07, 0x7F, 0x6F ; 1, 2, 3, 4, 5, 6, 7, 8, 9
+ 228 00D7 06 5B 4F 66 6D 7D 07 7F 6F
+ 229          	        .align 1
+ 230           	
+ 231           	    max_sides: ; Define the max number of die sides for each die
+ 232          	        .word 4, 6, 8, 12
+ 232 00E0 04 00 06 00 08 00 0C 00
+ 233           	
+ 234           	    anim_sequence: ; 7Segment Display Animation Sequence (8style)
+ 235 00E8 01 00	        .word 0x01
+ 236 00EA 02 00	        .word 0x02
+ 237 00EC 40 00	        .word 0x40
+ 238 00EE 10 00	        .word 0x10
+ 239 00F0 08 00	        .word 0x08
+ 240 00F2 04 00	        .word 0x04
+ 241 00F4 40 00	        .word 0x40
+ 242 00F6 20 00	        .word 0x20
+ 243           	
+ 244           	;-------------------------------------------------------
+ 245           	; Stack
+ 246           	;-------------------------------------------------------
+ 247           	;
+ 248           		.stack
+ 249 00F8 00   		.space	STACK_SIZE
+ 249 .... ..
+ 249 0137 00
+ 250           	stack_top:
+ 250           	

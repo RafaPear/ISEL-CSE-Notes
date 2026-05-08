@@ -1,0 +1,63 @@
+#============================================================
+# Altera DE10-Lite board settings
+#============================================================
+
+set_global_assignment -name FAMILY "MAX 10 FPGA"
+set_global_assignment -name DEVICE 10M50DAF484C6GES
+set_global_assignment -name TOP_LEVEL_entity "DE10_Lite"
+set_global_assignment -name DEVICE_FILTER_PACKAGE FBGA
+set_global_assignment -name SDC_FILE DE10_Lite.sdc
+set_global_assignment -name INTERNAL_FLASH_UPDATE_MODE "SINGLE IMAGE WITH ERAM"
+
+#============================================================
+# CLOCK
+#============================================================
+
+#set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to CLK
+set_location_assignment PIN_P11 -to CLK
+
+#============================================================
+# SW
+#============================================================
+
+set_location_assignment PIN_C10     -to    RESET
+#set_location_assignment PIN_C11     -to    lcdSel
+#set_location_assignment PIN_D12     -to    InBit
+#set_location_assignment PIN_C12    -to     ackti
+#set_location_assignment PIN_A12    -to    SW[4]
+#set_location_assignment PIN_B12    -to    SW[5]
+#set_location_assignment PIN_A13    -to    SW[6]
+#set_location_assignment PIN_A14    -to    SW[7]
+#set_location_assignment PIN_B14    -to    SW[8]
+#set_location_assignment PIN_F15    -to    SW[9]
+
+#============================================================
+# KEY
+#============================================================
+#set_instance_assignment -name IO_STANDARD "3.3 V SCHMITT TRIGGER" -to KEY[0]
+#set_instance_assignment -name IO_STANDARD "3.3 V SCHMITT TRIGGER" -to KEY[1]
+#set_location_assignment PIN_B8 -to KEY[0]
+#set_location_assignment PIN_A7 -to send
+
+#============================================================
+# LED
+#============================================================
+
+set_location_assignment PIN_A8      -to    K_D[0]
+set_location_assignment PIN_A9      -to    K_D[1]
+set_location_assignment PIN_A10     -to    K_D[2]
+set_location_assignment PIN_B10     -to    K_D[3]
+set_location_assignment PIN_D13     -to    K_Dval
+
+#============================================================
+# Keyboard (Expansion Board)
+#============================================================
+
+set_location_assignment PIN_W5      -to    k_LIN[0]
+set_location_assignment PIN_AA14    -to	   k_LIN[1]
+set_location_assignment PIN_W12     -to    k_LIN[2]
+set_location_assignment PIN_AB12    -to	   k_LIN[3]
+set_location_assignment PIN_AB11    -to	   k_COL[3]
+set_location_assignment PIN_AB10    -to	   k_COL[0]
+set_location_assignment PIN_AA9     -to	   k_COL[1]
+set_location_assignment PIN_AA8     -to	   k_COL[2]

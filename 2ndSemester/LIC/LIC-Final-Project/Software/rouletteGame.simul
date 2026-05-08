@@ -1,0 +1,84 @@
+## --- Additional packages with Hardware to Simulator
+# for Modules used in Roulette Game
+package roulette.simul
+
+# Generic modules to activate from Simulator
+UsbPort = UsbPort
+kbd  = Keyboard("123A456B789C*0#D",4,4,0)
+lcd  = LCD
+m    = Switch ; "manut" ; setLabel("M")
+
+# Costume modules from roulette package
+rb  = RingBuffer
+ob  = OutputBuffer
+srl = SerialReceiverParity(5)
+dl  = LCD_Dispatcher
+srr = SerialReceiverParity(8)
+rdispatch = Roulette_Dispatcher
+rdisplay = RouletteDisplay
+ca = CoinAcceptor ; "Acceptor"
+
+## --- Project Links ---
+# --------------------------------------
+# Manut
+# --------------------------------------
+m.out -> UsbPort.I7
+
+# --------------------------------------
+# Coin Acceptor
+# --------------------------------------
+UsbPort.O6 -> ca.accept
+ca.Coin -> UsbPort.I6
+ca.Coin_id -> UsbPort.I5
+
+# --------------------------------------
+# Keyboard Reader
+# --------------------------------------
+# Key Decode
+1 -> kbd.oe
+kbd.val -> rb.DAV
+kbd.K[0-3] -> rb.D[0-3]
+
+# Ring Buffer
+rb.DAC -> kbd.ack
+rb.Q[0-1] -> ob.D[2-3]
+rb.Q[2-3] -> ob.D[0-1]
+rb.Wreg -> ob.Load
+
+# Output Buffer
+ob.OBfree -> rb.CTS
+ob.Q[0-3] -> UsbPort.I[0-3]
+ob.Dval -> UsbPort.I4
+UsbPort.O7 -> ob.ACK
+
+# --------------------------------------
+# SLCDC
+# --------------------------------------
+# Serial Receiver
+UsbPort.O0 -> srl./SS
+UsbPort.O3 -> srl.SDX
+UsbPort.O4-> srl.SCLK
+srl.DXval -> dl.Dval
+srl.D[0-4] -> dl.I[0-4]
+
+# LCD Dispatcher
+dl.D[1-4] -> lcd.D[4-7]
+dl.D0 -> lcd.rs
+dl.WrL -> lcd.e
+dl.done -> srl.accept
+
+# --------------------------------------
+# SRD
+# --------------------------------------
+# Serial Receiver
+UsbPort.O1  -> srr./SS
+UsbPort.O3  -> srr.SDX
+UsbPort.O4  -> srr.SCLK
+srr.Dxval   -> rdispatch.Dval
+srr.D[0-7]  -> rdispatch.I[0-7]
+
+# Roulette Dispatcher
+rdispatch.done     -> srr.accept
+rdispatch.WrD      -> rdisplay.set
+rdispatch.D[0-2]   -> rdisplay.cmd[0-2]
+rdispatch.D[3-7]   -> rdisplay.data[0-4]

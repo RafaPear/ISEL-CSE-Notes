@@ -1,0 +1,69 @@
+{
+    "count": 183,
+    "filters": {},
+    "competitions": [
+        {
+            "id": 2166,
+            "area": {
+                "id": 2001,
+                "name": "Africa",
+                "code": "AFR",
+                "flag": null
+            },
+            "name": "AFC Champions League",
+            "code": "ACL",
+            "type": "CUP",
+            "emblem": null,
+            "plan": "TIER_FOUR",
+            "currentSeason": {},
+            "numberOfAvailableSeasons": 1,
+            "lastUpdated": "2023-02-26T12:57:33Z"
+        },
+        {
+            "id": 2006,
+            "area": {
+                "id": 2001,
+                "name": "Africa",
+                "code": "AFR",
+                "flag": null
+            },
+            "name": "WC Qualification CAF",
+            "code": "QCAF",
+            "type": "CUP",
+            "emblem": null,
+            "plan": "TIER_FOUR",
+            "currentSeason": {
+                "id": 1609,
+                "startDate": "2023-11-15",
+                "endDate": "2025-10-13",
+                "currentMatchday": 10,
+                "winner": null
+            },
+            "numberOfAvailableSeasons": 3,
+            "lastUpdated": "2022-03-13T18:51:44Z"
+        },
+        {
+            "id": 2176,
+            "area": {
+                "id": 2001,
+                "name": "Africa",
+                "code": "AFR",
+                "flag": null
+            },
+            "name": "Africa Cup",
+            "code": "AC",
+            "type": "CUP",
+            "emblem": "https://crests.football-data.org/ac.png",
+            "plan": "TIER_FOUR",
+            "currentSeason": {
+                "id": 2385,
+                "startDate": "2025-12-21",
+                "endDate": "2026-01-18",
+                "currentMatchday": 1,
+                "winner": null
+            },
+            "numberOfAvailableSeasons": 2,
+            "lastUpdated": "2024-01-13T11:34:43Z"
+        }
+    ]
+}

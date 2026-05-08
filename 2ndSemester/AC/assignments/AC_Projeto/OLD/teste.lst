@@ -1,0 +1,334 @@
+P16 assembler v1.5 (Feb  9 2024)	d:\1-ISEL\Semestre_2\AC\Trabalhos\AC_Projeto\teste.lst	Thu May 29 23:10:58 2025
+
+Sections
+Index   Name            Address   Size
+0       .text           0000      00E0 224
+1       .data           00E0      0022 34
+2       .stack          0102      0040 64
+
+Symbols
+Name                    Type      Value       Section
+_stack_lit              LABEL     0008 8      .text
+_tick_ptr1              LABEL     0020 32     .text
+_tick_ptr2              LABEL     0032 50     .text
+action                  LABEL     005E 94     .text
+Action_ret              LABEL     007A 122    .text
+anim                    LABEL     009C 156    .text
+Anim_idx_ok             LABEL     00BE 190    .text
+Anim_loop               LABEL     00AC 172    .text
+anim_sequence           LABEL     00F2 242    .data
+DICE_MSK                ABSOLUTE  000C 12     .text
+ENABLE_EXTINT           ABSOLUTE  0010 16     .text
+extint_vector           LABEL     000A 10     .text
+FED_ADDRESS             ABSOLUTE  FF40 65344  .text
+FRAME_T_MS              ABSOLUTE  000A 10     .text
+FRAME_TICKS             ABSOLUTE  000A 10     .text
+FRAMES_ROLL             ABSOLUTE  03E8 1000   .text
+getDiceMax              LABEL     0088 136    .text
+getDiceMax_end          LABEL     0096 150    .text
+inport_addr             LABEL     00E0 224    .data
+INPORT_ADDRESS          ABSOLUTE  FF80 65408  .text
+inport_read             LABEL     00D0 208    .text
+main                    LABEL     0034 52     .text
+Main_loop               LABEL     0046 70     .text
+MAX_ANIM                ABSOLUTE  0008 8      .text
+max_sides               LABEL     00EA 234    .data
+outport_addr            LABEL     00E2 226    .data
+OUTPORT_ADDRESS         ABSOLUTE  FFC0 65472  .text
+outport_write           LABEL     00D8 216    .text
+ptr_anim_seq            LABEL     00CE 206    .text
+randGen                 LABEL     009A 154    .text
+reset_vector            LABEL     0004 4      .text
+rng_seed                LABEL     00E6 230    .data
+roll                    LABEL     0080 128    .text
+ROLL_MSK                ABSOLUTE  0001 1      .text
+ROLL_T_S                ABSOLUTE  000A 10     .text
+ROLL_TICKS              ABSOLUTE  2710 10000  .text
+STACK_SIZE              ABSOLUTE  0040 64     .text
+stack_top               LABEL     0142 322    .stack
+SUBDIV                  ABSOLUTE  000A 10     .text
+tick_cnt                LABEL     00E8 232    .data
+tick_cnt_ptr            LABEL     00E4 228    .data
+TICK_HZ                 ABSOLUTE  2710 10000  .text
+TOTAL_SIDES             ABSOLUTE  0004 4      .text
+wait_ticks              LABEL     0022 34     .text
+WT_loop                 LABEL     0028 40     .text
+
+Code listing
+   1           	; =====================================================================
+   2           	;  File:   TrabalhoProjeto_p16.s
+   3           	;  Desc:   Dice‑roller project – uses FED ticks for timing *only with
+   4           	;          instructions available in the P16 ISA* (no pseudo‑ops).
+   5           	;          Replace the TIMING CONSTANTS block if the external clock
+   6           	;          on the FED is changed (e.g. 100 kHz instead of 10 kHz).
+   7           	; ---------------------------------------------------------------------
+   8           	;  BUILD:  p16as -s .stack=0x2000 TrabalhoProjeto_p16.s
+   9           	; =====================================================================
+  10           	
+  11           	; =========================== CONSTANTES ===============================
+  12          	    .equ INPORT_ADDRESS   , 0xFF80         ; porta de entrada (DIP‑switch)
+  13          	    .equ OUTPORT_ADDRESS  , 0xFFC0         ; porta de saída (7‑seg)
+  14          	    .equ FED_ADDRESS      , 0xFF40         ; 1.º byte da região CS_EXT1
+  15          	    .equ ENABLE_EXTINT    , 0x10
+  16           	
+  17           	; ------------  temporização derivada do FED  -------------------------
+  18          	    .equ  TICK_HZ      , 10000      ; relógio externo
+  19          	    .equ  SUBDIV       , 10         ; 10 kHz ÷ 10 = 1 kHz  (1 ms)
+  20          	    .equ  FRAME_T_MS   , 10         ; 10 ms
+  21          	    .equ  ROLL_T_S     , 10         ; 10 s
+  22          	    .equ  FRAME_TICKS  , FRAME_T_MS ; 10  ticks
+  23          	    .equ  ROLL_TICKS   , 10000      ; 10000 ticks
+  24          	    .equ  FRAMES_ROLL  , 1000       ; 1000 frames
+  25           	
+  26           	; ------------  dados jogo  -------------------------------------------
+  27          	    .equ MAX_ANIM      , 8
+  28          	    .equ TOTAL_SIDES   , 4
+  29           	
+  30          	    .equ DICE_MSK      , 0x0C           ; SIDES[1:0] no DIP
+  31          	    .equ ROLL_MSK      , 0x01           ; ROLL no DIP
+  32           	
+  33          	    .equ STACK_SIZE    , 64
+  34           	
+  35           	; =====================================================================
+  36           	    .text
+  37 0000 01 58	    b   reset_vector            ; 0x0000
+  38 0002 03 58	    b   extint_vector           ; 0x0002
+  39           	
+  40           	; ========================== VECTORS ==================================
+  41           	reset_vector:
+  42 0004 1D 0C	        ldr     sp, _stack_lit     ; PC-relative (offset = +2 words)
+  43 0006 16 58	        b       main
+  44           	_stack_lit:
+  45 0008 42 01	        .word   stack_top
+  46           	
+  47           	
+  48           	
+  49           	extint_vector:
+  50 000A 00 24	        push    r0
+  51 000C 01 24	        push    r1
+  52           	
+  53           	        ; --- limpa FED ------------------------------------------------
+  54 000E 00 64	        mov     r0, #FED_ADDRESS & 0xFF          ; low  byte de 0xFF40
+  55 0010 F0 7F	        movt    r0, #(FED_ADDRESS >> 8) & 0xFF          ; high byte
+  56           	        ;strb    r0, [r0, #0]           ; grava 0x40 em 0xFF40
+  57           	
+  58           	        ; --- tick_cnt++ -----------------------------------------------
+  59 0012 61 0C	        ldr     r1, _tick_ptr1     ; r1 = &tick_cnt  (offset curto)
+  60 0014 10 00	        ldr     r0, [r1]
+  61 0016 80 A0	        add     r0, r0, #1
+  62 0018 10 20	        str     r0, [r1]
+  63           	
+  64 001A 01 04	        pop     r1
+  65 001C 00 04	        pop     r0
+  66 001E 20 B0	        movs    pc, lr
+  67           	_tick_ptr1:
+  68 0020 E8 00	        .word   tick_cnt
+  69           	
+  70           	
+  71           	; =========================  WAIT_TICKS ===============================
+  72           	;  Espera r0 ticks (0…65535) – destrói r1, r2
+  73           	; ---------------------------------------------------------------------
+  74           	wait_ticks:
+  75 0022 71 0C	        ldr     r1, _tick_ptr2     ; r1 = &tick_cnt
+  76 0024 12 00	        ldr     r2, [r1]           ; t0
+  77 0026 00 81	        add     r0, r0, r2         ; alvo = t0 + delay
+  78           	WT_loop:
+  79 0028 12 00	        ldr     r2, [r1]
+  80 002A 00 B1	        mov r0, r2          ; r0 = t2
+  81 002C 20 B8	        cmp     r2, r0
+  82 002E FC 47	        bne     WT_loop
+  83 0030 0F B7	        mov     pc,  lr
+  84           	_tick_ptr2:
+  85 0032 E8 00	        .word   tick_cnt
+  86           	
+  87           	
+  88           	; ===========================  MAIN  ==================================
+  89           	main:
+  90 0034 0E 24	    push lr
+  91 0036 04 24	    push r4
+  92           	
+  93 0038 54 60	    mov  r4, #5                ; valor inicial no display
+  94 003A 00 B2	    mov  r0, r4
+  95 003C 4D 5C	    bl   outport_write
+  96 003E 60 B0	    mrs	r0, cpsr
+  97 0040 01 61		mov	r1, #ENABLE_EXTINT
+  98 0042 80 C8		orr	r0, r0, r1
+  99 0044 40 B0		msr	cpsr, r0
+ 100           	
+ 101           	; -------- loop principal ---------------------------------------------
+ 102           	Main_loop:
+ 103           	    ; actualiza índice do dado se SIDES mudar
+ 104 0046 00 B2	    mov  r0, r4
+ 105 0048 0A 5C	    bl   action
+ 106 004A 04 B0	    mov  r4, r0
+ 107           	
+ 108           	    ; espera premir ROLL
+ 109 004C 41 5C	    bl   inport_read           ; r0 ← entradas
+ 110 004E 11 60	    mov  r1, #ROLL_MSK
+ 111 0050 80 C0	    and  r0, r0, r1
+ 112 0052 F9 43	    beq  Main_loop
+ 113           	
+ 114           	    ; anima durante ROLL_TICKS
+ 115 0054 23 5C	    bl   anim
+ 116           	
+ 117           	    ; gera face aleatória & mostra
+ 118 0056 00 B2	    mov  r0, r4
+ 119 0058 13 5C	    bl   roll
+ 120 005A 3E 5C	    bl   outport_write
+ 121           	
+ 122 005C F4 5B	    b    Main_loop
+ 123           	
+ 124           	; ======================  ACTION  =====================================
+ 125           	; in  r0 = idx dado anterior (0‑3)
+ 126           	; out r0 = idx actual
+ 127           	; corrompe r4, r5
+ 128           	; ---------------------------------------------------------------------
+ 129           	action:
+ 130 005E 0E 24	    push lr
+ 131 0060 04 24	    push r4
+ 132 0062 05 24	    push r5
+ 133           	
+ 134 0064 04 B0	    mov  r4, r0                ; idx anterior
+ 135 0066 34 5C	    bl   inport_read
+ 136 0068 C5 60	    mov  r5, #DICE_MSK
+ 137 006A 80 C2	    and  r0, r0, r5
+ 138 006C 00 E9	    lsr  r0, r0, #2            ; 0‑3
+ 139 006E 00 BA	    cmp  r0, r4
+ 140 0070 04 40	    beq  Action_ret            ; igual → mantem‑se
+ 141           	
+ 142 0072 04 B0	    mov  r4, r0                ; novo dado
+ 143 0074 05 5C	    bl   roll
+ 144 0076 30 5C	    bl   outport_write
+ 145 0078 00 B2	    mov  r0, r4
+ 146           	Action_ret:
+ 147 007A 05 04	    pop  r5
+ 148 007C 04 04	    pop  r4
+ 149 007E 0F 04	    pop pc
+ 150           	
+ 151           	; ======================  ROLL ========================================
+ 152           	; in  r0 = idx dado (0‑3)  => 4,6,8,12 ladoslr
+ 153           	; out r0 = número 1…N (placeholder RNG)
+ 154           	; ---------------------------------------------------------------------
+ 155           	roll:
+ 156 0080 0E 24	    push lr
+ 157 0082 02 5C	    bl   getDiceMax
+ 158 0084 0A 5C	    bl   randGen               ; devolve 1…max
+ 159 0086 0F 04	    pop  pc
+ 160           	
+ 161           	; ------------ getDiceMax ---------------------------------------------
+ 162           	; ------------------------------------------------------------
+ 163           	; Get the maximum sides for the die based on the index
+ 164           	; Input:
+ 165           	; r0 - Die index (0 for d4, 1 for d6, 2 for d8, 3 for d12)
+ 166           	; Returns:
+ 167           	; r0 - Maximum sides for the die
+ 168           	getDiceMax:
+ 169 0088 04 24	    push r4 ; Save r4 on the stack
+ 170 008A 44 60	    mov r4, #TOTAL_SIDES ; Load the total number of sides for the die
+ 171 008C 00 BA	    cmp r0, r4 ; Compare the input with the total sides
+ 172 008E 03 50	    bge getDiceMax_end ; If input is greater or equal, return
+ 173 0090 80 E0	    lsl r0, r0, #1 ; Double the input value (to match the die sides)
+ 174 0092 A4 6E	    mov r4, #max_sides
+ 175 0094 40 10	    ldr r0, [r4, r0] ; Load the maximum sides for the die
+ 176           	getDiceMax_end:
+ 177 0096 04 04	    pop r4 ; Restore r4
+ 178 0098 0F B7	    mov pc, lr ; Return from getDiceMax
+ 179           	
+ 180           	; ------------ randGen (linear, simples) ------------------------------
+ 181           	randGen:
+ 182           	    ; placeholder RNG – nothing implemented yet
+ 183 009A 0F B7	    mov pc, lr
+ 184           	
+ 185           	; ======================  ANIMAÇÃO ====================================
+ 186           	; Faz FRAMES_ROLL frames, cada FRAME_TICKS ticks
+ 187           	; ---------------------------------------------------------------------
+ 188           	anim:
+ 189 009C 0E 24	    push lr
+ 190 009E 04 24	    push r4
+ 191 00A0 05 24	    push r5
+ 192 00A2 06 24	    push r6
+ 193           	
+ 194 00A4 46 0D	    ldr  r6, ptr_anim_seq
+ 195 00A6 04 60	    mov  r4, #0                ; offset
+ 196           	        ; FRAMES_ROLL (=1000) não cabe num MOV imediato de 8 bits
+ 197 00A8 85 6E	    mov  r5, #FRAMES_ROLL & 0xFF   ; baixa
+ 198 00AA 35 70	    movt r5, #FRAMES_ROLL >> 8     ; alta
+ 199           	
+ 200           	Anim_loop:
+ 201 00AC A0 60	    mov  r0, #FRAME_TICKS
+ 202 00AE B9 5F	    bl   wait_ticks
+ 203           	
+ 204 00B0 60 12	    ldr  r0, [r6, r4]
+ 205 00B2 12 5C	    bl   outport_write
+ 206           	
+ 207 00B4 44 A1	    add  r4, r4, #2            ; próximo byte
+ 208 00B6 01 61	    mov r1, #(MAX_ANIM * 2)
+ 209 00B8 C0 B8	    cmp  r4, r1
+ 210 00BA 01 54	    blt  Anim_idx_ok
+ 211 00BC 04 60	    mov  r4, #0
+ 212           	Anim_idx_ok:
+ 213           	
+ 214 00BE D5 A8	    sub  r5, r5, #1
+ 215 00C0 01 60	    mov r1, #0
+ 216 00C2 D0 B8	    cmp  r5, r1
+ 217 00C4 F3 47	    bne  Anim_loop
+ 218           	
+ 219 00C6 06 04	    pop  r6
+ 220 00C8 05 04	    pop  r5
+ 221 00CA 04 04	    pop  r4
+ 222 00CC 0E 04	    pop  lr
+ 223           	
+ 224           	ptr_anim_seq:
+ 225 00CE F2 00	    .word   anim_sequence
+ 226           	
+ 227           	; ======================  I/O ROUTINES ================================
+ 228           	;-------------------------------------------------------
+ 229           	; Input Port Routines
+ 230           	;-------------------------------------------------------
+ 231           	inport_read:
+ 232 00D0 01 68		mov	r1, #INPORT_ADDRESS & 0xFF
+ 233 00D2 F1 7F		movt	r1, #(INPORT_ADDRESS >> 8) & 0xFF
+ 234 00D4 10 08		ldrb	r0, [r1, #0]
+ 235 00D6 0F B7		mov	pc, lr
+ 236           	
+ 237           	;-------------------------------------------------------
+ 238           	; Output Port Routines
+ 239           	;-------------------------------------------------------
+ 240           	outport_write:
+ 241 00D8 01 6C		mov	r1, #OUTPORT_ADDRESS & 0xFF
+ 242 00DA F1 7F		movt	r1, #(OUTPORT_ADDRESS >> 8) & 0xFF
+ 243 00DC 10 28		strb	r0, [r1, #0]
+ 244 00DE 0F B7		mov	pc, lr
+ 245           	
+ 246           	; ============================  DATA ==================================
+ 247           	    .data
+ 248          	    .align 2
+ 249           	
+ 250           	; ponteiros constantes para contornar limitação PC‑relative
+ 251 00E0 80 FF	inport_addr:   .word INPORT_ADDRESS
+ 252 00E2 C0 FF	outport_addr:  .word OUTPORT_ADDRESS
+ 253           	
+ 254 00E4 E8 00	tick_cnt_ptr:  .word tick_cnt
+ 255 00E6 39 30	rng_seed:      .word 12345
+ 256           	
+ 257 00E8 00 00	tick_cnt:      .word 0          ; incrementado pela ISR
+ 258          	max_sides:     .word 4, 6, 8, 6
+ 258 00EA 04 00 06 00 08 00 06 00
+ 259           	
+ 260           	    anim_sequence: ; 7Segment Display Animation Sequence (8style)
+ 261 00F2 21 00	        .word 0x21
+ 262 00F4 03 00	        .word 0x03
+ 263 00F6 42 00	        .word 0x42
+ 264 00F8 50 00	        .word 0x50
+ 265 00FA 18 00	        .word 0x18
+ 266 00FC 0C 00	        .word 0x0C
+ 267 00FE 44 00	        .word 0x44
+ 268 0100 60 00	        .word 0x60
+ 269           	
+ 270           	; ===========================  STACK ==================================
+ 271           	    .stack
+ 272 0102 00   	    .space  STACK_SIZE
+ 272 .... ..
+ 272 0141 00
+ 273           	stack_top:
+ 273           	

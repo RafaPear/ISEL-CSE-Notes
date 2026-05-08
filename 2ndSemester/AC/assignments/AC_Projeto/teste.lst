@@ -1,0 +1,580 @@
+P16 assembler v1.5 (Feb  9 2024)	d:\1-ISEL\Semestre_2\AC\Trabalhos\AC_Projeto\teste.lst	Thu Jun 26 23:18:32 2025
+
+Sections
+Index   Name            Address   Size
+0       .text           0000      01CE 462
+1       .data           01CE      0032 50
+2       .stack          0200      0040 64
+
+Symbols
+Name                    Type      Value       Section
+_stack_lit              LABEL     0008 8      .text
+_tick_ptr1              LABEL     0022 34     .text
+_tick_ptr2              LABEL     0032 50     .text
+action                  LABEL     0096 150    .text
+Action_ret              LABEL     00B6 182    .text
+anim                    LABEL     00EE 238    .text
+Anim_idx_ok             LABEL     0110 272    .text
+Anim_loop               LABEL     00FE 254    .text
+anim_sequence           LABEL     01E0 480    .data
+ATESTE                  ABSOLUTE  0000 0      .text
+DICE_MSK                ABSOLUTE  000C 12     .text
+ENABLE_EXTINT           ABSOLUTE  0010 16     .text
+END_ROLL                ABSOLUTE  0064 100    .text
+extint_vector           LABEL     000A 10     .text
+FED_ADDRESS             ABSOLUTE  FF40 65344  .text
+FRAME_TICKS             ABSOLUTE  0001 1      .text
+FRAMES_ROLL             ABSOLUTE  001E 30     .text
+getDiceMax              LABEL     00DA 218    .text
+getDiceMax_end          LABEL     00E8 232    .text
+hex27seg                LABEL     01F0 496    .data
+inport_addr             LABEL     01CE 462    .data
+INPORT_ADDRESS          ABSOLUTE  FF80 65408  .text
+inport_read             LABEL     011E 286    .text
+main                    LABEL     0034 52     .text
+main_init               LABEL     0044 68     .text
+Main_loop               LABEL     006C 108    .text
+Main_pre_loop           LABEL     006A 106    .text
+main_start_loop         LABEL     0056 86     .text
+MAX_ANIM                ABSOLUTE  0008 8      .text
+max_sides               LABEL     01D8 472    .data
+mod_done                LABEL     00D4 212    .text
+mod_loop                LABEL     00CA 202    .text
+outport_addr            LABEL     01D0 464    .data
+OUTPORT_ADDRESS         ABSOLUTE  FFC0 65472  .text
+outport_write           LABEL     0126 294    .text
+ptr_anim_seq            LABEL     011C 284    .text
+ptr_hex27seg            LABEL     00BC 188    .text
+ptr_max_sides           LABEL     00EC 236    .text
+rand                    LABEL     018C 396    .text
+RAND_MAX_H              ABSOLUTE  FFFF 65535  .text
+RAND_MAX_L              ABSOLUTE  FFFF 65535  .text
+rand_save_seed          LABEL     01BE 446    .text
+reset_vector            LABEL     0004 4      .text
+rng_seed                LABEL     01D4 468    .data
+roll                    LABEL     00BE 190    .text
+ROLL_MSK                ABSOLUTE  0001 1      .text
+seed                    LABEL     01CA 458    .text
+seed_addr_rand          LABEL     01C8 456    .text
+seed_addr_srand         LABEL     018A 394    .text
+srand                   LABEL     0182 386    .text
+STACK_SIZE              ABSOLUTE  0040 64     .text
+stack_top               LABEL     0240 576    .stack
+tick_cnt                LABEL     01D6 470    .data
+tick_cnt_ptr            LABEL     01D2 466    .data
+TOTAL_SIDES             ABSOLUTE  0004 4      .text
+umull32                 LABEL     012E 302    .text
+umull32_else            LABEL     0158 344    .text
+umull32_loop            LABEL     0140 320    .text
+umull32_loop_end        LABEL     0162 354    .text
+umull32_ret             LABEL     0172 370    .text
+wait_ticks              LABEL     0024 36     .text
+WT_loop                 LABEL     002A 42     .text
+
+Code listing
+   1           	; =====================================================================
+   2           	;  File:   TrabalhoProjeto_p16.s
+   3           	;  Desc:   Dice‑roller project – uses FED ticks for timing *only with
+   4           	;          instructions available in the P16 ISA* (no pseudo‑ops).
+   5           	;          Replace the TIMING CONSTANTS block if the external clock
+   6           	;          on the FED is changed (e.g. 100 kHz instead of 10 kHz).
+   7           	; ---------------------------------------------------------------------
+   8           	;  BUILD:  p16as -s .stack=0x2000 TrabalhoProjeto_p16.s
+   9           	; =====================================================================
+  10           	
+  11           	; =========================== CONSTANTES ===============================
+  12          	    .equ INPORT_ADDRESS   , 0xFF80         ; porta de entrada (DIP‑switch)
+  13          	    .equ OUTPORT_ADDRESS  , 0xFFC0         ; porta de saída (7‑seg)
+  14          	    .equ FED_ADDRESS      , 0xFF40         ; 1.º byte da região CS_EXT1
+  15           	
+  16          	    .equ ENABLE_EXTINT    , 0x10
+  17           	
+  18          	    .equ ATESTE           , '\0'
+  19           	
+  20           	; ------------  temporização derivada do FED  -------------------------
+  21           	        ; ---------- temporização ----------
+  22          	    .equ  FRAME_TICKS , 1        ; 100 ms
+  23          	    .equ  FRAMES_ROLL , 30      ; 10 s / 10 ms
+  24          	    .equ  END_ROLL    , 100
+  25           	
+  26           	; ------------  dados jogo  -------------------------------------------
+  27          	    .equ MAX_ANIM      , 8
+  28          	    .equ TOTAL_SIDES   , 4
+  29           	
+  30          	    .equ DICE_MSK      , 0x0C           ; SIDES[1:0] no DIP
+  31          	    .equ ROLL_MSK      , 0x01           ; ROLL no DIP
+  32           	
+  33           	; ------------  RandMax  ---------------------------------------
+  34          	    .equ    RAND_MAX_L, 0xFFFF      ; Corresponde ao maior valor inteiro
+  35          	    .equ    RAND_MAX_H, 0xFFFF      ; sem sinal codificavel com 32 bits
+  36           	
+  37          	    .equ STACK_SIZE    , 64
+  38           	
+  39           	; =====================================================================
+  40           	    .text
+  41 0000 01 58	    b       reset_vector            ; 0x0000
+  42 0002 03 58	    b       extint_vector           ; 0x0002
+  43           	
+  44           	; ========================== VECTORS ==================================
+  45           	reset_vector:
+  46 0004 1D 0C	    ldr     sp, _stack_lit         ; PC-relative (offset = +2 words)
+  47 0006 16 58	    b       main
+  48           	_stack_lit:
+  49 0008 40 02	    .word   stack_top
+  50           	
+  51           	extint_vector:                ; vector 0x0002
+  52 000A 00 24	    push    r0
+  53 000C 01 24	    push    r1
+  54           	    ; limpa FED
+  55 000E 00 64	    mov     r0, #FED_ADDRESS & 0xFF
+  56 0010 F0 7F	    movt    r0, #(FED_ADDRESS >> 8) & 0xFF
+  57 0012 00 28	    strb    r0, [r0]
+  58           	    ; ++tick_cnt
+  59 0014 60 0C	    ldr     r0, _tick_ptr1     ; &tick_cnt (literal logo abaixo)
+  60 0016 01 00	    ldr     r1, [r0]
+  61 0018 91 A0	    add     r1, r1, #1
+  62 001A 01 20	    str     r1, [r0]
+  63 001C 01 04	    pop     r1
+  64 001E 00 04	    pop     r0
+  65 0020 20 B0	    movs    pc, lr
+  66           	    
+  67 0022 D6 01	_tick_ptr1: .word tick_cnt
+  68           	
+  69           	
+  70           	; =========================  WAIT_TICKS ===============================
+  71           	;  Espera r0 ticks (0…65535) – destrói r1, r2
+  72           	; ---------------------------------------------------------------------
+  73           	wait_ticks:
+  74 0024 61 0C	    ldr     r1, _tick_ptr2         ; r1 = &tick_cnt
+  75 0026 12 00	    ldr     r2, [r1]               ; t0
+  76 0028 00 81	    add     r0, r0, r2             ; alvo = t0 + delay
+  77           	WT_loop:
+  78 002A 12 00	    ldr     r2, [r1]
+  79 002C 20 B8	    cmp     r2, r0
+  80 002E FD 4F	    blo     WT_loop
+  81 0030 0F B7	    mov     pc,  lr
+  82           	_tick_ptr2:
+  83 0032 D6 01	    .word   tick_cnt
+  84           	
+  85           	; ===========================  MAIN  ==================================
+  86           	main:
+  87 0034 0E 24	    push    lr
+  88 0036 04 24	    push    r4
+  89 0038 05 24	    push    r5
+  90           	
+  91 003A 60 B0	    mrs     r0, cpsr
+  92 003C 01 61	    mov     r1, #ENABLE_EXTINT
+  93 003E 80 C8	    orr     r0, r0, r1
+  94 0040 40 B0	    msr     cpsr, r0
+  95 0042 00 58	    b       main_init             ; inicializa o display
+  96           	
+  97           	main_init:
+  98 0044 6C 5C	    bl      inport_read
+  99 0046 9D 5C	    bl      srand
+ 100 0048 3A 5C	    bl      roll
+ 101           	
+ 102 004A 81 0F	    ldr     r1, ptr_hex27seg      ; r0 ← endereço da tabela de 7‑seg
+ 103 004C 10 18	    ldrb    r0, [r1, r0]          ; r0 ← valor do dígito
+ 104 004E 6B 5C	    bl      outport_write         ; escreve no display
+ 105           	    
+ 106 0050 04 60	    mov     r4, #0                ; valor inicial no display
+ 107 0052 05 60	    mov     r5, #0
+ 108 0054 00 60	    mov     r0, #0
+ 109           	
+ 110           	main_start_loop:
+ 111 0056 05 B0	    mov     r5, r0
+ 112 0058 00 B2	    mov     r0, r4
+ 113 005A 1D 5C	    bl      action
+ 114 005C 04 B0	    mov     r4, r0
+ 115           	    ; espera premir ROLL
+ 116 005E 5F 5C	    bl      inport_read           ; r0 ← entradas
+ 117 0060 11 60	    mov     r1, #ROLL_MSK
+ 118 0062 80 C0	    and     r0, r0, r1
+ 119           	
+ 120 0064 80 BA	    cmp     r0, r5
+ 121 0066 F7 4B	    bhs     main_start_loop            ; se ROLL não foi premido, continua
+ 122 0068 01 58	    b       Main_loop            ; se ROLL foi premido, continua
+ 123           	
+ 124           	; -------- loop principal ---------------------------------------------
+ 125           	Main_pre_loop:
+ 126 006A 05 B0	    mov     r5, r0
+ 127           	
+ 128           	Main_loop:
+ 129           	    ; actualiza índice do dado se SIDES mudar
+ 130           	
+ 131           	    ; espera premir ROLL
+ 132 006C 58 5C	    bl      inport_read           ; r0 ← entradas
+ 133 006E 11 60	    mov     r1, #ROLL_MSK
+ 134 0070 80 C0	    and     r0, r0, r1
+ 135           	
+ 136 0072 80 BA	    cmp     r0, r5
+ 137 0074 FA 4B	    bhs     Main_pre_loop            ; se ROLL não foi premido, continua
+ 138           	
+ 139 0076 05 B0	    mov     r5, r0
+ 140           	
+ 141 0078 52 5C	    bl      inport_read
+ 142 007A C6 60	    mov     r6, #DICE_MSK
+ 143 007C 00 C3	    and     r0, r0, r6
+ 144 007E 00 E9	    lsr     r0, r0, #2            ; 0‑3
+ 145 0080 06 B0	    mov     r6, r0                ; r1 ← índice do dado
+ 146           	
+ 147           	    ; anima durante ROLL_TICKS
+ 148 0082 35 5C	    bl      anim
+ 149           	
+ 150           	    ; gera face aleatória & mostra
+ 151 0084 00 B3	    mov     r0, r6                ; r0 ← índice do dado (0‑3)
+ 152 0086 1B 5C	    bl      roll
+ 153           	    
+ 154 0088 91 0D	    ldr     r1, ptr_hex27seg      ; r0 ← endereço da tabela de 7‑seg
+ 155 008A 10 18	    ldrb     r0, [r1, r0]          ; r0 ← valor do dígito
+ 156 008C 4C 5C	    bl      outport_write         ; escreve no display
+ 157           	
+ 158 008E 40 66	    mov     r0, #END_ROLL & 0xFF   ; baixa
+ 159 0090 00 70	    movt    r0, #END_ROLL >> 8     ; alta
+ 160 0092 C8 5F	    bl      wait_ticks
+ 161           	
+ 162 0094 EB 5B	    b       Main_loop
+ 163           	
+ 164           	
+ 165           	; ======================  ACTION  =====================================
+ 166           	; in  r0 = idx dado anterior (0‑3)
+ 167           	; out r0 = idx actual
+ 168           	; ---------------------------------------------------------------------
+ 169           	action:
+ 170 0096 0E 24	    push    lr
+ 171 0098 04 24	    push    r4
+ 172 009A 05 24	    push    r5
+ 173           	
+ 174 009C 04 B0	    mov     r4, r0                ; idx anterior
+ 175 009E 3F 5C	    bl      inport_read
+ 176 00A0 C5 60	    mov     r5, #DICE_MSK
+ 177 00A2 80 C2	    and     r0, r0, r5
+ 178 00A4 00 E9	    lsr     r0, r0, #2            ; 0‑3
+ 179 00A6 00 BA	    cmp     r0, r4
+ 180 00A8 06 40	    beq     Action_ret            ; igual → mantem‑se
+ 181           	
+ 182 00AA 04 B0	    mov     r4, r0                ; novo dado
+ 183 00AC 08 5C	    bl      roll
+ 184           	
+ 185 00AE 61 0C	    ldr     r1, ptr_hex27seg      ; r0 ← endereço da tabela de 7‑seg
+ 186 00B0 10 18	    ldrb     r0, [r1, r0]          ; r0 ← valor do dígito
+ 187 00B2 39 5C	    bl      outport_write         ; escreve no display
+ 188           	
+ 189 00B4 00 B2	    mov      r0, r4
+ 190           	Action_ret:
+ 191 00B6 05 04	    pop     r5
+ 192 00B8 04 04	    pop     r4
+ 193 00BA 0F 04	    pop     pc
+ 194           	
+ 195           	
+ 196           	ptr_hex27seg:
+ 197 00BC F0 01	    .word   hex27seg
+ 198           	
+ 199           	
+ 200           	
+ 201           	; ======================  ROLL ========================================
+ 202           	; in  r0 = idx dado (0‑3)  => 4,6,8,12 ladoslr
+ 203           	; out r0 = número 1…N (placeholder RNG)
+ 204           	; out r1 = idx dado (0‑3)  => 4,6,8,12 lados
+ 205           	; ---------------------------------------------------------------------
+ 206           	roll:
+ 207 00BE 0E 24	    push    lr
+ 208 00C0 04 24	    push    r4
+ 209 00C2 0B 5C	    bl      getDiceMax      ; r0 = N
+ 210 00C4 04 B0	    mov     r4, r0          ; divisor
+ 211           	
+ 212 00C6 62 5C	    bl      rand            ; r0 = 0…65535
+ 213 00C8 00 EC	    lsr     r0, r0, #8
+ 214           	
+ 215           	
+ 216           	; ---------- r0 = r0 mod N  (N ≤ 12) ----------------------------------
+ 217           	; ciclo: enquanto r0 ≥ N  → r0 -= N
+ 218           	mod_loop:
+ 219 00CA 00 BA	    cmp     r0, r4
+ 220 00CC 03 4C	    blo     mod_done              ; r0 < N  → já é o resto
+ 221 00CE 00 8A	    sub     r0, r0, r4
+ 222 00D0 01 4C	    blo     mod_done
+ 223 00D2 FB 5B	    b       mod_loop
+ 224           	mod_done:
+ 225 00D4 80 A0	    add     r0, r0, #1            ; passa a 1-based (1…N)
+ 226           	
+ 227 00D6 04 04	    pop     r4                    ; r4 = N  (máx. número do dado)
+ 228 00D8 0F 04	    pop     pc
+ 229           	
+ 230           	; ------------ getDiceMax ---------------------------------------------
+ 231           	; ------------------------------------------------------------
+ 232           	; Get the maximum sides for the die based on the index
+ 233           	; Input:
+ 234           	; r0 - Die index (0 for d4, 1 for d6, 2 for d8, 3 for d12)
+ 235           	; Returns:
+ 236           	; r0 - Maximum sides for the die
+ 237           	getDiceMax:
+ 238 00DA 04 24	    push    r4                     ; Save r4 on the stack
+ 239 00DC 44 60	    mov     r4, #TOTAL_SIDES       ; Load the total number of sides for the die
+ 240 00DE 00 BA	    cmp     r0, r4                 ; Compare the input with the total sides
+ 241 00E0 03 50	    bge     getDiceMax_end         ; If input is greater or equal, return
+ 242 00E2 80 E0	    lsl     r0, r0, #1             ; Double the input value (to match the die sides)
+ 243 00E4 34 0C	    ldr     r4, ptr_max_sides      ; Load the address of max_sides
+ 244 00E6 40 10	    ldr     r0, [r4, r0]           ; Load the maximum sides for the die
+ 245           	getDiceMax_end:
+ 246 00E8 04 04	    pop     r4                     ; Restore r4
+ 247 00EA 0F B7	    mov     pc, lr                 ; Return from getDiceMax
+ 248           	
+ 249           	ptr_max_sides:
+ 250 00EC D8 01	    .word   max_sides
+ 251           	
+ 252           	; ======================  ANIMAÇÃO ====================================
+ 253           	; Faz FRAMES_ROLL frames, cada FRAME_TICKS ticks
+ 254           	; ---------------------------------------------------------------------
+ 255           	anim:
+ 256 00EE 0E 24	    push    lr
+ 257 00F0 04 24	    push    r4
+ 258 00F2 05 24	    push    r5
+ 259 00F4 06 24	    push    r6
+ 260           	
+ 261 00F6 26 0D	    ldr     r6, ptr_anim_seq
+ 262 00F8 04 60	    mov     r4, #0          ; índice 0-7
+ 263 00FA E5 61	    mov     r5, #FRAMES_ROLL & 0xFF   ; baixa
+ 264 00FC 05 70	    movt    r5, #FRAMES_ROLL >> 8     ; alta
+ 265           	
+ 266           	Anim_loop:
+ 267 00FE 10 60	    mov     r0, #FRAME_TICKS
+ 268 0100 91 5F	    bl      wait_ticks
+ 269           	
+ 270 0102 60 1A	    ldrb    r0, [r6, r4]
+ 271 0104 10 5C	    bl      outport_write
+ 272           	
+ 273 0106 44 A1	    add     r4, r4, #2            ; próximo byte
+ 274 0108 01 61	    mov     r1, #(MAX_ANIM * 2)
+ 275 010A C0 B8	    cmp     r4, r1
+ 276 010C 01 54	    blt     Anim_idx_ok
+ 277 010E 04 60	    mov     r4, #0
+ 278           	Anim_idx_ok:
+ 279           	
+ 280 0110 D5 A8	    sub     r5, r5, #1
+ 281 0112 F5 47	    bne     Anim_loop
+ 282           	
+ 283 0114 06 04	    pop     r6
+ 284 0116 05 04	    pop     r5
+ 285 0118 04 04	    pop     r4
+ 286 011A 0F 04	    pop     pc
+ 287           	
+ 288           	ptr_anim_seq:
+ 289 011C E0 01	    .word   anim_sequence
+ 290           	
+ 291           	; ======================  I/O ROUTINES ================================
+ 292           	;-------------------------------------------------------
+ 293           	; Input Port Routines
+ 294           	;-------------------------------------------------------
+ 295           	inport_read:
+ 296 011E 01 68	    mov     r1, #INPORT_ADDRESS & 0xFF
+ 297 0120 F1 7F	    movt    r1, #(INPORT_ADDRESS >> 8) & 0xFF
+ 298 0122 10 08	    ldrb    r0, [r1, #0]
+ 299 0124 0F B7	    mov     pc, lr
+ 300           	
+ 301           	;-------------------------------------------------------
+ 302           	; Output Port Routines
+ 303           	;-------------------------------------------------------
+ 304           	outport_write:
+ 305 0126 01 6C	    mov     r1, #OUTPORT_ADDRESS & 0xFF
+ 306 0128 F1 7F	    movt    r1, #(OUTPORT_ADDRESS >> 8) & 0xFF
+ 307 012A 10 28	    strb    r0, [r1, #0]
+ 308 012C 0F B7	    mov     pc, lr
+ 309           	
+ 310           	; Rotina:    umull32
+ 311           	; Descricao: Realiza a multiplicacao de dois numeros naturais codificados com
+ 312           	;            32 bits.
+ 313           	;            Interface exemplo: uint32_t umull( uint32_t M, uint32_t m );
+ 314           	; Entradas:  R1:R0 - Valor do multiplicando (M)
+ 315           	;            R3:R2 - Valor do multiplicador (m)
+ 316           	; Saidas:    R1:R0 - Valor do produto
+ 317           	; Efeitos:   R5:R4 - Parte alta (bits 63..32) do produto (p), pois R3:R2 contem
+ 318           	;                    a parte baixa (bits 31..0)
+ 319           	;            R6    - Mapeia a variavel p_1
+ 320           	;            R7    - guarda o valor da iteracao do ciclo for (i)
+ 321           	;            R8    - guarda valores temporariamente
+ 322           	;
+ 323           	umull32:
+ 324           	    ; Prologo
+ 325 012E 08 24	    push    r8
+ 326 0130 07 24	    push    r7
+ 327 0132 06 24	    push    r6
+ 328 0134 05 24	    push    r5
+ 329 0136 04 24	    push    r4
+ 330           	
+ 331           	    ; Iniciar p fazendo a extensao de sinal aos 16 MSb
+ 332 0138 B4 F7	    asr     r4, r3, #15
+ 333 013A 05 B2	    mov     r5, r4
+ 334           	    ; Inicia p_1
+ 335 013C 06 60	    mov     r6, #0
+ 336           	    ; Implementacao do ciclo for
+ 337 013E 07 60	    mov     r7, #0      ; Inicia i
+ 338           	umull32_loop:
+ 339 0140 08 62	    mov     r8, #32     ; Avaliar o limite maximo de i
+ 340 0142 70 BC	    cmp     r7, r8
+ 341 0144 16 48	    bhs     umull32_ret
+ 342           	    ; Implementacao do if
+ 343 0146 18 60	    mov     r8, #1
+ 344 0148 28 C4	    and     r8, r2, r8
+ 345 014A 06 44	    bzc     umull32_else
+ 346 014C 18 60	    mov     r8, #1
+ 347 014E 60 BC	    cmp     r6, r8
+ 348 0150 08 44	    bne     umull32_loop_end
+ 349 0152 44 80	    add     r4, r4, r0  ; Atualizar o valor de p
+ 350 0154 D5 90	    adc     r5, r5, r1
+ 351 0156 05 58	    b       umull32_loop_end
+ 352           	umull32_else:
+ 353           	    ; Implementacao otimizada do else
+ 354 0158 08 60	    mov     r8, #0
+ 355 015A 60 BC	    cmp     r6, r8
+ 356 015C 02 44	    bne     umull32_loop_end
+ 357 015E 44 88	    sub     r4, r4, r0  ; Atualizar o valor de p
+ 358 0160 D5 98	    sbc     r5, r5, r1
+ 359           	umull32_loop_end:
+ 360 0162 18 60	    mov     r8, #1      ; Definir o novo valor de p_1
+ 361 0164 26 C4	    and     r6, r2, r8
+ 362 0166 D5 F0	    asr     r5, r5, #1
+ 363 0168 44 D8	    rrx     r4, r4
+ 364 016A 33 D8	    rrx     r3, r3
+ 365 016C 22 D8	    rrx     r2, r2
+ 366 016E F7 A0	    add     r7, r7, #1  ; Incrementar i
+ 367 0170 E7 5B	    b       umull32_loop
+ 368           	
+ 369           	umull32_ret:
+ 370           	    ; Epilogo
+ 371 0172 00 B1	    mov     r0, r2      ; Preparar o valor a devolver
+ 372 0174 81 B1	    mov     r1, r3
+ 373           	
+ 374 0176 04 04	    pop     r4
+ 375 0178 05 04	    pop     r5
+ 376 017A 06 04	    pop     r6
+ 377 017C 07 04	    pop     r7
+ 378 017E 08 04	    pop     r8
+ 379 0180 0F B7	    mov     pc, lr
+ 380           	
+ 381           	; Rotina:    srand
+ 382           	; Descricao: Afeta a variavel global seed com um novo valor (semente),
+ 383           	;            recebido por parametro.
+ 384           	;            Interface exemplo: void srand( uint32_t nseed );
+ 385           	; Entradas:  R0 - Parte baixa (bits 0..15) do novo valor de seed
+ 386           	;            R1 - Parte alta (bits 16..31) do novo valor de seed
+ 387           	; Saidas:    -
+ 388           	; Efeitos:   Altera o valor da variavel global seed
+ 389           	;            R2 - guarda valores temporariamente
+ 390           	;
+ 391           	srand:
+ 392 0182 32 0C	    ldr     r2, seed_addr_srand
+ 393 0184 20 20	    str     r0, [r2, #0]
+ 394 0186 A1 20	    str     r1, [r2, #2]
+ 395 0188 0F B7	    mov     pc, lr
+ 396           	
+ 397           	seed_addr_srand:
+ 398 018A CA 01	    .word   seed
+ 399           	
+ 400           	; Rotina:    rand
+ 401           	; Descricao: Implementa um gerador congruencial linear (LCG) para gerar numeros
+ 402           	;            pseudo-aleatorios entre zero e RAND_MAX.
+ 403           	;            Interface exemplo: uint16_t rand( void );
+ 404           	; Entradas:  R0 - Valor maximo para gerar
+ 405           	; Saidas:    R0 - O valor pseudo-aleatorio gerado
+ 406           	; Efeitos:   Altera o valor da variavel global seed
+ 407           	;            R0 - guarda valores temporariamente
+ 408           	;            R1 - guarda valores temporariamente
+ 409           	;            R2 - guarda valores temporariamente
+ 410           	;            R3 - guarda valores temporariamente
+ 411           	;
+ 412           	rand:
+ 413           	    ; Prologo
+ 414 018C 0E 24	    push    lr
+ 415           	    ; Obter o valor atual de seed
+ 416 018E C2 0D	    ldr     r2, seed_addr_rand
+ 417 0190 20 00	    ldr     r0, [r2, #0]
+ 418 0192 A1 00	    ldr     r1, [r2, #2]
+ 419           	    ; Calcular a multiplicacao a 32 bits
+ 420 0194 D2 6F	    mov     r2, #( 0x43FD >> 0 ) & 0xFF    ; Carregar o valor 214013
+ 421 0196 32 74	    movt    r2, #( 0x43FD >> 8 ) & 0xFF
+ 422 0198 33 60	    mov     r3, #( 0x0003 >> 0 ) & 0xFF
+ 423 019A 03 70	    movt    r3, #( 0x0003 >> 8 ) & 0xFF
+ 424 019C C8 5F	    bl      umull32
+ 425           	    ; Calcular a adicao a 32 bits
+ 426 019E 32 6C	    mov     r2, #( 0x9EC3 >> 0 ) & 0xFF    ; Carregar o valor 2531011
+ 427 01A0 E2 79	    movt    r2, #( 0x9EC3 >> 8 ) & 0xFF
+ 428 01A2 63 62	    mov     r3, #( 0x0026 >> 0 ) & 0xFF
+ 429 01A4 03 70	    movt    r3, #( 0x0026 >> 8 ) & 0xFF
+ 430 01A6 00 81	    add     r0, r0, r2
+ 431 01A8 91 91	    adc     r1, r1, r3
+ 432           	
+ 433           	    ; Nao e necessario implementar a divisao modulo, pois a operacao realizada
+ 434           	    ; com valores de 32 bits nunca ultrapassa o valor RAND_MAX (0xFFFFFFFF).
+ 435           	    ; No entanto, a operacao % RAND_MAX deve devolver 0 quando o novo valor de
+ 436           	    ; seed e exatamente igual a RAND_MAX. Assim, e suficiente verificar este
+ 437           	    ; caso e forcar seed a zero.
+ 438 01AA F2 6F	    mov     r2, #( RAND_MAX_L >> 0 ) & 0xFF
+ 439 01AC F2 7F	    movt    r2, #( RAND_MAX_L >> 8 ) & 0xFF
+ 440 01AE 00 B9	    cmp     r0, r2
+ 441 01B0 06 44	    bne     rand_save_seed
+ 442 01B2 F3 6F	    mov     r3, #( RAND_MAX_H >> 0 ) & 0xFF
+ 443 01B4 F3 7F	    movt    r3, #( RAND_MAX_H >> 8 ) & 0xFF
+ 444 01B6 90 B9	    cmp     r1, r3
+ 445 01B8 02 44	    bne     rand_save_seed
+ 446 01BA 00 60	    mov     r0, #0      ; Atribuir a seed o valor 0
+ 447 01BC 01 60	    mov     r1, #0
+ 448           	
+ 449           	rand_save_seed:
+ 450           	    ; Atualizar o valor de seed
+ 451 01BE 42 0C	    ldr     r2, seed_addr_rand
+ 452 01C0 20 20	    str     r0, [r2, #0]
+ 453 01C2 A1 20	    str     r1, [r2, #2]
+ 454           	    ; Epilogo
+ 455 01C4 80 B0	    mov     r0, r1      ; Preparar o valor a devolver (16 MSb do valor)
+ 456 01C6 0F 04	    pop     pc
+ 457           	
+ 458           	seed_addr_rand:
+ 459 01C8 CA 01	    .word   seed
+ 460           	    ; Definicao da variavel global do tipo uint32_t com valor inicial 1
+ 461           	    ; Como o processador P16 utiliza ordenacao little endian, o byte menos
+ 462           	    ; significativo (LSB) é armazenado no endereço mais baixo, logo, o valor
+ 463           	    ; um (0x00000001) é escrito primeiro
+ 464           	seed:
+ 465          	    .word   1, 0
+ 465 01CA 01 00 00 00
+ 466           	
+ 467           	; ============================  DATA ==================================
+ 468           	    .data
+ 469          	    .align 2
+ 470           	
+ 471           	; ponteiros constantes para contornar limitação PC‑relative
+ 472 01CE 80 FF	inport_addr:       .word INPORT_ADDRESS
+ 473 01D0 C0 FF	outport_addr:      .word OUTPORT_ADDRESS
+ 474           	
+ 475 01D2 D6 01	tick_cnt_ptr:      .word tick_cnt
+ 476 01D4 39 30	rng_seed:          .word 12345
+ 477           	
+ 478 01D6 00 00	tick_cnt:          .word 0          ; incrementado pela ISR
+ 479          	max_sides:         .word 4, 6, 8, 6
+ 479 01D8 04 00 06 00 08 00 06 00
+ 480          	.align 1
+ 481           	
+ 482           	anim_sequence:     ; 7Segment Display Animation Sequence (8style)
+ 483 01E0 21 00	    .word 0x21
+ 484 01E2 03 00	    .word 0x03
+ 485 01E4 42 00	    .word 0x42
+ 486 01E6 50 00	    .word 0x50
+ 487 01E8 18 00	    .word 0x18
+ 488 01EA 0C 00	    .word 0x0C
+ 489 01EC 44 00	    .word 0x44
+ 490 01EE 60 00	    .word 0x60
+ 491           	
+ 492           	hex27seg:
+ 493          	    .byte   0x3F, 0x06, 0x5B, 0x4F, 0x66, 0x6D, 0x7D, 0x07
+ 493 01F0 3F 06 5B 4F 66 6D 7D 07
+ 494          	    .byte   0x7F, 0x6F, 0x77, 0x7C, 0x39, 0x5E, 0x79, 0x71
+ 494 01F8 7F 6F 77 7C 39 5E 79 71
+ 495           	
+ 496           	; ===========================  STACK ==================================
+ 497           	    .stack
+ 498 0200 00   	    .space  STACK_SIZE
+ 498 .... ..
+ 498 023F 00
+ 499           	stack_top:
+ 499           	

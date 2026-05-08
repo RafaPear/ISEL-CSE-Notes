@@ -1,0 +1,4 @@
+src/node_modules
+src/env.json
+src/teams.json
+.idea/

@@ -1,0 +1,54 @@
+name: Deploy Dokka Docs
+
+on:
+  push:
+    branches:
+      - master
+  release:
+    types: [ created ]
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v4
+
+      - name: Grant execute permission for gradlew
+        run: chmod +x ./gradlew
+
+      - name: Build Project
+        run: ./gradlew build --no-daemon -x test
+
+      - name: Debug Dokka output
+        run: |
+          echo "=== Conteúdo de build/dokka/html ==="
+          ls -la build/dokka/html || true
+          echo "✅ index.html deve estar na raiz agora"
+
+      - name: Upload docs artifact (opcional)
+        uses: actions/upload-artifact@v4
+        with:
+          name: dokka-html
+          path: build/dokka/html
+
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: build/dokka/html
+          commit_message: "Deploy Dokka docs"
+          keep_files: false

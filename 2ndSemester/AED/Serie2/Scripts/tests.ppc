@@ -1,0 +1,75 @@
+// Run all tests (10, 100, 1000, 10000, 100000, 1000000)
+
+cd scripts
+
+print ---------------------------------
+print Loads all tests (10, 100, 1000, 10000, 100000, 1000000, 10000000)
+print ---------------------------------
+
+wait 2000
+clr
+
+print ---------------------------------
+print LOADING TEST WITH 10 POINTS
+print ---------------------------------
+
+wait 2000
+lscript test10.ppc
+wfu Start test with 100?
+clr
+
+print ---------------------------------
+print LOADING TEST WITH 100 POINTS
+print ---------------------------------
+
+wait 2000
+lscript test100.ppc
+wfu Start test with 1000 (thousand)?
+clr
+
+print ---------------------------------
+print LOADING TEST WITH 1000 (thousand) POINTS
+print ---------------------------------
+
+wait 2000
+lscript test1000.ppc
+wfu Start test with 10000 (ten thousand)?
+clr
+
+print ---------------------------------
+print LOADING TEST WITH 10000 (ten thousand) POINTS
+print ---------------------------------
+
+wait 2000
+lscript test10000.ppc
+wfu Start test with 100000 (hundred thousand)?
+clr
+
+print ---------------------------------
+print LOADING TEST WITH 100000 (hundred thousand) POINTS
+print ---------------------------------
+
+wait 2000
+lscript test100000.ppc
+wfu Start test with 1000000 (one million)?
+clr
+
+print ---------------------------------
+print LOADING TEST WITH 1000000 (one million) POINTS
+print ---------------------------------
+
+wait 2000
+lscript test1000000.ppc
+wfu Start test with 10000000 (ten million)?
+clr
+
+print ---------------------------------
+print LOADING TEST WITH 10000000 (ten million) POINTS
+print ---------------------------------
+
+wait 2000
+lscript test10000000.ppc
+
+print ---------------------------------
+print TESTS COMPLETED
+print ---------------------------------

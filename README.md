@@ -100,11 +100,9 @@ This folder is organized by topic, where each subject has its own dedicated dire
 - iTerm2  
 - zsh  
 - oh-my-posh (prompt customization)  
-- SuperFile (file manager)  
+- Yazi (file manager)  
 - Helix (editor)  
-- Glow (Markdown viewer)  
 
 ### Coding Applications
 
 - IntelliJ (Java / Kotlin)  
-- VS Code (general purpose)

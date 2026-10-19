@@ -48,3 +48,6 @@ target/
 
 # Node.js
 node_modules/
+
+.helix
+.helix/
